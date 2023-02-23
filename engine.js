@@ -96,14 +96,14 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
    for (let i = 0; i < numCars; i++) {
       let numStreets;
       if (ns > 995) {
-         numStreets = Math.floor(Math.random() * 995);
+         numStreets = Math.floor(Math.random() * 995) + 2;
       } else {
-         numStreets = Math.floor(Math.random() * ns);
+         numStreets = Math.floor(Math.random() * ns) + 2;
       }
       const streets = [];
 
       for (let j = 0; j < numStreets; j++) {
-         const streetIndex = Math.floor(Math.random() * numStreets);
+         const streetIndex = Math.floor(Math.random() * numStreets) + 1;
          const streetName = `street-${streetIndex}`;
 
          // Increment count of street usage
@@ -118,7 +118,7 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
    // Assign unused streets to a random car
    for (let [streetName, count] of streetMap) {
       if (count === 0) {
-         const randomIndex = Math.floor(Math.random() * numCars);
+         const randomIndex = Math.floor(Math.random() * numCars) + 1;
 
          let str = String(cars[randomIndex]);
 
