@@ -131,6 +131,103 @@ function solve(input) {
       },
    });
 
+   // Parse the input data
+   const [numIntersections, numStreets, numSeconds, numCars, bonusPoints, ...streetsAndPaths] =
+      input.split("\n").map((line) => line.trim());
+
+   // Extract the street information
+   const streets1 = streetsAndPaths.slice(0, numStreets);
+   const paths1 = streetsAndPaths.slice(numStreets);
+
+   // Count the number of times each intersection is used in a path
+   const intersectionUsage = new Map();
+   for (const path of paths1) {
+      const [, ...intersections] = path.split(" ");
+      for (const intersection of intersections) {
+         if (intersectionUsage.has(intersection)) {
+            intersectionUsage.set(intersection, intersectionUsage.get(intersection) + 1);
+         } else {
+            intersectionUsage.set(intersection, 1);
+         }
+      }
+   }
+
+   // Extract the intersection names and usage counts
+   const intersectionNames = streets1.map((street) => street.split(" ")[1]);
+   const intersectionUsages = intersectionNames.map((name) => intersectionUsage.get(name) || 0);
+
+   // Create a radar chart
+   const radarChart = new Chart(document.getElementById("radarChart"), {
+      type: "radar",
+      data: {
+         labels: intersectionNames,
+         datasets: [
+            {
+               label: "Intersection usage",
+               data: intersectionUsages,
+               backgroundColor: "rgba(255, 99, 132, 0.2)",
+               borderColor: "rgb(255, 99, 132)",
+               pointBackgroundColor: "rgb(255, 99, 132)",
+               pointBorderColor: "#fff",
+               pointHoverBackgroundColor: "#fff",
+               pointHoverBorderColor: "rgb(255, 99, 132)",
+            },
+         ],
+      },
+      options: {
+         scale: {
+            ticks: {
+               beginAtZero: true,
+            },
+         },
+      },
+   });
+
+   // Count the number of streets that each intersection is connected to
+
+   const intersectionConnections = new Map();
+   for (const street of streets1) {
+      const [, intersection] = street.split(" ");
+      if (intersectionConnections.has(intersection)) {
+         intersectionConnections.set(intersection, intersectionConnections.get(intersection) + 1);
+      } else {
+         intersectionConnections.set(intersection, 1);
+      }
+   }
+
+   // Extract the intersection names and connection counts
+   const intersectionConnectionCounts = intersectionNames.map(
+      (name) => intersectionConnections.get(name) || 0
+   );
+
+   // Create a horizontal bar chart
+   const barChart = new Chart(document.getElementById("barChart"), {
+      type: "bar",
+      data: {
+         labels: intersectionNames,
+         datasets: [
+            {
+               label: "Number of street connections",
+               data: intersectionConnectionCounts,
+               backgroundColor: "rgba(54, 162, 235, 0.2)",
+               borderColor: "rgb(54, 162, 235)",
+               borderWidth: 1,
+            },
+         ],
+      },
+      options: {
+         scales: {
+            xAxes: [
+               {
+                  ticks: {
+                     beginAtZero: true,
+                  },
+               },
+            ],
+         },
+      },
+   });
+
    const blob = new Blob([output], { type: "text/plain" });
    const url = URL.createObjectURL(blob);
    const downloadLink = document.createElement("a");

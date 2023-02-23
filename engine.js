@@ -68,6 +68,7 @@ function getData() {
 
 function generateInputFile(duration, numIntersections, numStreets, numCars, bonusPoints) {
    running = true;
+   let ns = numStreets;
    // Generate streets
    const streets = [];
    for (let i = 0; i < numStreets; i++) {
@@ -83,16 +84,56 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
 
    // Generate cars
    const cars = [];
+   const streetMap = new Map();
+
+   // Initialize street map
+   for (let i = 0; i < numStreets; i++) {
+      const streetName = `street-${i}`;
+      streetMap.set(streetName, 0);
+   }
+
+   // Assign streets to cars
    for (let i = 0; i < numCars; i++) {
-      const numStreets = Math.floor(Math.random() * 995) + 2;
+      let numStreets;
+      if (ns > 995) {
+         numStreets = Math.floor(Math.random() * 995);
+      } else {
+         numStreets = Math.floor(Math.random() * ns);
+      }
       const streets = [];
+
       for (let j = 0; j < numStreets; j++) {
-         let char = Math.floor(Math.random() * roads.length);
          const streetIndex = Math.floor(Math.random() * numStreets);
          const streetName = `street-${streetIndex}`;
+
+         // Increment count of street usage
+         streetMap.set(streetName, streetMap.get(streetName) + 1);
+
          streets.push(streetName);
       }
+
       cars.push(`${numStreets} ${streets.join(" ")}`);
+   }
+
+   // Assign unused streets to a random car
+   for (let [streetName, count] of streetMap) {
+      if (count === 0) {
+         const randomIndex = Math.floor(Math.random() * numCars);
+
+         let str = String(cars[randomIndex]);
+
+         let input_arr = str.split(" "); // split the string into an array of strings
+
+         // increase the first number in the array by 1
+         input_arr[0] = (parseInt(input_arr[0]) + 1).toString();
+
+         // join the array of strings back into a single string
+         let newSTR = input_arr.join(" ");
+
+         newSTR += ` ${streetName}`;
+
+         cars[randomIndex] = newSTR;
+      }
    }
 
    // Combine all data and format as text
