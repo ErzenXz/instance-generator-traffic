@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a Markdown (.md) file that serves as documentation for an instance generator designed to create input files for the Google Hash Code Problem - Traffic Signaling. The instance generator is a tool that creates instances of the problem based on user-defined parameters. 
+This is a Markdown (.md) file that serves as documentation for an instance generator designed to create input files for the Google Hash Code Problem - Traffic Signaling. The instance generator is a tool that creates instances of the problem based on user-defined parameters.
 
 ## Problem Statement
 
@@ -10,29 +10,27 @@ The Traffic Signaling problem involves creating an optimal schedule for traffic 
 
 The input for the problem consists of:
 
-- The duration of the simulation
-- The number of intersections
-- The number of streets
-- The number of cars
-- The duration of each street
-- The time it takes for a car to travel from one end of a street to the other
-- The streets that each car will travel on
+-  The duration of the simulation
+-  The number of intersections
+-  The number of streets
+-  The number of cars
+-  The duration of each street
+-  The time it takes for a car to travel from one end of a street to the other
+-  The streets that each car will travel on
 
 The output for the problem consists of:
 
-- The number of intersections with traffic lights
-- The schedule for each traffic light, consisting of the street names and the duration of each green light
+-  The number of intersections with traffic lights
+-  The schedule for each traffic light, consisting of the street names and the duration of each green light
 
 ## Instance Generator
 
 The instance generator is designed to create input files for the Traffic Signaling problem based on user-defined parameters. The user can specify the following parameters:
 
-- The number of intersections
-- The number of streets
-- The number of cars
-- The duration of the simulation
-- The maximum duration of each street
-- The maximum time it takes for a car to travel from one end of a street to the other
+-  The number of intersections
+-  The number of streets
+-  The number of cars
+-  The duration of the simulation
 
 The generator creates a random graph of intersections and streets, where each street has a random duration and a random travel time. The generator also randomly assigns streets to cars.
 
@@ -49,7 +47,6 @@ To use the instance generator, follow these steps:
 Or go to the link below.
 
 [Traffic Signaling Online](https://trafficsignaling.instance.generator.erzen.tk "Traffic Signaling Instance Generator")
-
 
 ## Conclusion
 
