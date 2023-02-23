@@ -9,6 +9,8 @@ function getRandomInt(min, max) {
    return Math.floor(Math.random() * (maxB - minB + 1)) + minB;
 }
 
+let INPUT = "";
+
 const roads = [
    "main-st",
    "broadwy",
@@ -115,6 +117,7 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
       DATE.getMinutes();
 
    // Create download link for the file
+   INPUT = data;
    const blob = new Blob([data], { type: "text/plain" });
    const url = URL.createObjectURL(blob);
    const downloadLink = document.createElement("a");
@@ -124,7 +127,11 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
    downloadLink.click();
    document.body.removeChild(downloadLink);
 
-   document.getElementById("data").classList.remove("hidden");
-   document.getElementById("running").classList.add("hidden");
-   running = false;
+   if (checkBOXSTATUS) {
+      solve(INPUT);
+   } else {
+      document.getElementById("data").classList.remove("hidden");
+      document.getElementById("running").classList.add("hidden");
+      running = false;
+   }
 }
