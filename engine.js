@@ -1,4 +1,4 @@
-// Version 1.0
+// Version 1.3
 
 let running = false;
 
@@ -103,7 +103,10 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
       const streets = [];
 
       for (let j = 0; j < numStreets; j++) {
-         const streetIndex = Math.floor(Math.random() * numStreets) + 1;
+         let streetIndex = Math.floor(Math.random() * numStreets);
+         if (streetIndex >= numStreets) {
+            streetIndex--;
+         }
          const streetName = `street-${streetIndex}`;
 
          // Increment count of street usage

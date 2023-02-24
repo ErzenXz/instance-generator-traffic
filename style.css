@@ -187,3 +187,8 @@ footer {
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
 }
+
+#build {
+    font-size: 10px;
+    margin-bottom: 7px;
+}
