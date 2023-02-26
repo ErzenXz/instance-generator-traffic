@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instance Generator for Traffic Signaling</title>
-    <link rel="stylesheet" href="style.css">
+    <link id="css-file" type="text/css" rel="stylesheet" href="style.css">
     <script defer src="./engine.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,6 +23,7 @@
     <h1>Instance Generator for Traffic Signaling
         Problem
     </h1>
+
 
     <main id="data">
 
@@ -53,6 +54,14 @@
 
             <input type="submit" value="Generate File" onclick="getData()">
         </div>
+
+        <label for="css-select">Theme</label>
+        <select id="css-select">
+            <option value="style.css" selected>Default</option>
+            <option value="old-style.css">Classic</option>
+            <option value="style2.css">No style</option>
+        </select>
+
 
         <br><br>
         <div>

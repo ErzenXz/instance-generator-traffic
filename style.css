@@ -192,3 +192,30 @@ footer {
     font-size: 10px;
     margin-bottom: 7px;
 }
+
+#css-select {
+    all: unset;
+}
+
+#css-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    color: #666;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#css-select::-ms-expand {
+    display: none;
+}
+
+#css-select:focus {
+    outline: none;
+    border-color: #007aff;
+}

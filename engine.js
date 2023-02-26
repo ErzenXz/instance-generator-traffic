@@ -185,3 +185,13 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
       running = false;
    }
 }
+
+// Code for selecting the style of the website
+
+const select = document.getElementById("css-select");
+const cssLink = document.getElementById("css-file");
+
+select.addEventListener("change", () => {
+   const selectedValue = select.value;
+   cssLink.href = selectedValue;
+});
