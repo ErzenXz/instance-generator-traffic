@@ -94,18 +94,24 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
 
    // Assign streets to cars
    for (let i = 0; i < numCars; i++) {
-      let numStreets;
+      let numStreets2 = 1;
       if (ns > 995) {
-         numStreets = Math.floor(Math.random() * 995) + 2;
+         numStreets2 = Math.floor(Math.random() * 995) + 2;
       } else {
-         numStreets = Math.floor(Math.random() * ns) + 2;
+         numStreets2 = Math.floor(Math.random() * ns) + 2;
       }
       const streets = [];
 
-      for (let j = 0; j < numStreets; j++) {
-         let streetIndex = Math.floor(Math.random() * numStreets);
-         if (streetIndex >= numStreets) {
-            streetIndex--;
+      for (let j = 0; j < numStreets2; j++) {
+         let streetIndex = Math.floor(Math.random() * Number(numStreets2));
+         let diff = numStreets2 - streetIndex;
+         diff = Math.abs(diff);
+         if (streetIndex >= numStreets2) {
+            streetIndex = streetIndex - 2 - diff;
+         } else {
+            if (streetIndex >= 2) {
+               streetIndex = Number(streetIndex - 2);
+            }
          }
          const streetName = `street-${streetIndex}`;
 
@@ -115,20 +121,20 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
          streets.push(streetName);
       }
 
-      cars.push(`${numStreets} ${streets.join(" ")}`);
+      cars.push(`${Number(numStreets2)} ${streets.join(" ")}`);
    }
 
    // Assign unused streets to a random car
    for (let [streetName, count] of streetMap) {
       if (count === 0) {
-         const randomIndex = Math.floor(Math.random() * numCars) + 1;
+         const randomIndex = Math.floor(Math.random() * numCars);
 
          let str = String(cars[randomIndex]);
 
          let input_arr = str.split(" "); // split the string into an array of strings
 
          // increase the first number in the array by 1
-         input_arr[0] = (parseInt(input_arr[0]) + 1).toString();
+         input_arr[0] = (parseInt(Number(input_arr[0])) + 1).toString();
 
          // join the array of strings back into a single string
          let newSTR = input_arr.join(" ");
