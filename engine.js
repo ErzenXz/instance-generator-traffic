@@ -63,6 +63,7 @@ function getData() {
 
    // Start the generation process
 
+   console.time("Generation time");
    generateInputFile(duration, intersections, streets, totalCars, bonusPoints);
 }
 
@@ -181,6 +182,8 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
    document.body.appendChild(downloadLink);
    downloadLink.click();
    document.body.removeChild(downloadLink);
+
+   console.timeEnd("Generation time");
 
    if (checkBOXSTATUS) {
       solve(INPUT);
