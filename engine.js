@@ -69,8 +69,9 @@ function getData() {
 function generateInputFile(duration, numIntersections, numStreets, numCars, bonusPoints) {
    running = true;
    let ns = numStreets;
+
    // Generate streets
-   const streets = [];
+   let streets = [];
    for (let i = 0; i < numStreets; i++) {
       const startIntersection = Math.floor(Math.random() * numIntersections);
       let endIntersection;
@@ -100,7 +101,7 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
       } else {
          numStreets2 = Math.floor(Math.random() * ns) + 2;
       }
-      const streets = [];
+      let streets = [];
 
       for (let j = 0; j < numStreets2; j++) {
          let streetIndex = Math.floor(Math.random() * Number(numStreets2));
@@ -145,11 +146,15 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
       }
    }
 
+   let s = [...cars];
+
+   s = processStreetsArray(s);
+
    // Combine all data and format as text
    const data = [
       `${duration} ${numIntersections} ${numStreets} ${numCars} ${bonusPoints}`,
       ...streets,
-      ...cars,
+      ...s,
    ].join("\n");
 
    // Get the time
@@ -195,3 +200,27 @@ select.addEventListener("change", () => {
    const selectedValue = select.value;
    cssLink.href = selectedValue;
 });
+
+function processStreetsArray(arr) {
+   const processedArr = [];
+
+   for (let i = 0; i < arr.length; i++) {
+      const streets = arr[i].split(" "); // Split the string into an array of streets
+      const numStreets = parseInt(streets[0]); // Get the number of streets from the first value in the array
+
+      // Remove duplicates from the streets array while keeping the order of streets
+      const uniqueStreets = streets.slice(1).filter((street, index, self) => {
+         return self.indexOf(street) === index;
+      });
+
+      // If the number of unique streets matches the number in the first value, push the processed string to the result array
+      if (numStreets === uniqueStreets.length) {
+         processedArr.push(`${numStreets} ${uniqueStreets.join(" ")}`);
+      } else {
+         // If the number of unique streets does not match the number in the first value, construct a new string with the updated count
+         processedArr.push(`${uniqueStreets.length} ${uniqueStreets.join(" ")}`);
+      }
+   }
+
+   return processedArr;
+}
