@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instance Generator for Traffic Signaling</title>
     <link id="css-file" type="text/css" rel="stylesheet" href="style.css">
-    <script defer src="./engine.js"></script>
+    <script src="https://unpkg.com/kinet@2.2.1/dist/kinet.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 
 
-    <script src="./solve.js"></script>
+    <script defer src="./solve.js"></script>
 
 </head>
 
@@ -23,6 +23,12 @@
     <h1>Instance Generator for Traffic Signaling
         Problem
     </h1>
+
+    <div class="loading-screen hidden" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div id="circle" class="circle"></div>
 
 
     <main id="data">
@@ -55,7 +61,7 @@
             <input type="submit" value="Generate File" onclick="getData()">
         </div>
 
-        <label for="css-select">Theme</label>
+        <label for="css-select hidden">Theme</label>
         <select id="css-select">
             <option value="style.css" selected>Default</option>
             <option value="old-style.css">Classic</option>
@@ -64,11 +70,15 @@
 
 
         <br><br>
-        <div>
-            <canvas id="chart" width="400" height="400"></canvas>
+
+        <div class="charts hidden" id="charts">
+            <div>
+                <canvas id="chart" width="400" height="400"></canvas>
+            </div>
+            <br><br>
+            <canvas id="street-usage-chart"></canvas>
         </div>
-        <br><br>
-        <canvas id="street-usage-chart"></canvas>
+
     </main>
 
     <div class="running hidden" id="running">
@@ -76,10 +86,13 @@
     </div>
 
     <footer>
-        <p>Version 1.6</p>
+        <p>Version 2.0</p>
         <pre>ErzenK           All rights reserved         2022 - 2023©</pre>
     </footer>
-    <p id="build">B1-17/4#23_bug-fixes-Duplicate-Streets</p>
+    <p id="build">B1-04/5#23_engine-upgraded-NewGeneratingEngine-faster-runtime</p>
+    <script defer src="./engine.js"></script>
+
+
 </body>
 
 </html>

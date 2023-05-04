@@ -12,7 +12,9 @@ body {
     align-items: center;
     justify-content: center;
     background-color: #f0f2f5;
+    backdrop-filter: blur(20px);
 }
+
 
 
 h1 {
@@ -21,16 +23,19 @@ h1 {
     margin-bottom: 1rem;
     text-align: center;
     margin-top: 10px;
+    color: #000000dd;
 }
+
 
 .main {
     margin: 2rem auto;
     max-width: 600px;
     padding: 2rem;
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.495);
     border-radius: 1rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     border: 1px solid lightgrey;
+    backdrop-filter: blur(10px);
 }
 
 label {
@@ -38,7 +43,7 @@ label {
     font-size: 1rem;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #444444;
+    color: rgba(40, 40, 40, 0.912);
 }
 
 input,
@@ -50,25 +55,25 @@ select {
     border-radius: 0.5rem;
     margin-bottom: 1rem;
     font-size: 1rem;
-    background-color: #f0f2f5;
+    background-color: rgba(240, 242, 245, 0.475);
     color: #444444;
     border: 1px solid lightgrey;
     outline: none;
 }
 
 input[type="submit"] {
-    background-color: #007aff;
-    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.45);
+    color: #000;
     cursor: pointer;
-    border: none;
+    border: 1px solid rgba(208, 208, 208, 0.63);
     border-radius: 0.5rem;
     padding: 1rem 2rem;
     font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.215, 0.610, 0.355, 1) 0ms;
+    transition: all 0.22s cubic-bezier(0.215, 0.610, 0.355, 1) 0ms;
 }
 
 input[type="submit"]:hover {
-    background-color: #0066cc;
+    background-color: rgba(255, 255, 255, 0.808);
     transform: scale(1.01);
 
 }
@@ -79,15 +84,15 @@ input[type="submit"]:active {
 
 footer {
     text-align: center;
-    background-color: #f2f2f2;
+    background-color: #f2f2f29b;
     border-radius: 12px;
-    padding: 10px;
+    padding: 20px;
     margin-bottom: 50px;
 }
 
 ::selection {
     color: #000;
-    background-color: #c1daf3;
+    background-color: #c1daf3cb;
 }
 
 /* width */
@@ -99,24 +104,24 @@ footer {
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: #eeeff1;
+    background: #eeeff1dd;
     border-radius: 20px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #b5b5b7;
+    background: #b5b5b7cf;
     border-radius: 20px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #818282;
+    background: #818282c3;
     border-radius: 20px;
 }
 
 .hidden {
-    display: none;
+    display: none !important;
     user-select: none;
 }
 
@@ -160,7 +165,7 @@ footer {
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked~.checkmark {
-    background-color: #2196F3;
+    background-color: #cacdcfb0;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -181,7 +186,7 @@ footer {
     top: 5px;
     width: 5px;
     height: 10px;
-    border: solid white;
+    border: solid rgba(255, 255, 255, 0.811);
     border-width: 0 3px 3px 0;
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
@@ -193,7 +198,11 @@ footer {
     margin-bottom: 7px;
 }
 
-#css-select {
+select {
+    cursor: pointer;
+}
+
+/* #css-select {
     all: unset;
 }
 
@@ -209,13 +218,63 @@ footer {
     color: #666;
     border-radius: 5px;
     border: 1px solid #ccc;
-}
+} */
 
-#css-select::-ms-expand {
+/* #css-select::-ms-expand {
     display: none;
-}
+} */
 
 #css-select:focus {
     outline: none;
-    border-color: #007aff;
+    border-color: #d2d3d5c6;
+}
+
+
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgb(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 50;
+}
+
+
+.loading-spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.circle {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(to top left, #f0f2f59a, #f0f2f591);
+    filter: blur(5px) saturate(1.5) brightness(0.8) contrast(1.2);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -20px 0 0 -20px;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    z-index: -1;
 }

@@ -1,4 +1,4 @@
-// Version 1.3
+// Version 2.0
 
 let running = false;
 
@@ -62,103 +62,38 @@ function getData() {
    document.getElementById("running").classList.remove("hidden");
 
    // Start the generation process
+   document.getElementById("loading").classList.remove("hidden");
 
    console.time("Generation time");
-   generateInputFile(duration, intersections, streets, totalCars, bonusPoints);
+
+   setTimeout(() => {
+      generateInputFile(duration, intersections, streets, totalCars, bonusPoints);
+   }, 500);
+
 }
 
-function generateInputFile(duration, numIntersections, numStreets, numCars, bonusPoints) {
+
+
+
+
+function generateInputFile(D, I, S, V, F) {
    running = true;
-   let ns = numStreets;
 
-   // Generate streets
-   let streets = [];
-   for (let i = 0; i < numStreets; i++) {
-      const startIntersection = Math.floor(Math.random() * numIntersections);
-      let endIntersection;
-      do {
-         endIntersection = Math.floor(Math.random() * numIntersections);
-      } while (endIntersection === startIntersection);
-      const name = `street-${i}`;
-      const time = Math.floor(Math.random() * duration) + 1;
-      streets.push(`${startIntersection} ${endIntersection} ${name} ${time}`);
+   let inputFile = "";
+   inputFile += `${D} ${I} ${S} ${V} ${F}\n`;
+
+   // generate streets
+   for (let i = 0; i < S; i++) {
+      inputFile += `${i % I} ${(i % I + 1) % I} street${i} 1\n`;
    }
 
-   // Generate cars
-   const cars = [];
-   const streetMap = new Map();
-
-   // Initialize street map
-   for (let i = 0; i < numStreets; i++) {
-      const streetName = `street-${i}`;
-      streetMap.set(streetName, 0);
+   // generate cars
+   for (let i = 0; i < V; i++) {
+      const P = Math.floor(Math.random() * 10) + 2; // random number between 2 and 11
+      const path = Array.from({ length: P }, (_, i) => `street${Math.floor(Math.random() * S)}`);
+      inputFile += `${path.length} ${path.join(" ")}\n`;
    }
 
-   // Assign streets to cars
-   for (let i = 0; i < numCars; i++) {
-      let numStreets2 = 1;
-      if (ns > 995) {
-         numStreets2 = Math.floor(Math.random() * 995) + 2;
-      } else {
-         numStreets2 = Math.floor(Math.random() * ns) + 2;
-      }
-      let streets = [];
-
-      for (let j = 0; j < numStreets2; j++) {
-         let streetIndex = Math.floor(Math.random() * Number(numStreets2));
-         let diff = numStreets2 - streetIndex;
-         diff = Math.abs(diff);
-         if (streetIndex >= numStreets2) {
-            streetIndex = streetIndex - 2 - diff;
-         } else {
-            if (streetIndex >= 2) {
-               streetIndex = Number(streetIndex - 2);
-            }
-         }
-         const streetName = `street-${streetIndex}`;
-
-         // Increment count of street usage
-         streetMap.set(streetName, streetMap.get(streetName) + 1);
-
-         streets.push(streetName);
-      }
-
-      cars.push(`${Number(numStreets2)} ${streets.join(" ")}`);
-   }
-
-   // Assign unused streets to a random car
-   for (let [streetName, count] of streetMap) {
-      if (count === 0) {
-         const randomIndex = Math.floor(Math.random() * numCars);
-
-         let str = String(cars[randomIndex]);
-
-         let input_arr = str.split(" "); // split the string into an array of strings
-
-         // increase the first number in the array by 1
-         input_arr[0] = (parseInt(Number(input_arr[0])) + 1).toString();
-
-         // join the array of strings back into a single string
-         let newSTR = input_arr.join(" ");
-
-         newSTR += ` ${streetName}`;
-
-         cars[randomIndex] = newSTR;
-      }
-   }
-
-   let s = [...cars];
-
-   s = processStreetsArray(s);
-
-   // Combine all data and format as text
-   const data = [
-      `${duration} ${numIntersections} ${numStreets} ${numCars} ${bonusPoints}`,
-      ...streets,
-      ...s,
-   ].join("\n");
-
-   // Get the time
 
    const DATE = new Date();
    let formattedTime =
@@ -173,8 +108,8 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
       DATE.getMinutes();
 
    // Create download link for the file
-   INPUT = data;
-   const blob = new Blob([data], { type: "text/plain" });
+   INPUT = inputFile;
+   const blob = new Blob([inputFile], { type: "text/plain" });
    const url = URL.createObjectURL(blob);
    const downloadLink = document.createElement("a");
    downloadLink.href = url;
@@ -187,14 +122,20 @@ function generateInputFile(duration, numIntersections, numStreets, numCars, bonu
 
    if (checkBOXSTATUS) {
       solve(INPUT);
+      document.getElementById("charts").classList.remove("hidden");
+      document.getElementById("loading").classList.add("hidden");
    } else {
       document.getElementById("data").classList.remove("hidden");
       document.getElementById("running").classList.add("hidden");
+      document.getElementById("loading").classList.add("hidden");
       running = false;
    }
+
+   //return inputFile;
 }
 
 // Code for selecting the style of the website
+
 
 const select = document.getElementById("css-select");
 const cssLink = document.getElementById("css-file");
@@ -204,26 +145,4 @@ select.addEventListener("change", () => {
    cssLink.href = selectedValue;
 });
 
-function processStreetsArray(arr) {
-   const processedArr = [];
-
-   for (let i = 0; i < arr.length; i++) {
-      const streets = arr[i].split(" "); // Split the string into an array of streets
-      const numStreets = parseInt(streets[0]); // Get the number of streets from the first value in the array
-
-      // Remove duplicates from the streets array while keeping the order of streets
-      const uniqueStreets = streets.slice(1).filter((street, index, self) => {
-         return self.indexOf(street) === index;
-      });
-
-      // If the number of unique streets matches the number in the first value, push the processed string to the result array
-      if (numStreets === uniqueStreets.length) {
-         processedArr.push(`${numStreets} ${uniqueStreets.join(" ")}`);
-      } else {
-         // If the number of unique streets does not match the number in the first value, construct a new string with the updated count
-         processedArr.push(`${uniqueStreets.length} ${uniqueStreets.join(" ")}`);
-      }
-   }
-
-   return processedArr;
-}
+var kinet = new Kinet({ acceleration: 0.07, friction: 0.20, names: ["x", "y"], }); var circle = document.getElementById('circle'); kinet.on('tick', function (instances) { circle.style.transform = `translate3d(${(instances.x.current)}px, ${(instances.y.current)}px, 0) rotateX(${(instances.x.velocity / 2)}deg) rotateY(${(instances.y.velocity / 2)}deg)`; }); document.addEventListener('mousemove', function (event) { kinet.animate('x', event.clientX - window.innerWidth / 2); kinet.animate('y', event.clientY - window.innerHeight / 2); }); kinet.on('start', function () { console.log('start'); }); kinet.on('end', function () { console.log('end'); });
