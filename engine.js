@@ -83,15 +83,28 @@ function generateInputFile(D, I, S, V, F) {
    inputFile += `${D} ${I} ${S} ${V} ${F}\n`;
 
    // generate streets
+   let g = 0;
    for (let i = 0; i < S; i++) {
-      inputFile += `${i % I} ${(i % I + 1) % I} street${i} 1\n`;
+
+
+      let c = i % I;
+      if (c == 0) {
+         g = g + 1;
+      }
+
+      inputFile += `${i % I} ${(i % I + g) % I} street${i} ${getRandomInt(1, D)}\n`;
    }
+
 
    // generate cars
    for (let i = 0; i < V; i++) {
       const P = Math.floor(Math.random() * 10) + 2; // random number between 2 and 11
       const path = Array.from({ length: P }, (_, i) => `street${Math.floor(Math.random() * S)}`);
-      inputFile += `${path.length} ${path.join(" ")}\n`;
+
+      let set = new Set(path);
+      let clo = [...set]; // Change to path to allow duplicates
+
+      inputFile += `${clo.length} ${clo.join(" ")}\n`;
    }
 
 
@@ -145,4 +158,4 @@ select.addEventListener("change", () => {
    cssLink.href = selectedValue;
 });
 
-var kinet = new Kinet({ acceleration: 0.07, friction: 0.20, names: ["x", "y"], }); var circle = document.getElementById('circle'); kinet.on('tick', function (instances) { circle.style.transform = `translate3d(${(instances.x.current)}px, ${(instances.y.current)}px, 0) rotateX(${(instances.x.velocity / 2)}deg) rotateY(${(instances.y.velocity / 2)}deg)`; }); document.addEventListener('mousemove', function (event) { kinet.animate('x', event.clientX - window.innerWidth / 2); kinet.animate('y', event.clientY - window.innerHeight / 2); }); kinet.on('start', function () { console.log('start'); }); kinet.on('end', function () { console.log('end'); });
+var kinet = new Kinet({ acceleration: 0.07, friction: 0.20, names: ["x", "y"], }); var circle = document.getElementById('circle'); kinet.on('tick', function (instances) { circle.style.transform = `translate3d(${(instances.x.current)}px, ${(instances.y.current)}px, 0) rotateX(${(instances.x.velocity / 2)}deg) rotateY(${(instances.y.velocity / 2)}deg)`; }); document.addEventListener('mousemove', function (event) { kinet.animate('x', event.clientX - window.innerWidth / 2); kinet.animate('y', event.clientY - window.innerHeight / 2); }); kinet.on('start', function () { }); kinet.on('end', function () { });
