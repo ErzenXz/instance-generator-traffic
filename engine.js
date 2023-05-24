@@ -84,16 +84,23 @@ function generateInputFile(D, I, S, V, F) {
 
    // generate streets
    let g = 0;
+   let arr = [];
    for (let i = 0; i < S; i++) {
-
-
       let c = i % I;
       if (c == 0) {
          g = g + 1;
       }
-
-      inputFile += `${i % I} ${(i % I + g) % I} street${i} ${getRandomInt(1, D)}\n`;
+      //inputFile += `${i % I} ${(i % I + g) % I} street${i} ${getRandomInt(1, D)}\n`;
+      arr.push(`${i % I} ${(i % I + g) % I} street${i} ${getRandomInt(1, D)}`);
    }
+
+   // Shuffle the array
+   arr.sort(() => Math.random() - 0.5);
+
+   // Add the array to the input file
+   arr.forEach((element) => {
+      inputFile += `${element}\n`;
+   });
 
 
    // generate cars
