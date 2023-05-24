@@ -84,15 +84,29 @@ function generateInputFile(D, I, S, V, F) {
 
    // generate streets
    let g = 0;
-   let arr = [];
+   let set = new Set(); // use a set instead of an array
    for (let i = 0; i < S; i++) {
       let c = i % I;
       if (c == 0) {
          g = g + 1;
       }
-      //inputFile += `${i % I} ${(i % I + g) % I} street${i} ${getRandomInt(1, D)}\n`;
-      arr.push(`${i % I} ${(i % I + g) % I} street${i} ${getRandomInt(1, D)}`);
+      let street = `${i % I} ${(i % I + g) % I} street${i} ${getRandomInt(1, 4)}`; // create a street string
+      let reversed = reverseStreet(street); // reverse the street string
+      if (!set.has(street) && !set.has(reversed)) { // check if the street or its reverse is not already in the set
+         set.add(street); // add the street to the set
+         //inputFile += street + "\n"; // uncomment this line if you want to write to the input file
+      }
    }
+
+   // a function that reverses a street string
+   function reverseStreet(street) {
+      let parts = street.split(" "); // split the string by spaces
+      let reversed = parts[1] + " " + parts[0] + " " + parts[2] + " " + parts[3]; // swap the first two parts and keep the rest
+      return reversed; // return the reversed string
+   }
+
+
+   let arr = Array.from(set); // convert the set to an array
 
    // Shuffle the array
    arr.sort(() => Math.random() - 0.5);
@@ -113,7 +127,6 @@ function generateInputFile(D, I, S, V, F) {
 
       inputFile += `${clo.length} ${clo.join(" ")}\n`;
    }
-
 
    const DATE = new Date();
    let formattedTime =
