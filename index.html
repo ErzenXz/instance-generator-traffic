@@ -12,9 +12,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-
+    <script defer src="graph.js"></script>
 
     <script defer src="./solve.js"></script>
+
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
 
 </head>
 
@@ -51,7 +54,7 @@
 
 
 
-            <label class="container"> <label for="solve">Solve instance using ES1-Engine</label>
+            <label class="container hidden"> <label for="solve">Solve instance using ES1-Engine</label>
 
                 <input type="checkbox" id="solve" name="solve" onclick="checkbox()">
                 <span class="checkmark"></span>
@@ -61,13 +64,17 @@
             <input type="submit" value="Generate File" onclick="getData()">
         </div>
 
+        <div id="network"></div>
+
+
+        <!-- 
         <label for="css-select hidden">Theme</label>
-        <select id="css-select">
+        <select id="css-select hidden">
             <option value="style.css" selected>Default</option>
             <option value="old-style.css">Classic</option>
             <option value="xp.css" disabled>XP style</option>
             <option value="style2.css">No style</option>
-        </select>
+        </select> -->
 
 
         <br><br>
@@ -82,12 +89,14 @@
 
     </main>
 
+
+
     <div class="running hidden" id="running">
         The engine is running...
     </div>
 
     <footer>
-        <p>Version 2.1</p>
+        <p>Version 2.2</p>
         <pre>ErzenK           All rights reserved         2022 - 2023©</pre>
     </footer>
     <p id="build">B1-24/5#23_fixed-streets-not-connected-and-improvements</p>

@@ -1,0 +1,284 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.6/standalone/umd/vis-network.min.js"
+        integrity="sha512-OwMVEyxgfpnZtZDE4ZH1/SB3Xgvx5CwX+/xJJx7men0Vh6VjWp4uEytx34AHQKbh+Ve4KogeyYqZbujEmAQXLA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <script>
+        function visualizeGraph() {
+            // Define the edge list
+            var edges = [
+                { from: 1, to: 3, label: 'street11', value: 4 },
+                { from: 4, to: 5, label: 'street4', value: 3 },
+                { from: 9, to: 1, label: 'street19', value: 1 },
+                { from: 6, to: 7, label: 'street6', value: 4 },
+                { from: 5, to: 7, label: 'street15', value: 2 },
+                { from: 5, to: 6, label: 'street5', value: 4 },
+                { from: 0, to: 1, label: 'street0', value: 3 },
+                { from: 2, to: 4, label: 'street12', value: 1 },
+                { from: 3, to: 5, label: 'street13', value: 3 },
+                { from: 1, to: 2, label: 'street1', value: 4 },
+                { from: 0, to: 2, label: 'street10', value: 4 },
+                { from: 9, to: 0, label: 'street9', value: 2 },
+                { from: 8, to: 9, label: 'street8', value: 2 },
+                { from: 3, to: 4, label: 'street3', value: 2 },
+                { from: 4, to: 6, label: 'street14', value: 1 },
+                { from: 7, to: 9, label: 'street17', value: 4 },
+                { from: 6, to: 8, label: 'street16', value: 4 },
+                { from: 2, to: 3, label: 'street2', value: 1 },
+                { from: 7, to: 8, label: 'street7', value: 3 },
+                { from: 8, to: 0, label: 'street18', value: 1 }
+            ];
+            // Create a network visualization
+            var container = document.getElementById('graphContainer');
+            var data = {
+                nodes: new vis.DataSet([]), // no nodes in this example
+                edges: new vis.DataSet(edges)
+            };
+            var options = {};
+            var network = new vis.Network(container, data, options);
+        }
+
+    </script>
+
+    <div id="graphContainer"></div>
+
+</body>
+
+</html> -->
+
+<html>
+
+<head>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+    <style type="text/css">
+        #mynetwork {
+            width: 900px;
+            height: 700px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="network"></div>
+
+    <script type="text/javascript">
+
+
+        function createGraph(fileInput, div) {
+
+            // Splitting the file input into lines
+            var lines = fileInput.split('\n');
+
+            // Creating a map to store streets and their connections
+            var streetMap = new Map();
+
+            // Parsing the lines to populate the street map
+            lines.forEach(function (line) {
+                var parts = line.split(' ');
+
+                var fromNode = parseInt(parts[0]);
+                var toNode = parseInt(parts[1]);
+                var street = parts[2];
+
+                if (!streetMap.has(street)) {
+                    streetMap.set(street, []);
+                }
+
+                streetMap.get(street).push([fromNode, toNode]);
+            });
+
+            // Creating an array to store nodes and edges
+            var nodes = [];
+            var edges = [];
+            var colors = [
+                '#FF0000', // Red
+                '#00FF00', // Green
+                '#0000FF', // Blue
+                '#FFFF00', // Yellow
+                '#FF00FF', // Magenta
+                '#00FFFF', // Cyan
+                '#000000', // Black
+                '#FFA500', // Orange
+                '#800080', // Purple
+                '#00CED1', // Dark Turquoise
+                '#6495ED', // Cornflower Blue
+                '#00BFFF', // Deep Sky Blue
+                '#4169E1', // Royal Blue
+                '#1E90FF', // Dodger Blue
+                '#87CEEB', // Sky Blue
+                '#ADD8E6', // Light Blue
+                '#F0F8FF', // Alice Blue
+                '#FFC0CB', // Pink
+                '#FFD700', // Gold
+                '#32CD32', // Lime Green
+                '#8A2BE2', // Blue Violet
+                '#FF4500', // Orange Red
+                '#A52A2A', // Brown
+                '#808080', // Gray
+                '#FF1493', // Deep Pink
+            ];
+
+
+
+            // Iterating over the street map to create nodes and edges
+            streetMap.forEach(function (connections, street) {
+                let color = colors[Math.floor(Math.random() * colors.length)];
+                edges.push(
+                    ...connections.map(function (connection) {
+                        return {
+                            from: connection[0],
+                            to: connection[1],
+                            label: street,
+                            arrows: 'to',
+                            color: {
+                                color: color,
+                                hover: '#848484'
+                            }
+                        };
+                    })
+                );
+
+                // Extract unique nodes from connections
+                var uniqueNodes = [...new Set(connections.flat())];
+
+                // Creating node objects
+                uniqueNodes.forEach(function (nodeId) {
+                    // Check if the node with the same ID already exists
+                    var existingNode = nodes.find(function (node) {
+                        return node.id === nodeId;
+                    });
+
+                    if (!existingNode) {
+                        nodes.push({
+                            id: nodeId,
+                            label: 'Intersection ' + nodeId,
+                            title: 'Intersection ' + nodeId,
+                            color: {
+                                background: '#2D5277',
+                                border: '#D4E6F1',
+                                hover: {
+                                    background: '#2177A2',
+                                    border: '#D4E6F1'
+                                },
+                                highlight: {
+                                    background: '#2177A2',
+                                    border: '#D4E6F1'
+                                }
+                            },
+                            font: {
+                                color: '#FFFFFF',
+                                size: 16,
+                                face: 'Roboto'
+                            },
+                            shape: 'circle',
+                            size: 30
+                        });
+                    }
+                });
+            });
+
+            // Creating a data object with nodes and edges
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+
+            var options = {
+                nodes: {
+                    shape: 'dot',
+                    size: 7,
+                    font: {
+                        size: 14,
+                        color: '#ffffff'
+                    },
+                    color: {
+                        border: '#2B7CE9',
+                        background: '#97C2FC'
+                    },
+                    borderWidth: 3
+                },
+                edges: {
+                    color: {
+                        color: '#848484',
+                        highlight: '#848484'
+                    },
+                    font: {
+                        color: '#343434',
+                        size: 12,
+                        align: 'middle'
+                    },
+                    arrows: {
+                        to: { enabled: true, scaleFactor: 1 },
+                        from: { enabled: true, scaleFactor: 1 }
+                    },
+                    smooth: {
+                        enabled: true,
+                        type: 'continuous',
+                        roundness: 0.3
+                    },
+                    length: 250 // Increased the edge length
+                },
+                groups: {
+                    intersections: {
+                        shape: 'dot',
+                        size: 10, // Decreased the intersection node size
+                        color: {
+                            border: '#2B7CE9',
+                            background: '#D2E5FF'
+                        }
+                    },
+                    streets: {
+                        shape: 'line',
+                        color: {
+                            color: '#848484',
+                            highlight: '#848484'
+                        },
+                        font: {
+                            color: '#343434',
+                            size: 12,
+                            align: 'middle'
+                        },
+                        width: 2
+                    }
+                },
+                physics: {
+                    enabled: true,
+                    barnesHut: {
+                        gravitationalConstant: -2000,
+                        centralGravity: 0.3,
+                        springLength: 300, // Increased the spring length
+                        springConstant: 0.05,
+                        damping: 0.09
+                    },
+                    maxVelocity: 50,
+                    solver: 'barnesHut',
+                    stabilization: {
+                        iterations: 2500
+                    }
+                },
+                interaction: {
+                    hover: true,
+                    tooltipDelay: 200
+                }
+            };
+
+            // Creating the network graph
+            var container = document.getElementById(div);
+            var network = new vis.Network(container, data, options);
+        }
+
+    </script>
+</body>
+
+</html>

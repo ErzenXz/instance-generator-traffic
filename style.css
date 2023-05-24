@@ -264,9 +264,9 @@ select {
     }
 }
 
-.circle {
-    width: 200px;
-    height: 200px;
+/* .circle {
+    width: 50px;
+    height: 50px;
     background: linear-gradient(to top left, #f0f2f59a, #f0f2f591);
     filter: blur(5px) saturate(1.5) brightness(0.8) contrast(1.2);
     border-radius: 50%;
@@ -277,4 +277,13 @@ select {
     pointer-events: none;
     mix-blend-mode: multiply;
     z-index: -1;
+} */
+
+#network {
+    width: 1200px;
+    height: 800px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
 }

@@ -110,10 +110,12 @@ function generateInputFile(D, I, S, V, F) {
 
    // Shuffle the array
    arr.sort(() => Math.random() - 0.5);
+   let graph = "";
 
    // Add the array to the input file
    arr.forEach((element) => {
       inputFile += `${element}\n`;
+      graph += `${element}\n`;
    });
 
 
@@ -164,18 +166,22 @@ function generateInputFile(D, I, S, V, F) {
       running = false;
    }
 
+   if (I < 750 && S < 2000) {
+      createGraph(graph, "network");
+   }
    //return inputFile;
 }
 
 // Code for selecting the style of the website
 
 
-const select = document.getElementById("css-select");
-const cssLink = document.getElementById("css-file");
+// const select = document.getElementById("css-select");
+// const cssLink = document.getElementById("css-file");
 
-select.addEventListener("change", () => {
-   const selectedValue = select.value;
-   cssLink.href = selectedValue;
-});
+// select.addEventListener("change", () => {
+//    const selectedValue = select.value;
+//    cssLink.href = selectedValue;
+// });
 
-var kinet = new Kinet({ acceleration: 0.07, friction: 0.20, names: ["x", "y"], }); var circle = document.getElementById('circle'); kinet.on('tick', function (instances) { circle.style.transform = `translate3d(${(instances.x.current)}px, ${(instances.y.current)}px, 0) rotateX(${(instances.x.velocity / 2)}deg) rotateY(${(instances.y.velocity / 2)}deg)`; }); document.addEventListener('mousemove', function (event) { kinet.animate('x', event.clientX - window.innerWidth / 2); kinet.animate('y', event.clientY - window.innerHeight / 2); }); kinet.on('start', function () { }); kinet.on('end', function () { });
+// var kinet = new Kinet({ acceleration: 0.07, friction: 0.20, names: ["x", "y"], }); var circle = document.getElementById('circle'); kinet.on('tick', function (instances) { circle.style.transform = `translate3d(${(instances.x.current)}px, ${(instances.y.current)}px, 0) rotateX(${(instances.x.velocity / 2)}deg) rotateY(${(instances.y.velocity / 2)}deg)`; }); document.addEventListener('mousemove', function (event) { kinet.animate('x', event.clientX - window.innerWidth / 2); kinet.animate('y', event.clientY - window.innerHeight / 2); }); kinet.on('start', function () { }); kinet.on('end', function () { });
+
