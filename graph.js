@@ -10,10 +10,9 @@ function createGraph(fileInput, div) {
     // Parsing the lines to populate the street map
     lines.forEach(function (line) {
         var parts = line.split(' ');
-
         var fromNode = parseInt(parts[0]);
         var toNode = parseInt(parts[1]);
-        var street = parts[2];
+        var street = parts[2] + " (" + parts[3] + ")";
 
         if (!streetMap.has(street)) {
             streetMap.set(street, []);
@@ -195,85 +194,6 @@ function createGraph(fileInput, div) {
     };
 
 
-    // var options = {
-    //     nodes: {
-    //         shape: 'dot',
-    //         size: 7,
-    //         font: {
-    //             size: 14,
-    //             color: '#ffffff'
-    //         },
-    //         color: {
-    //             border: '#2B7CE9',
-    //             background: '#97C2FC'
-    //         },
-    //         borderWidth: 3
-    //     },
-    //     edges: {
-    //         color: {
-    //             color: '#848484',
-    //             highlight: '#848484'
-    //         },
-    //         font: {
-    //             color: '#343434',
-    //             size: 12,
-    //             align: 'middle'
-    //         },
-    //         arrows: {
-    //             to: { enabled: true, scaleFactor: 1 },
-    //             from: { enabled: true, scaleFactor: 1 }
-    //         },
-    //         smooth: {
-    //             enabled: true,
-    //             type: 'continuous',
-    //             roundness: 0.3
-    //         },
-    //         length: 250 // Increased the edge length
-    //     },
-    //     groups: {
-    //         intersections: {
-    //             shape: 'dot',
-    //             size: 10, // Decreased the intersection node size
-    //             color: {
-    //                 border: '#2B7CE9',
-    //                 background: '#D2E5FF'
-    //             }
-    //         },
-    //         streets: {
-    //             shape: 'line',
-    //             color: {
-    //                 color: '#848484',
-    //                 highlight: '#848484'
-    //             },
-    //             font: {
-    //                 color: '#343434',
-    //                 size: 12,
-    //                 align: 'middle'
-    //             },
-    //             width: 2
-    //         }
-    //     },
-    //     physics: {
-    //         enabled: true,
-    //         barnesHut: {
-    //             gravitationalConstant: -2000,
-    //             centralGravity: 0.3,
-    //             springLength: 300, // Increased the spring length
-    //             springConstant: 0.05,
-    //             damping: 0.09
-    //         },
-    //         maxVelocity: 50,
-    //         solver: 'barnesHut',
-    //         stabilization: {
-    //             iterations: 2500
-    //         }
-    //     },
-    //     interaction: {
-    //         hover: true,
-    //         tooltipDelay: 200
-    //     }
-    // };
-
     // Creating the network graph
     var container = document.getElementById(div);
     var network = new vis.Network(container, data, options);
@@ -289,6 +209,8 @@ function createGraph2(data) {
     lines.forEach((line, index) => {
         const parts = line.split(' ');
         const car = `Car ${index + 1}`;
+
+        parts.shift(); // Remove the first element
 
         // Add nodes (streets) to the set
         parts.forEach((street) => nodes.add(street));
@@ -319,8 +241,6 @@ function createGraph2(data) {
     const container = document.getElementById('network2');
     // Define the graph options
 
-    // Define the graph options
-    // Define the graph options
     const options = {
         layout: {
             improvedLayout: false, // Disable automatic layout optimization
@@ -341,10 +261,48 @@ function createGraph2(data) {
                 type: 'cubicBezier',
                 forceDirection: 'horizontal',
             },
+            color: {
+                color: '#848484',
+                highlight: '#848484'
+            },
+            font: {
+                color: '#343434',
+                size: 12,
+                align: 'middle'
+            },
+            arrows: {
+                to: { enabled: true, scaleFactor: 1 },
+                from: { enabled: true, scaleFactor: 1 }
+            },
         },
+        groups: {
+            intersections: {
+                shape: 'dot',
+                size: 10, // Decreased the intersection node size
+                color: {
+                    border: '#2B7CE9',
+                    background: '#D2E5FF'
+                }
+            },
+            streets: {
+                shape: 'line',
+                color: {
+                    color: '#848484',
+                    highlight: '#848484'
+                },
+                font: {
+                    color: '#343434',
+                    size: 12,
+                    align: 'middle'
+                },
+                width: 2
+            }
+        },
+
+        interaction: {
+            hover: true,
+            tooltipDelay: 200
+        }
     };
-
-
     const network = new vis.Network(container, graphData, options);
-
 }

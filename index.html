@@ -11,8 +11,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <script defer src="./engine.js"></script>
+    <script defer src="./engine.js?v2=true"></script>
     <script defer src="graph.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     <!-- <script defer src="./solve.js"></script> -->
 
@@ -92,12 +94,14 @@
 
     <div id="network2" style="width: 800px; height: 600px;"></div>
 
+    <div id="chart2" style="width: 800px; height: 600px;"></div>
+
     <div class="running hidden" id="running">
         The engine is running...
     </div>
 
     <footer>
-        <p>Version 2.2</p>
+        <p>Version 2.3</p>
         <pre>ErzenK           All rights reserved         2022 - 2023©</pre>
     </footer>
     <p id="build">B1-24/5#23_fixed-streets-not-connected-and-improvements</p>
