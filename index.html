@@ -6,17 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instance Generator for Traffic Signaling</title>
-    <link id="css-file" type="text/css" rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/kinet@2.2.1/dist/kinet.min.js"></script>
+    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script defer src="./engine.js"></script>
     <script defer src="graph.js"></script>
 
-    <script defer src="./solve.js"></script>
+    <!-- <script defer src="./solve.js"></script> -->
 
-    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 
 
 </head>
@@ -27,9 +26,9 @@
         Problem
     </h1>
 
-    <div class="loading-screen hidden" id="loading">
+    <!-- <div class="loading-screen hidden" id="loading">
         <div class="loading-spinner"></div>
-    </div>
+    </div> -->
 
     <div id="circle" class="circle"></div>
 
@@ -64,7 +63,7 @@
             <input type="submit" value="Generate File" onclick="getData()">
         </div>
 
-        <div id="network"></div>
+
 
 
         <!-- 
@@ -89,7 +88,9 @@
 
     </main>
 
+    <div id="network" style="width: 800px; height: 600px;"></div>
 
+    <div id="network2" style="width: 800px; height: 600px;"></div>
 
     <div class="running hidden" id="running">
         The engine is running...
@@ -100,7 +101,7 @@
         <pre>ErzenK           All rights reserved         2022 - 2023©</pre>
     </footer>
     <p id="build">B1-24/5#23_fixed-streets-not-connected-and-improvements</p>
-    <script defer src="./engine.js"></script>
+
 
 
 </body>

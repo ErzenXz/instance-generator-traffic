@@ -1,7 +1,8 @@
 function createGraph(fileInput, div) {
 
     // Splitting the file input into lines
-    var lines = fileInput.split('\n');
+    fileInput = String.raw`${fileInput}`;
+    var lines = fileInput.replace(/\r\n/g, '\n').split('\n');
 
     // Creating a map to store streets and their connections
     var streetMap = new Map();
@@ -40,7 +41,7 @@ function createGraph(fileInput, div) {
         '#4169E1', // Royal Blue
         '#1E90FF', // Dodger Blue
         '#87CEEB', // Sky Blue
-        '#ADD8E6', // Light Blue
+        '#4169E1', // Light Blue
         '#F0F8FF', // Alice Blue
         '#FFC0CB', // Pink
         '#FFD700', // Gold
@@ -51,7 +52,6 @@ function createGraph(fileInput, div) {
         '#808080', // Gray
         '#FF1493', // Deep Pink
     ];
-
 
 
     // Iterating over the street map to create nodes and edges
@@ -117,21 +117,26 @@ function createGraph(fileInput, div) {
         edges: edges
     };
 
-    var options = {
-        nodes: {
-            shape: 'dot',
-            size: 7,
-            font: {
-                size: 14,
-                color: '#ffffff'
+    const options = {
+        layout: {
+            improvedLayout: false, // Disable automatic layout optimization
+        },
+        physics: {
+            enabled: true,
+            solver: 'forceAtlas2Based',
+            forceAtlas2Based: {
+                gravitationalConstant: -300, // Increase the gravitational constant to spread nodes apart
+                centralGravity: 0.005, // Decrease the central gravity to avoid collisions
+                springLength: 200, // Adjust the spring length to space out the nodes
+                springConstant: 0.02, // Adjust the spring constant to control the layout tension
             },
-            color: {
-                border: '#2B7CE9',
-                background: '#97C2FC'
-            },
-            borderWidth: 3
+            minVelocity: 0.75, // Increase the minimum velocity to avoid slow convergence
         },
         edges: {
+            smooth: {
+                type: 'cubicBezier',
+                forceDirection: 'horizontal',
+            },
             color: {
                 color: '#848484',
                 highlight: '#848484'
@@ -145,12 +150,19 @@ function createGraph(fileInput, div) {
                 to: { enabled: true, scaleFactor: 1 },
                 from: { enabled: true, scaleFactor: 1 }
             },
-            smooth: {
-                enabled: true,
-                type: 'continuous',
-                roundness: 0.3
+        },
+        nodes: {
+            shape: 'dot',
+            size: 7,
+            font: {
+                size: 14,
+                color: '#ffffff'
             },
-            length: 750 // Increased the edge length
+            color: {
+                border: '#2B7CE9',
+                background: '#97C2FC'
+            },
+            borderWidth: 3
         },
         groups: {
             intersections: {
@@ -175,28 +187,164 @@ function createGraph(fileInput, div) {
                 width: 2
             }
         },
-        physics: {
-            enabled: true,
-            barnesHut: {
-                gravitationalConstant: -2000,
-                centralGravity: 0.3,
-                springLength: 300, // Increased the spring length
-                springConstant: 0.05,
-                damping: 0.09
-            },
-            maxVelocity: 50,
-            solver: 'barnesHut',
-            stabilization: {
-                iterations: 2500
-            }
-        },
+
         interaction: {
             hover: true,
             tooltipDelay: 200
         }
     };
 
+
+    // var options = {
+    //     nodes: {
+    //         shape: 'dot',
+    //         size: 7,
+    //         font: {
+    //             size: 14,
+    //             color: '#ffffff'
+    //         },
+    //         color: {
+    //             border: '#2B7CE9',
+    //             background: '#97C2FC'
+    //         },
+    //         borderWidth: 3
+    //     },
+    //     edges: {
+    //         color: {
+    //             color: '#848484',
+    //             highlight: '#848484'
+    //         },
+    //         font: {
+    //             color: '#343434',
+    //             size: 12,
+    //             align: 'middle'
+    //         },
+    //         arrows: {
+    //             to: { enabled: true, scaleFactor: 1 },
+    //             from: { enabled: true, scaleFactor: 1 }
+    //         },
+    //         smooth: {
+    //             enabled: true,
+    //             type: 'continuous',
+    //             roundness: 0.3
+    //         },
+    //         length: 250 // Increased the edge length
+    //     },
+    //     groups: {
+    //         intersections: {
+    //             shape: 'dot',
+    //             size: 10, // Decreased the intersection node size
+    //             color: {
+    //                 border: '#2B7CE9',
+    //                 background: '#D2E5FF'
+    //             }
+    //         },
+    //         streets: {
+    //             shape: 'line',
+    //             color: {
+    //                 color: '#848484',
+    //                 highlight: '#848484'
+    //             },
+    //             font: {
+    //                 color: '#343434',
+    //                 size: 12,
+    //                 align: 'middle'
+    //             },
+    //             width: 2
+    //         }
+    //     },
+    //     physics: {
+    //         enabled: true,
+    //         barnesHut: {
+    //             gravitationalConstant: -2000,
+    //             centralGravity: 0.3,
+    //             springLength: 300, // Increased the spring length
+    //             springConstant: 0.05,
+    //             damping: 0.09
+    //         },
+    //         maxVelocity: 50,
+    //         solver: 'barnesHut',
+    //         stabilization: {
+    //             iterations: 2500
+    //         }
+    //     },
+    //     interaction: {
+    //         hover: true,
+    //         tooltipDelay: 200
+    //     }
+    // };
+
     // Creating the network graph
-    var container = document.getElementById("network");
+    var container = document.getElementById(div);
     var network = new vis.Network(container, data, options);
+}
+
+function createGraph2(data) {
+
+    const lines = data.split('\n');
+    const nodes = new Set();
+    const edges = [];
+
+    // Extract nodes and edges from data
+    lines.forEach((line, index) => {
+        const parts = line.split(' ');
+        const car = `Car ${index + 1}`;
+
+        // Add nodes (streets) to the set
+        parts.forEach((street) => nodes.add(street));
+
+        // Create edges between consecutive streets
+        for (let i = 1; i < parts.length; i++) {
+            edges.push({ from: parts[i - 1], to: parts[i], label: car });
+        }
+
+        // Handle the number of streets the car will go
+        if (parts.length > 1) {
+            edges.push({ from: parts[parts.length - 1], to: parts[0], label: car });
+        }
+    });
+
+    // Create an array of node objects
+    const visNodes = Array.from(nodes).map((street) => {
+        return { id: street, label: street };
+    });
+
+    // Define the graph data
+    const graphData = {
+        nodes: new vis.DataSet(visNodes),
+        edges: new vis.DataSet(edges),
+    };
+
+    // Create a network instance
+    const container = document.getElementById('network2');
+    // Define the graph options
+
+    // Define the graph options
+    // Define the graph options
+    const options = {
+        layout: {
+            improvedLayout: false, // Disable automatic layout optimization
+        },
+        physics: {
+            enabled: true,
+            solver: 'forceAtlas2Based',
+            forceAtlas2Based: {
+                gravitationalConstant: -300, // Increase the gravitational constant to spread nodes apart
+                centralGravity: 0.005, // Decrease the central gravity to avoid collisions
+                springLength: 200, // Adjust the spring length to space out the nodes
+                springConstant: 0.02, // Adjust the spring constant to control the layout tension
+            },
+            minVelocity: 0.75, // Increase the minimum velocity to avoid slow convergence
+        },
+        edges: {
+            smooth: {
+                type: 'cubicBezier',
+                forceDirection: 'horizontal',
+            },
+        },
+    };
+
+
+    const network = new vis.Network(container, graphData, options);
+
 }

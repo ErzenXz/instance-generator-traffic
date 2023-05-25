@@ -10,6 +10,7 @@ function getRandomInt(min, max) {
 }
 
 let INPUT = "";
+let graph = [];
 
 const roads = [
    "main-st",
@@ -58,11 +59,11 @@ function getData() {
       bonusPoints = getRandomInt(1, 1000);
    }
 
-   document.getElementById("data").classList.add("hidden");
-   document.getElementById("running").classList.remove("hidden");
+   // document.getElementById("data").classList.add("hidden");
+   // document.getElementById("running").classList.remove("hidden");
 
    // Start the generation process
-   document.getElementById("loading").classList.remove("hidden");
+   // document.getElementById("loading").classList.remove("hidden");
 
    console.time("Generation time");
 
@@ -110,14 +111,20 @@ function generateInputFile(D, I, S, V, F) {
 
    // Shuffle the array
    arr.sort(() => Math.random() - 0.5);
-   let graph = "";
+
 
    // Add the array to the input file
    arr.forEach((element) => {
       inputFile += `${element}\n`;
-      graph += `${element}\n`;
+      graph.push(element);
    });
 
+   if (I < 250 && S < 1000) {
+      let graph2 = graph.join("\n");
+      createGraph(graph2, "network");
+   }
+
+   let carsArr = [];
 
    // generate cars
    for (let i = 0; i < V; i++) {
@@ -128,6 +135,12 @@ function generateInputFile(D, I, S, V, F) {
       let clo = [...set]; // Change to path to allow duplicates
 
       inputFile += `${clo.length} ${clo.join(" ")}\n`;
+      carsArr.push(`${clo.length} ${clo.join(" ")}`);
+   }
+
+   if (I < 250 && S < 1000) {
+      let graph2 = carsArr.join("\n");
+      createGraph2(graph2);
    }
 
    const DATE = new Date();
@@ -155,20 +168,18 @@ function generateInputFile(D, I, S, V, F) {
 
    console.timeEnd("Generation time");
 
-   if (checkBOXSTATUS) {
-      solve(INPUT);
-      document.getElementById("charts").classList.remove("hidden");
-      document.getElementById("loading").classList.add("hidden");
-   } else {
-      document.getElementById("data").classList.remove("hidden");
-      document.getElementById("running").classList.add("hidden");
-      document.getElementById("loading").classList.add("hidden");
-      running = false;
-   }
+   // if (checkBOXSTATUS) {
+   //    solve(INPUT);
+   //    // document.getElementById("charts").classList.remove("hidden");
+   //    // document.getElementById("loading").classList.add("hidden");
+   // } else {
+   //    // document.getElementById("data").classList.remove("hidden");
+   //    // document.getElementById("running").classList.add("hidden");
+   //    // document.getElementById("loading").classList.add("hidden");
+   // }
 
-   if (I < 750 && S < 2000) {
-      createGraph(graph, "network");
-   }
+   running = false;
+
    //return inputFile;
 }
 
