@@ -59,11 +59,11 @@ function getData() {
       bonusPoints = getRandomInt(1, 1000);
    }
 
-   // document.getElementById("data").classList.add("hidden");
-   // document.getElementById("running").classList.remove("hidden");
+   document.getElementById("data").classList.add("hidden");
+   document.getElementById("running").classList.remove("hidden");
 
    // Start the generation process
-   // document.getElementById("loading").classList.remove("hidden");
+   document.getElementById("loading").classList.remove("hidden");
 
    console.time("Generation time");
 
@@ -167,15 +167,17 @@ function generateInputFile(D, I, S, V, F) {
    document.body.removeChild(downloadLink);
 
    console.timeEnd("Generation time");
-
+   document.getElementById("data").classList.remove("hidden");
+   document.getElementById("running").classList.add("hidden");
+   document.getElementById("loading").classList.add("hidden");
    // if (checkBOXSTATUS) {
    //    solve(INPUT);
-   //    // document.getElementById("charts").classList.remove("hidden");
-   //    // document.getElementById("loading").classList.add("hidden");
+   // document.getElementById("charts").classList.remove("hidden");
+   // document.getElementById("loading").classList.add("hidden");
    // } else {
-   //    // document.getElementById("data").classList.remove("hidden");
-   //    // document.getElementById("running").classList.add("hidden");
-   //    // document.getElementById("loading").classList.add("hidden");
+   document.getElementById("data").classList.remove("hidden");
+   document.getElementById("running").classList.add("hidden");
+   document.getElementById("loading").classList.add("hidden");
    // }
 
    running = false;
