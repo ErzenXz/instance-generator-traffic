@@ -23,6 +23,12 @@ async function getData() {
         const streetsUrl = `https://overpass-api.de/api/interpreter?data=[out:json];way(${bbox})[%22highway%22];out;`;
         const streetsResponse = await fetch(streetsUrl);
         const streetsData = await streetsResponse.json();
+        console.log(streetsData);
+
+        if (streetsData.elements.length == 0) {
+            Swal.fire("Error", "City was not found in the database", "error");
+            return false;
+        }
 
         let dataResult = [];
 
@@ -118,7 +124,7 @@ async function getData() {
 
         // Create graphs
 
-        if (intersectionsV <= 350 && temp <= 999) {
+        if (intersectionsV <= 750 && temp <= 1999) {
             Swal.fire("Success", "The city was found in the database and the data was successfully generated", "success");
             setTimeout(() => {
                 Swal.fire("Please wait...", "Generating graphs", "info");
@@ -163,4 +169,227 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (maxB - minB + 1)) + minB;
 }
 
+// GOOD!!!
 
+// function getTrafficData(city) {
+//     const cityEndpoint = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
+
+//     fetch(cityEndpoint)
+//         .then(response => response.json())
+//         .then(data => {
+//             if (data.length === 0) {
+//                 throw new Error('City not found.');
+//             }
+
+//             const cityData = data[0];
+//             const cityId = cityData.place_id;
+//             const bbox = cityData.boundingbox;
+
+//             const mapEndpoint = `https://api.openstreetmap.org/api/0.6/map?bbox=${bbox[2]},${bbox[0]},${bbox[3]},${bbox[1]}`;
+
+//             fetch(mapEndpoint)
+//                 .then(response => response.text())
+//                 .then(data => {
+//                     const parser = new DOMParser();
+//                     const xmlDoc = parser.parseFromString(data, 'application/xml');
+
+//                     let intersections = {};
+//                     let streets = [];
+
+//                     const nodes = xmlDoc.getElementsByTagName('node');
+//                     for (const node of nodes) {
+//                         intersections[node.getAttribute('id')] = {
+//                             lat: node.getAttribute('lat'),
+//                             lon: node.getAttribute('lon')
+//                         };
+//                     }
+//                     let x = 0;
+
+//                     const ways = xmlDoc.getElementsByTagName('way');
+//                     for (const way of ways) {
+//                         const nds = way.getElementsByTagName('nd');
+//                         const nodes = Array.from(nds).map(nd => nd.getAttribute('ref'));
+
+//                         for (let i = 0; i < nodes.length - 1; i++) {
+//                             const nameTag = way.querySelector('tag[k="name"]');
+
+//                             const name = `street-${x}`;//nameTag ? nameTag.getAttribute('v') : '';
+//                             x++;
+//                             streets.push({
+//                                 start: nodes[i],
+//                                 end: nodes[i + 1],
+//                                 name: name
+//                             });
+//                         }
+//                     }
+
+//                     let result = '';
+
+//                     for (const street of streets) {
+//                         const start = street.start;
+//                         const end = street.end;
+//                         const name = street.name;
+
+//                         result += `${start} ${end} ${name} ${getRandomInt(1, 7)}\n`;
+//                     }
+
+//                     console.log(result);
+//                 })
+//                 .catch(error => {
+//                     console.error('Error:', error.message);
+//                 });
+//         })
+//         .catch(error => {
+//             console.error('Error:', error.message);
+//         });
+// }
+
+
+function getTrafficData() {
+
+    let t = new Date().getTime();
+
+
+    let city = document.getElementById("city").value;
+    let duration = document.getElementById("duration").value;
+    let bonus = document.getElementById("bonus").value;
+    let cars = document.getElementById("cars").value;
+
+    let DATA = [];
+    let graphsSTR = "";
+    let carsSTR = "";
+    const cityEndpoint = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
+
+    Swal.fire("Please wait...", "Fetching data from OpenStreetMap API", "info");
+
+    fetch(cityEndpoint)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length === 0) {
+                Swal.fire("Error", "The city was not found in the database or an error has occurred", "error");
+                throw new Error('City not found.');
+            }
+
+            const cityData = data[0];
+            const cityId = cityData.place_id;
+            const bbox = cityData.boundingbox;
+
+            const query = `[out:xml][timeout:600];
+          (
+            way["highway"](bbox:${bbox[2]},${bbox[0]},${bbox[3]},${bbox[1]});
+            >;
+          );
+          out body;`;
+
+            const overpassEndpoint = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+
+            let intersectionsN = 0;
+
+            Swal.fire("Please wait...", "Fetching data from Overpass-API", "info");
+            fetch(overpassEndpoint)
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(data, 'application/xml');
+
+                    let intersections = {};
+                    let streets = [];
+
+                    const nodes = xmlDoc.getElementsByTagName('node');
+                    for (const node of nodes) {
+                        intersections[node.getAttribute('id')] = {
+                            lat: node.getAttribute('lat'),
+                            lon: node.getAttribute('lon')
+                        };
+                        intersectionsN++;
+                    }
+
+                    let x = 0;
+
+                    const ways = xmlDoc.getElementsByTagName('way');
+                    for (const way of ways) {
+                        const nds = way.getElementsByTagName('nd');
+                        const nodes = Array.from(nds).map(nd => nd.getAttribute('ref'));
+
+                        for (let i = 0; i < nodes.length - 1; i++) {
+                            const nameTag = way.querySelector('tag[k="name"]');
+                            const name = `street${x}`; //nameTag ? nameTag.getAttribute('v') : `street-${x}`;
+                            x++;
+
+                            streets.push({
+                                start: nodes[i],
+                                end: nodes[i + 1],
+                                name: name
+                            });
+                        }
+                    }
+
+                    let result = [];
+
+                    for (const street of streets) {
+                        const start = street.start;
+                        const end = street.end;
+                        const name = street.name;
+
+                        result.push(`${start} ${end} ${name} ${getRandomInt(1, 7)}`);
+                    }
+
+                    let resultstr = result.join("\n");
+
+                    DATA.push(`${duration} ${intersectionsN} ${x} ${cars} ${bonus}`);
+                    DATA.push(resultstr);
+
+
+                    let carsArr = [];
+
+                    // generate cars
+                    for (let i = 0; i < cars; i++) {
+                        const P = Math.floor(Math.random() * 10) + 2; // random number between 2 and 11
+                        const path = Array.from({ length: P }, (_, i) => `street${Math.floor(Math.random() * x)}`);
+
+                        let set = new Set(path);
+                        let clo = [...set]; // Change to path to allow duplicates
+
+                        carsArr.push(`${clo.length} ${clo.join(" ")}`);
+                    }
+
+                    let carsStr = carsArr.join("\n");
+
+                    DATA.push(carsStr);
+
+                    let DATAstr = DATA.join("\n");
+
+
+
+                    // Log the formatted result
+
+                    const blob = new Blob([DATAstr], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = url;
+                    downloadLink.download = `D:${new Date().getTime()}.txt`;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+
+                    Swal.fire("Success", "The data was successfully generated", "success");
+                    let t2 = new Date().getTime();
+
+                    console.log(`Time: ${t2 - t}ms`);
+
+                    Swal.fire("Success", "The data was successfully generated in " + `${t2 - t}ms`, "success");
+
+                    if (intersectionsN < 1000 && x < 1999) {
+                        Swal.fire("Please wait...", "Creating Graphs", "info");
+                        createGraph(resultstr, "network");
+                        createGraph2(carsStr);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error.message);
+                });
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+        });
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instance Generator for Traffic Signaling</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script defer src="./engine.js?v2=true"></script>
+    <script defer src="graph.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <h1>Instance Generator for Traffic Signaling
+        Problem
+    </h1>
+
+    <div class="loading-screen hidden" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div id="circle" class="circle"></div>
+
+
+    <main id="data">
+
+        <div class="main">
+            <label for="duration">Duration (seconds)</label>
+            <input type="number" name="duration" id="duration" min="1" max="10000" required>
+
+            <label for="intersections">Number of intersections</label>
+            <input type="number" name="intersections" id="intersections" min="2" max="100000" required>
+
+            <label for="streets">Number of streets</label>
+            <input type="number" name="streets" id="streets" min="2" max="100000" required>
+
+            <label for="totalCars">Total number of cars</label>
+            <input type="number" name="totalCars" id="totalCars" min="1" max="1000" required>
+
+            <label for="bonusPoints">Bonus points for each car that reaches its destination before time D</label>
+            <input type="number" name="bonusPoints" id="bonusPoints" min="1" max="1000" required>
+
+
+
+            <label class="container hidden"> <label for="solve">Solve instance using ES1-Engine</label>
+
+                <input type="checkbox" id="solve" name="solve" onclick="checkbox()">
+                <span class="checkmark"></span>
+            </label>
+            <br><br><br>
+
+            <input type="submit" value="Generate File" onclick="getData()">
+        </div>
+
+
+        <br><br>
+
+        <div class="charts hidden" id="charts">
+            <div>
+                <canvas id="chart" width="400" height="400"></canvas>
+            </div>
+            <br><br>
+            <canvas id="street-usage-chart"></canvas>
+        </div>
+
+    </main>
+
+    <div id="network" style="width: 800px; height: 600px;" class="hidden"></div>
+
+    <div id="network2" style="width: 800px; height: 600px;" class="hidden"></div>
+
+
+    <div class="running hidden" id="running">
+        The engine is running...
+    </div>
+
+    <footer>
+        <p>Version 2.4</p>
+        <pre>ErzenK           All rights reserved         2022 - 2023©</pre>
+    </footer>
+    <p id="build">B1-25/5#23_added-graphs-bug-fixes</p>
+
+
+
+</body>
+
+</html>

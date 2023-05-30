@@ -1,0 +1,89 @@
+input[type="text"],
+input[type="number"] {
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) 0ms;
+}
+
+footer {
+    text-align: center;
+    background-color: #f2f2f29b;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 50px;
+}
+
+::selection {
+    color: #000;
+    background-color: #c1daf3cb;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 20px -15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #eeeff1dd;
+    border-radius: 20px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #b5b5b7cf;
+    border-radius: 20px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #818282c3;
+    border-radius: 20px;
+}
+
+
+
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgb(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 50;
+}
+
+
+.loading-spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+#build {
+    font-size: 10px;
+    margin-bottom: 7px;
+    margin-left: auto;
+    text-align: center;
+}

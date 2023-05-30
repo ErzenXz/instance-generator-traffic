@@ -1,4 +1,4 @@
-* {
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -72,5 +72,47 @@ input[type="number"]:focus {
     border-radius: 5px;
     padding: 10px;
     font-size: 16px;
+    margin: 10px;
+} */
+
+input[type="text"],
+input[type="number"] {
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) 0ms;
+}
+
+
+::selection {
+    color: #000;
+    background-color: #c1daf3cb;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 20px -15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #eeeff1dd;
+    border-radius: 20px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #b5b5b7cf;
+    border-radius: 20px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #818282c3;
+    border-radius: 20px;
+}
+
+.version {
+    display: flex;
+    justify-content: center;
     margin: 10px;
 }
