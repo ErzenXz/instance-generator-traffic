@@ -5,10 +5,12 @@ async function getData() {
     let bonus = document.getElementById("bonus").value;
     let cars = document.getElementById("cars").value;
 
+    let graph = [];
 
     const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${city}&polygon_geojson=1`;
 
     try {
+        Swal.fire("Please wait...", "Fetching data from OpenStreetMap API", "info");
         // Fetch data from OpenStreetMap API
         const response = await fetch(apiUrl);
         const data = await response.json();
@@ -53,6 +55,11 @@ async function getData() {
             const streetName = street.tags.name;
             const intersections = street.nodes;
 
+            // if (intersections.length == 0 || street == undefined) {
+            //     Swal.fire("Error", "City was not found in the database", "error");
+            //     return false;
+            // }
+
             for (let i = 0; i < intersections.length - 1; i++) {
                 const startIntersection = intersections[i];
                 const endIntersection = intersections[i + 1];
@@ -66,6 +73,7 @@ async function getData() {
                     intersectionMap.set(endIntersection, new Set());
                 }
                 intersectionMap.get(endIntersection).add(startIntersection);
+                intersectionsV = intersections.length + 1;
             }
         });
 
@@ -73,7 +81,9 @@ async function getData() {
             const startIntersectionId = startIntersection;
             for (const endIntersection of connectedIntersections) {
                 const endIntersectionId = endIntersection;
-                result.push(`${startIntersectionId} ${endIntersectionId} street${key} ${getRandomInt(1, 7)}`);
+                let ran = getRandomInt(1, 7);
+                result.push(`${startIntersectionId} ${endIntersectionId} street${key} ${ran}`);
+                graph.push(`${startIntersectionId} ${endIntersectionId} street${key} ${ran}`);
                 key++;
             }
         }
@@ -105,6 +115,24 @@ async function getData() {
 
         let rr = dataResult.join("\n");
 
+
+        // Create graphs
+
+        if (intersectionsV <= 350 && temp <= 999) {
+            Swal.fire("Success", "The city was found in the database and the data was successfully generated", "success");
+            setTimeout(() => {
+                Swal.fire("Please wait...", "Generating graphs", "info");
+                setTimeout(() => {
+                    let graph20 = graph.join("\n");
+                    createGraph(graph20, "network");
+                    createGraph2(carsStr);
+                }, 5000);
+
+            }, 1000);
+        }
+
+
+
         // Log the formatted result
 
         const blob = new Blob([rr], { type: "text/plain" });
@@ -116,9 +144,11 @@ async function getData() {
         downloadLink.click();
         document.body.removeChild(downloadLink);
 
+        Swal.fire("Success", "The data was successfully generated", "success");
 
         return result;
     } catch (error) {
+        Swal.fire("Error", "The city was not found in the database or an error has occurred", "error");
         console.error('Error:', error);
         return null;
     }

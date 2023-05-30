@@ -6,8 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generate from OpenStreetMap Map</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
     <script src="engine-api.js"></script>
+    <script src="graph.js"></script>
     <link rel="stylesheet" href="api-data.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
@@ -15,6 +20,7 @@
     <main>
 
         <div class="form">
+
             <label for="duration">Duration (seconds)</label>
             <input type="number" name="duration" id="duration" min="1" max="10000" required>
 
@@ -28,12 +34,17 @@
             <input type="text" name="city" id="city">
 
 
-
-            <button onclick="getData()">Generate File</button>
+            <button class="btn" onclick="getData()">Generate File</button>
         </div>
 
 
+
     </main>
+    <div class="maps">
+        <div id="network" style="width: 800px; height: 600px;" class="hidden"></div>
+
+        <div id="network2" style="width: 800px; height: 600px;" class="hidden"></div>
+    </div>
 
 
 </body>
