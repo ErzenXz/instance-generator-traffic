@@ -87,3 +87,9 @@ footer {
     margin-left: auto;
     text-align: center;
 }
+
+#network,
+#network2 {
+    border: 1px solid lightgrey;
+    border-radius: 12px;
+}

@@ -1,4 +1,3 @@
-
 async function getData() {
     let city = document.getElementById("city").value;
     let duration = document.getElementById("duration").value;
@@ -367,6 +366,7 @@ function getTrafficDataOld() {
 
     const cityEndpoint = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
 
+
     fetch(cityEndpoint)
         .then(response => response.json())
         .then(data => {
@@ -391,13 +391,13 @@ function getTrafficDataOld() {
 
             let requests = [];
             for (let i = 0; i < 50; i++) {
-                Swal.fire("Please wait...", "Fetching data from OpenStreetMap API. " + k + " / 50", "info");
                 const partLatMin = latMin + latStep * i;
                 const partLatMax = partLatMin + latStep;
                 const partLonMin = lonMin + lonStep * i;
                 const partLonMax = partLonMin + lonStep;
                 const mapEndpoint = `https://api.openstreetmap.org/api/0.6/map?bbox=${partLonMin},${partLatMin},${partLonMax},${partLatMax}`;
                 requests.push(fetch(mapEndpoint));
+                Swal.fire("Please wait...", "Fetching data from OpenStreetMap API. " + i + " / 50", "info");
             }
 
             Promise.all(requests)
@@ -406,9 +406,11 @@ function getTrafficDataOld() {
                     let intersections = {};
                     let streets = [];
 
-
+                    // let g = 0;
 
                     for (const data of datas) {
+                        // Swal.fire("Please wait...", "Completing data from OpenStreetMap API. " + g + " / 50", "info");
+                        // g++;
                         const parser = new DOMParser();
                         const xmlDoc = parser.parseFromString(data, 'application/xml');
 
@@ -426,7 +428,7 @@ function getTrafficDataOld() {
                             const nds = way.getElementsByTagName('nd');
                             const wayNodes = Array.from(nds).map(nd => nd.getAttribute('ref'));
 
-                            let x = streets.length;
+                            let x = streets.length ?? 0;
                             for (let i = 0; i < wayNodes.length - 1; i++) {
                                 const nameTag = way.querySelector('tag[k="name"]');
                                 // const name = nameTag ? nameTag.getAttribute('v') : `street-${x++}`;
@@ -513,11 +515,14 @@ function getTrafficDataOld() {
                 })
                 .catch(error => {
                     console.error('Error:', error.message);
+                    Swal.fire("Error", error.message, "error");
                 });
         })
         .catch(error => {
             console.error('Error:', error.message);
+            Swal.fire("Error", error.message, "error");
         });
+
 }
 
 
