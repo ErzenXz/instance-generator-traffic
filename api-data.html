@@ -6,13 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generate from OpenStreetMap Map</title>
-    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <script src="engine-api.js"></script>
-    <script src="graph.js"></script>
+    <script defer src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script defer src="engine-api.js"></script>
+    <script defer src="graph.js"></script>
     <link rel="stylesheet" href="api-data.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-borderless@5.0.15/borderless.min.css"
         integrity="sha256-AoNcDUx+PZCUQhUrYn7OGBcOJivdFQYODnn9taDYh/k=" crossorigin="anonymous">
@@ -53,7 +52,7 @@
                 </div>
 
                 <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full mt-4"
-                    onclick="getTrafficData()">Generate File</button>
+                    onclick="getTrafficDataOld()">Generate File</button>
             </div>
 
         </div>
@@ -81,7 +80,7 @@
 
     <div class="flex items-center version">
         <span class="text-gray-700 text-sm">Version</span>
-        <span class="ml-1 text-blue-500 text-sm font-medium">1.1</span>
+        <span class="ml-1 text-blue-500 text-sm font-medium">1.2</span>
     </div>
 
 

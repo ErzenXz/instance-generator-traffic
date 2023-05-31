@@ -171,7 +171,7 @@ function getRandomInt(min, max) {
 
 // GOOD!!!
 
-// function getTrafficData(city) {
+// function getTrafficDataOld(city) {
 //     const cityEndpoint = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
 
 //     fetch(cityEndpoint)
@@ -213,7 +213,7 @@ function getRandomInt(min, max) {
 //                         for (let i = 0; i < nodes.length - 1; i++) {
 //                             const nameTag = way.querySelector('tag[k="name"]');
 
-//                             const name = `street-${x}`;//nameTag ? nameTag.getAttribute('v') : '';
+//                             const name = nameTag ? nameTag.getAttribute('v') : `street-${x}`; //street-${x}`;
 //                             x++;
 //                             streets.push({
 //                                 start: nodes[i],
@@ -243,6 +243,283 @@ function getRandomInt(min, max) {
 //             console.error('Error:', error.message);
 //         });
 // }
+
+
+// function getTrafficDataOld(city) {
+//     const cityEndpoint = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
+
+//     fetch(cityEndpoint)
+//         .then(response => response.json())
+//         .then(data => {
+//             if (data.length === 0) {
+//                 throw new Error('City not found.');
+//             }
+
+//             const cityData = data[0];
+//             const cityId = cityData.place_id;
+//             const bbox = cityData.boundingbox;
+
+//             const latMin = parseFloat(bbox[0]);
+//             const latMax = parseFloat(bbox[1]);
+//             const lonMin = parseFloat(bbox[2]);
+//             const lonMax = parseFloat(bbox[3]);
+
+//             const latRange = latMax - latMin;
+//             const lonRange = lonMax - lonMin;
+
+//             const latStep = latRange / 50;
+//             const lonStep = lonRange / 50;
+
+//             let requests = [];
+//             for (let i = 0; i < 50; i++) {
+//                 const partLatMin = latMin + latStep * i;
+//                 const partLatMax = partLatMin + latStep;
+//                 const partLonMin = lonMin + lonStep * i;
+//                 const partLonMax = partLonMin + lonStep;
+
+//                 const mapEndpoint = `https://api.openstreetmap.org/api/0.6/map?bbox=${partLonMin},${partLatMin},${partLonMax},${partLatMax}`;
+//                 requests.push(fetch(mapEndpoint));
+//             }
+
+//             Promise.all(requests)
+//                 .then(responses => Promise.all(responses.map(response => response.text())))
+//                 .then(datas => {
+//                     let intersections = {};
+//                     let streets = [];
+
+//                     for (const data of datas) {
+//                         const parser = new DOMParser();
+//                         const xmlDoc = parser.parseFromString(data, 'application/xml');
+
+//                         const nodes = xmlDoc.getElementsByTagName('node');
+//                         for (const node of nodes) {
+//                             intersections[node.getAttribute('id')] = {
+//                                 lat: node.getAttribute('lat'),
+//                                 lon: node.getAttribute('lon')
+//                             };
+//                         }
+
+//                         let x = streets.length;
+//                         const ways = xmlDoc.getElementsByTagName('way');
+//                         for (const way of ways) {
+//                             const nds = way.getElementsByTagName('nd');
+//                             const wayNodes = Array.from(nds).map(nd => nd.getAttribute('ref'));
+
+//                             for (let i = 0; i < wayNodes.length - 1; i++) {
+//                                 const nameTag = way.querySelector('tag[k="name"]');
+//                                 const name = nameTag ? nameTag.getAttribute('v') : `street-${x++}`;
+
+//                                 streets.push({
+//                                     start: wayNodes[i],
+//                                     end: wayNodes[i + 1],
+//                                     name: name
+//                                 });
+//                             }
+//                         }
+//                     }
+
+//                     let result = '';
+
+//                     for (const street of streets) {
+//                         const start = street.start;
+//                         const end = street.end;
+//                         const name = street.name;
+
+//                         result += `${start} ${end} ${name} ${getRandomInt(1, 7)}\n`;
+//                     }
+
+//                     console.log(result);
+//                 })
+//                 .catch(error => {
+//                     console.error('Error:', error.message);
+//                 });
+//         })
+//         .catch(error => {
+//             console.error('Error:', error.message);
+//         });
+// }
+
+
+function getTrafficDataOld() {
+    let t = new Date().getTime();
+
+    Swal.fire("Please wait...", "Fetching data from OpenStreetMap API.", "info");
+
+    let city = document.getElementById("city").value || "Lipjan";
+    let duration = document.getElementById("duration").value || 15;
+    let bonus = document.getElementById("bonus").value || 500;
+    let cars = document.getElementById("cars").value || 250;
+
+    if (cars > 1000) {
+        cars = 5000;
+    }
+
+    if (duration > 1000) {
+        duration = 50;
+    }
+
+    if (bonus > 1000) {
+        bonus = 500;
+    }
+
+    let k = 0;
+    let b = 0;
+
+    const cityEndpoint = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
+
+    fetch(cityEndpoint)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length === 0) {
+                throw new Error('City not found.');
+            }
+
+            const cityData = data[0];
+            const cityId = cityData.place_id;
+            const bbox = cityData.boundingbox;
+
+            const latMin = parseFloat(bbox[0]);
+            const latMax = parseFloat(bbox[1]);
+            const lonMin = parseFloat(bbox[2]);
+            const lonMax = parseFloat(bbox[3]);
+
+            const latRange = latMax - latMin;
+            const lonRange = lonMax - lonMin;
+
+            const latStep = latRange / 50;
+            const lonStep = lonRange / 50;
+
+            let requests = [];
+            for (let i = 0; i < 50; i++) {
+                Swal.fire("Please wait...", "Fetching data from OpenStreetMap API. " + k + " / 50", "info");
+                const partLatMin = latMin + latStep * i;
+                const partLatMax = partLatMin + latStep;
+                const partLonMin = lonMin + lonStep * i;
+                const partLonMax = partLonMin + lonStep;
+                const mapEndpoint = `https://api.openstreetmap.org/api/0.6/map?bbox=${partLonMin},${partLatMin},${partLonMax},${partLatMax}`;
+                requests.push(fetch(mapEndpoint));
+            }
+
+            Promise.all(requests)
+                .then(responses => Promise.all(responses.map(response => response.text())))
+                .then(datas => {
+                    let intersections = {};
+                    let streets = [];
+
+
+
+                    for (const data of datas) {
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(data, 'application/xml');
+
+                        const nodes = xmlDoc.getElementsByTagName('node');
+                        for (const node of nodes) {
+                            intersections[node.getAttribute('id')] = {
+                                lat: node.getAttribute('lat'),
+                                lon: node.getAttribute('lon')
+                            };
+                            b++;
+                        }
+
+                        const ways = xmlDoc.getElementsByTagName('way');
+                        for (const way of ways) {
+                            const nds = way.getElementsByTagName('nd');
+                            const wayNodes = Array.from(nds).map(nd => nd.getAttribute('ref'));
+
+                            let x = streets.length;
+                            for (let i = 0; i < wayNodes.length - 1; i++) {
+                                const nameTag = way.querySelector('tag[k="name"]');
+                                // const name = nameTag ? nameTag.getAttribute('v') : `street-${x++}`;
+                                const name = `street${x++}`;
+
+                                streets.push({
+                                    start: wayNodes[i],
+                                    end: wayNodes[i + 1],
+                                    name: name
+                                });
+                            }
+                        }
+                    }
+
+
+                    Swal.fire("Please wait...", "Completing data.", "info");
+
+                    let DATA = [];
+
+                    let result = [];
+
+                    for (const street of streets) {
+                        const start = street.start;
+                        const end = street.end;
+                        const name = street.name;
+
+                        result.push(`${start} ${end} ${name} ${getRandomInt(1, 7)}`);
+                    }
+
+                    DATA.push(`${duration} ${Object.keys(intersections).length} ${streets.length} ${cars} ${bonus}`);
+
+                    let resultstr = result.join("\n");
+
+                    DATA.push(resultstr);
+
+
+                    let carsArr = [];
+
+                    // generate cars
+                    for (let i = 0; i < cars; i++) {
+                        const P = Math.floor(Math.random() * 10) + 2; // random number between 2 and 11
+                        const path = Array.from({ length: P }, (_, i) => `street${Math.floor(Math.random() * streets.length)}`);
+
+                        let set = new Set(path);
+                        let clo = [...set]; // Change to path to allow duplicates
+
+                        carsArr.push(`${clo.length} ${clo.join(" ")}`);
+                    }
+
+                    let carsStr = carsArr.join("\n");
+
+                    DATA.push(carsStr);
+
+                    let DATAstr = DATA.join("\n");
+
+
+
+                    // Log the formatted result
+
+                    const blob = new Blob([DATAstr], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = url;
+                    downloadLink.download = `D:${new Date().getTime()}.txt`;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+
+                    Swal.fire("Success", "The data was successfully generated", "success");
+                    let t2 = new Date().getTime();
+
+                    console.log(`Time: ${t2 - t}ms`);
+
+                    Swal.fire("Success", "The data was successfully generated in " + `${t2 - t}ms`, "success");
+
+                    if (streets.length < 1000 && x < 1999) {
+                        Swal.fire("Please wait...", "Creating Graphs", "info");
+                        createGraph(resultstr, "network");
+                        createGraph2(carsStr);
+                    }
+
+
+                    console.log(result);
+                })
+                .catch(error => {
+                    console.error('Error:', error.message);
+                });
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+        });
+}
+
 
 
 function getTrafficData() {
