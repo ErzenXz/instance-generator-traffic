@@ -9,7 +9,7 @@ async function getData() {
     const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${city}&polygon_geojson=1`;
 
     try {
-        Swal.fire("Please wait...", "Fetching data from OpenStreetMap API", "info");
+        toast("Please wait... Fetching data from OpenStreetMap API");
         // Fetch data from OpenStreetMap API
         const response = await fetch(apiUrl);
         const data = await response.json();
@@ -25,7 +25,7 @@ async function getData() {
         console.log(streetsData);
 
         if (streetsData.elements.length == 0) {
-            Swal.fire("Error", "City was not found in the database", "error");
+            toast("Error City was not found in the database");
             return false;
         }
 
@@ -61,7 +61,7 @@ async function getData() {
             const intersections = street.nodes;
 
             // if (intersections.length == 0 || street == undefined) {
-            //     Swal.fire("Error", "City was not found in the database", "error");
+            //     toast("Error", "City was not found in the database", "error");
             //     return false;
             // }
 
@@ -124,9 +124,9 @@ async function getData() {
         // Create graphs
 
         if (intersectionsV <= 750 && temp <= 1999) {
-            Swal.fire("Success", "The city was found in the database and the data was successfully generated", "success");
+            toast("Success The city was found in the database and the data was successfully generated");
             setTimeout(() => {
-                Swal.fire("Please wait...", "Generating graphs", "info");
+                toast("Please wait... Generating graphs");
                 setTimeout(() => {
                     let graph20 = graph.join("\n");
                     createGraph(graph20, "network");
@@ -149,11 +149,11 @@ async function getData() {
         downloadLink.click();
         document.body.removeChild(downloadLink);
 
-        Swal.fire("Success", "The data was successfully generated", "success");
+        toast("Success The data was successfully generated");
 
         return result;
     } catch (error) {
-        Swal.fire("Error", "The city was not found in the database or an error has occurred", "error");
+        toast("Error The city was not found in the database or an error has occurred");
         console.error('Error:', error);
         return null;
     }
@@ -342,7 +342,7 @@ function getRandomInt(min, max) {
 function getTrafficDataOld() {
     let t = new Date().getTime();
 
-    Swal.fire("Please wait...", "Fetching data from OpenStreetMap API.", "info");
+    toast("Please wait... Fetching data from OpenStreetMap API.");
 
     let city = document.getElementById("city").value || "Lipjan";
     let duration = document.getElementById("duration").value || 15;
@@ -397,7 +397,9 @@ function getTrafficDataOld() {
                 const partLonMax = partLonMin + lonStep;
                 const mapEndpoint = `https://api.openstreetmap.org/api/0.6/map?bbox=${partLonMin},${partLatMin},${partLonMax},${partLatMax}`;
                 requests.push(fetch(mapEndpoint));
-                Swal.fire("Please wait...", "Fetching data from OpenStreetMap API. " + i + " / 50", "info");
+                let v = i + 1;
+                console.log("Fetching data from OpenStreetMap API. " + v + " / 50");
+                toast("Please wait... Fetching data from OpenStreetMap API. " + v + " / 50", 2000, 50);
             }
 
             Promise.all(requests)
@@ -409,7 +411,7 @@ function getTrafficDataOld() {
                     // let g = 0;
 
                     for (const data of datas) {
-                        // Swal.fire("Please wait...", "Completing data from OpenStreetMap API. " + g + " / 50", "info");
+                        // toast("Please wait...", "Completing data from OpenStreetMap API. " + g + " / 50", "info");
                         // g++;
                         const parser = new DOMParser();
                         const xmlDoc = parser.parseFromString(data, 'application/xml');
@@ -444,7 +446,7 @@ function getTrafficDataOld() {
                     }
 
 
-                    Swal.fire("Please wait...", "Completing data.", "info");
+                    toast("Please wait... Completing data.");
 
                     let DATA = [];
 
@@ -497,15 +499,15 @@ function getTrafficDataOld() {
                     downloadLink.click();
                     document.body.removeChild(downloadLink);
 
-                    Swal.fire("Success", "The data was successfully generated", "success");
+                    toast("Success The data was successfully generated ");
                     let t2 = new Date().getTime();
 
                     console.log(`Time: ${t2 - t}ms`);
 
-                    Swal.fire("Success", "The data was successfully generated in " + `${t2 - t}ms`, "success");
+                    toast("Success The data was successfully generated in " + `${t2 - t}ms`);
 
                     if (streets.length < 1000 && x < 1999) {
-                        Swal.fire("Please wait...", "Creating Graphs", "info");
+                        toast("Please wait... Creating Graphs");
                         createGraph(resultstr, "network");
                         createGraph2(carsStr);
                     }
@@ -515,12 +517,12 @@ function getTrafficDataOld() {
                 })
                 .catch(error => {
                     console.error('Error:', error.message);
-                    Swal.fire("Error", error.message, "error");
+                    toast("Error" + error.message);
                 });
         })
         .catch(error => {
             console.error('Error:', error.message);
-            Swal.fire("Error", error.message, "error");
+            toast("Error" + error.message);
         });
 
 }
@@ -542,13 +544,13 @@ function getTrafficData() {
     let carsSTR = "";
     const cityEndpoint = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
 
-    Swal.fire("Please wait...", "Fetching data from OpenStreetMap API", "info");
+    toast("Please wait... Fetching data from OpenStreetMap API info");
 
     fetch(cityEndpoint)
         .then(response => response.json())
         .then(data => {
             if (data.length === 0) {
-                Swal.fire("Error", "The city was not found in the database or an error has occurred", "error");
+                toast("Error The city was not found in the database or an error has occurred");
                 throw new Error('City not found.');
             }
 
@@ -567,7 +569,7 @@ function getTrafficData() {
 
             let intersectionsN = 0;
 
-            Swal.fire("Please wait...", "Fetching data from Overpass-API", "info");
+            toast("Please wait...  Fetching data from Overpass-API");
             fetch(overpassEndpoint)
                 .then(response => response.text())
                 .then(data => {
@@ -654,15 +656,15 @@ function getTrafficData() {
                     downloadLink.click();
                     document.body.removeChild(downloadLink);
 
-                    Swal.fire("Success", "The data was successfully generated", "success");
+                    toast("Success The data was successfully generated");
                     let t2 = new Date().getTime();
 
                     console.log(`Time: ${t2 - t}ms`);
 
-                    Swal.fire("Success", "The data was successfully generated in " + `${t2 - t}ms`, "success");
+                    toast("Success The data was successfully generated in " + `${t2 - t}ms`);
 
                     if (intersectionsN < 1000 && x < 1999) {
-                        Swal.fire("Please wait...", "Creating Graphs", "info");
+                        toast("Please wait... Creating Graphs");
                         createGraph(resultstr, "network");
                         createGraph2(carsStr);
                     }
@@ -674,4 +676,40 @@ function getTrafficData() {
         .catch(error => {
             console.error('Error:', error.message);
         });
+}
+
+
+function toast(message, duration = 4500, delay = 0) {
+    const showToast = () => {
+        const toastContainer = document.createElement('div');
+        toastContainer.className = 'fixed top-4 right-4 flex items-center justify-center w-64 p-4 bg-gray-900 text-white rounded-md shadow-md';
+        toastContainer.style.padding = '12px';
+        toastContainer.style.maxHeight = '500px';
+        toastContainer.style.overflow = 'auto';
+        toastContainer.style.width = 'fit-content';
+        toastContainer.style.zIndex = '9999';
+
+        const toastText = document.createElement('span');
+        toastText.className = 'whitespace-nowrap overflow-hidden overflow-ellipsis';
+        toastText.textContent = message;
+        toastContainer.appendChild(toastText);
+
+        document.body.appendChild(toastContainer);
+
+        setTimeout(() => {
+            toastContainer.classList.add('opacity-0');
+            setTimeout(() => {
+                toastContainer.remove();
+            }, 300);
+        }, duration);
+
+        toast.dismiss = function () {
+            toastContainer.classList.add('opacity-0');
+            setTimeout(() => {
+                toastContainer.remove();
+            }, 300);
+        };
+    };
+
+    setTimeout(showToast, delay);
 }

@@ -115,7 +115,7 @@ function generateInputFile(D, I, S, V, F) {
 
    // generate cars
    for (let i = 0; i < V; i++) {
-      const P = Math.floor(Math.random() * 10) + 2; // random number between 2 and 11
+      const P = Math.floor(Math.random() * 50) + 2; // random number between 2 and 71
       const path = Array.from({ length: P }, (_, i) => `street${Math.floor(Math.random() * S)}`);
 
       let set = new Set(path);
