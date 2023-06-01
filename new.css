@@ -110,7 +110,7 @@ footer {
     height: 70vh;
 }
 
-.flex {
+.graphs {
     flex-wrap: wrap;
     gap: 10px;
 }
