@@ -1,0 +1,112 @@
+// function generateGraph(data) {
+// var cy = cytoscape({
+// container: document.getElementById('cy'),
+// layout: {
+// name: 'preset'
+// },
+// style: [
+// {
+// selector: 'node',
+// style: {
+// 'label': 'data(id)',
+// 'width': 40,
+// 'height': 40,
+// 'background-color': '#fff',
+// 'border-color': '#000',
+// 'border-width': 2,
+// 'border-opacity': 1,
+// 'text-valign': 'center',
+// 'text-halign': 'center',
+// 'font-size': '12px',
+// 'font-weight': 'bold'
+// }
+// },
+// {
+// selector: 'edge',
+// style: {
+// 'width': 2,
+// 'label': 'data(label)',
+// 'curve-style': 'bezier',
+// 'line-color': '#ccc',
+// 'target-arrow-color': '#ccc',
+// 'target-arrow-shape': 'triangle'
+// }
+// }
+// ]
+// });
+
+// var lines = data.split('\n');
+// var nodes = {};
+// var maxX = 0;
+// var maxY = 0;
+// for (var i = 0; i < lines.length; i++) { // var parts=lines[i].split(' ');
+    //         var source = parts[0];
+    //         var target = parts[1];
+    //         var street = parts[2];
+    //         var duration = parts[3];
+
+    //         if (!nodes[source]) {
+    //             nodes[source] = true;
+    //             var x = Math.random() * 1000;
+    //             var y = Math.random() * 1000;
+    //             cy.add({ data: { id: source }, position: { x: x, y: y } });
+    //             maxX = Math.max(maxX, x);
+    //             maxY = Math.max(maxY, y);
+    //         }
+
+    //         if (!nodes[target]) {
+    //             nodes[target] = true;
+    //             var x = Math.random() * 1000;
+    //             var y = Math.random() * 1000;
+    //             cy.add({ data: { id: target }, position: { x: x, y: y } });
+    //             maxX = Math.max(maxX, x);
+    //             maxY = Math.max(maxY, y);
+    //         }
+
+    //         cy.add({ data: { id: source + ' -' + target, source: source, target: target, label: street } }); // } //
+    var scaleFactor=1000 / Math.max(maxX, maxY); // cy.zoom(scaleFactor); // cy.fit(); // cy.layout().run(); // } //
+    generateGraph(data); // generateGraph2(data2); // function generateCombinedGraph(data1, data2) { // var
+    cy=cytoscape({ // container: document.getElementById('cy'), // layout: { // name: 'preset' // }, // style: [ // { //
+    selector: 'node' , // style: { // 'label' : 'data(id)' , // 'width' : 40, // 'height' : 40, // 'background-color'
+    : '#fff' , // 'border-color' : '#000' , // 'border-width' : 2, // 'border-opacity' : 1, // 'text-valign' : 'center'
+    , // 'text-halign' : 'center' , // 'font-size' : '12px' , // 'font-weight' : 'bold' // } // }, // { //
+    selector: 'edge' , // style: { // 'width' : 2, // 'curve-style' : 'bezier' , // 'line-color' : '#ccc' ,
+    // 'target-arrow-color' : '#ccc' , // 'target-arrow-shape' : 'triangle' , // 'label' : 'data(label)' , // Label for
+    streets // 'text-background-color' : '#fff' , // 'text-background-opacity' : 0.8, // 'text-background-padding' : 2,
+    // 'color' : '#333' , // 'font-size' : 10, // 'text-wrap' : 'wrap' // } // } // ] // }); // var
+    lines=data1.split('\n'); // var nodes={}; // var edgeCounter=1; // for (var i=0; i < lines.length; i++) { // var
+    parts=lines[i].split(' ');
+    //         var source = parts[0];
+    //         var target = parts[1];
+    //         var street = parts[2];
+    //         var duration = parts[3];
+
+    //         if (!nodes[source]) {
+    //             nodes[source] = true;
+    //             cy.add({ data: { id: source }, position: { x: Math.random() * 3000, y: Math.random() * 3000 } });
+    //         }
+
+    //         if (!nodes[target]) {
+    //             nodes[target] = true;
+    //             cy.add({ data: { id: target }, position: { x: Math.random() * 3000, y: Math.random() * 3000 } });
+    //         }
+
+    //         var edgeId = `edge${edgeCounter}`;
+    //         var formattedStreet = street.replace(/[^a-zA-Z0-9]/g, ' _') + ` (${duration})`; // cy.add({ data: { id:
+    edgeId, source: source, target: target, label: formattedStreet } }); // edgeCounter++; // } // var
+    lines2=data2.split('\n'); // var nodes2={}; // var colors=['#ff0000', '#00ff00' , '#0000ff' , '#ffff00' , '#00ffff'
+    , '#ff00ff' , '#ffa500' , '#800080' , '#008080' ]; // Color options for cars // var carCount=0; // for (var i=0; i <
+    lines2.length; i++) { // var carData=lines2[i].split(' ');
+    //         var numStreets = parseInt(carData[0]);
+    //         var streets = carData.slice(1);
+
+    //         var carId = ' car' + i; // Generate a unique car ID // var carText='Car ' + (i + 1); // Car text for the
+    label // // Set color for the car // var color=colors[carCount % colors.length]; // for (var j=0; j < numStreets -
+    1; j++) { // var source='street_' + streets[j] + '_' + carId; // Add car ID to ensure unique node ID // var
+    target='street_' + streets[j + 1] + '_' + carId; // Add car ID to ensure unique node ID // var street='street' + j;
+    // if (!nodes2[source]) { // nodes2[source]=true; // cy.add({ data: { id: source }, position: { x: Math.random() *
+    1000, y: Math.random() * 1000 } }); // } // if (!nodes2[target]) { // nodes2[target]=true; // cy.add({ data: { id:
+    target }, position: { x: Math.random() * 1000, y: Math.random() * 1000 } }); // } // cy.add({ data: { id: source
+    + '-' + target, source: source, target: target, label: street, carText: carText } }); // Assign carText to the label
+    // } // cy.nodes().forEach(function (node) { // if (node.id().endsWith('_' + carId)) { //
+    node.style('background-color', color); // } // }); // carCount++; // } // cy.layout().run(); // }

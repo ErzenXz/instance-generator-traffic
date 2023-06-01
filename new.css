@@ -89,7 +89,28 @@ footer {
 }
 
 #network,
-#network2 {
+#network2,
+#cy,
+#cy2 {
     border: 1px solid lightgrey;
     border-radius: 12px;
+    width: 700px !important;
+}
+
+.download {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#textArea {
+    width: 70vw;
+    height: 70vh;
+}
+
+.flex {
+    flex-wrap: wrap;
+    gap: 10px;
 }

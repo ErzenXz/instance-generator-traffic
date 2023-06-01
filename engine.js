@@ -12,18 +12,9 @@ function getRandomInt(min, max) {
 let INPUT = "";
 let graph = [];
 
-const roads = [
-   "main-st",
-   "broadwy",
-   "park-av",
-   "5th-av",
-   "lombard",
-   "rodeo-dr",
-   "abbey-r",
-   "champs",
-   "la-ramb",
-   "oxford",
-];
+const maxIntersections = 450;
+const maxStreets = 500;
+
 
 function getData() {
    // Check if the engine is alerdy running
@@ -95,7 +86,6 @@ function generateInputFile(D, I, S, V, F) {
       let reversed = reverseStreet(street); // reverse the street string
       if (!set.has(street) && !set.has(reversed)) { // check if the street or its reverse is not already in the set
          set.add(street); // add the street to the set
-         //inputFile += street + "\n"; // uncomment this line if you want to write to the input file
       }
    }
 
@@ -106,7 +96,6 @@ function generateInputFile(D, I, S, V, F) {
       return reversed; // return the reversed string
    }
 
-
    let arr = Array.from(set); // convert the set to an array
 
    // Shuffle the array
@@ -116,13 +105,11 @@ function generateInputFile(D, I, S, V, F) {
    // Add the array to the input file
    arr.forEach((element) => {
       inputFile += `${element}\n`;
-      graph.push(element);
+      if (I < maxIntersections && S < maxStreets) {
+         graph.push(element);
+      }
    });
 
-   if (I < 250 && S < 1000) {
-      let graph2 = graph.join("\n");
-      createGraph(graph2, "network");
-   }
 
    let carsArr = [];
 
@@ -135,66 +122,56 @@ function generateInputFile(D, I, S, V, F) {
       let clo = [...set]; // Change to path to allow duplicates
 
       inputFile += `${clo.length} ${clo.join(" ")}\n`;
-      carsArr.push(`${clo.length} ${clo.join(" ")}`);
+
+
+      if (I < maxIntersections && S < maxStreets) {
+         carsArr.push(`${clo.length} ${clo.join(" ")}`);
+      }
    }
 
-   if (I < 250 && S < 1000) {
-      let graph2 = carsArr.join("\n");
-      createGraph2(graph2);
-   }
-
-   const DATE = new Date();
-   let formattedTime =
-      DATE.getFullYear() +
-      "-" +
-      (DATE.getMonth() + 1) +
-      "-" +
-      DATE.getDate() +
-      "-" +
-      DATE.getHours() +
-      ":" +
-      DATE.getMinutes();
-
-   // Create download link for the file
    INPUT = inputFile;
-   const blob = new Blob([inputFile], { type: "text/plain" });
-   const url = URL.createObjectURL(blob);
-   const downloadLink = document.createElement("a");
-   downloadLink.href = url;
-   downloadLink.download = `D:${formattedTime}.txt`;
-   document.body.appendChild(downloadLink);
-   downloadLink.click();
-   document.body.removeChild(downloadLink);
+
+   if (I < maxIntersections && S < maxStreets) {
+      let data = graph.join("\n");
+      let data2 = carsArr.join("\n");
+      generateGraph(data);
+      generateGraph2(data2);
+      document.getElementById("cy").classList.remove("hidden");
+      document.getElementById("cy2").classList.remove("hidden");
+
+      document.getElementById("download").classList.remove("hidden");
+   } else {
+      document.getElementById("textArea").classList.remove("hidden");
+      document.getElementById("download").classList.remove("hidden");
+      document.getElementById("textArea").value = INPUT;
+   }
+   // Create download link for the file
+
 
    console.timeEnd("Generation time");
    document.getElementById("data").classList.remove("hidden");
    document.getElementById("running").classList.add("hidden");
    document.getElementById("loading").classList.add("hidden");
-   // if (checkBOXSTATUS) {
-   //    solve(INPUT);
-   // document.getElementById("charts").classList.remove("hidden");
-   // document.getElementById("loading").classList.add("hidden");
-   // } else {
+
    document.getElementById("data").classList.remove("hidden");
    document.getElementById("running").classList.add("hidden");
    document.getElementById("loading").classList.add("hidden");
-   // }
 
    running = false;
-
-   //return inputFile;
 }
 
-// Code for selecting the style of the website
+function downloadFile() {
+   if (INPUT == "") {
+      alert("Please generate the input file first");
+      return;
+   }
 
-
-// const select = document.getElementById("css-select");
-// const cssLink = document.getElementById("css-file");
-
-// select.addEventListener("change", () => {
-//    const selectedValue = select.value;
-//    cssLink.href = selectedValue;
-// });
-
-// var kinet = new Kinet({ acceleration: 0.07, friction: 0.20, names: ["x", "y"], }); var circle = document.getElementById('circle'); kinet.on('tick', function (instances) { circle.style.transform = `translate3d(${(instances.x.current)}px, ${(instances.y.current)}px, 0) rotateX(${(instances.x.velocity / 2)}deg) rotateY(${(instances.y.velocity / 2)}deg)`; }); document.addEventListener('mousemove', function (event) { kinet.animate('x', event.clientX - window.innerWidth / 2); kinet.animate('y', event.clientY - window.innerHeight / 2); }); kinet.on('start', function () { }); kinet.on('end', function () { });
-
+   const blob = new Blob([INPUT], { type: "text/plain" });
+   const url = URL.createObjectURL(blob);
+   const downloadLink = document.createElement("a");
+   downloadLink.href = url;
+   downloadLink.download = `D:${new Date().getTime()}.txt`;
+   document.body.appendChild(downloadLink);
+   downloadLink.click();
+   document.body.removeChild(downloadLink);
+}

@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Graph Visualization</title>
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+    <script src="https://unpkg.com/cytoscape-cola/cytoscape-cola.js"></script>
+
+    <style>
+        #cy {
+            width: 100vw;
+            height: 700px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cy"></div>
+    <script>
+
+
+        function generateGraph(data) {
+            var cy = cytoscape({
+                container: document.getElementById('cy'),
+                layout: {
+                    name: 'preset'
+                },
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            'label': 'data(id)',
+                            'width': 40,
+                            'height': 40,
+                            'background-color': '#fff',
+                            'border-color': '#000',
+                            'border-width': 2,
+                            'border-opacity': 1,
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                            'font-size': '12px',
+                            'font-weight': 'bold'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 2,
+                            'label': 'data(label)',
+                            'curve-style': 'bezier',
+                            'line-color': '#ccc',
+                            'target-arrow-color': '#ccc',
+                            'target-arrow-shape': 'triangle'
+                        }
+                    }
+                ]
+            });
+
+            var lines = data.split('\n');
+            var nodes = {};
+            var edgeCounter = 1;
+
+            for (var i = 0; i < lines.length; i++) {
+                var parts = lines[i].split(' ');
+                var source = parts[0];
+                var target = parts[1];
+                var street = parts[2];
+                var duration = parts[3];
+
+                console.log('Source:', source);
+                console.log('Target:', target);
+
+                if (source && target) {
+                    if (!nodes[source]) {
+                        nodes[source] = true;
+                        cy.add({ data: { id: source }, position: { x: Math.random() * 5000, y: Math.random() * 5000 } });
+                    }
+
+                    if (!nodes[target]) {
+                        nodes[target] = true;
+                        cy.add({ data: { id: target }, position: { x: Math.random() * 5000, y: Math.random() * 5000 } });
+                    }
+
+                    var edgeId = `edge${edgeCounter}`;
+                    var formattedStreet = street.replace(/[^a-zA-Z0-9]/g, '-') + `-(${duration})`;
+                    cy.add({ data: { id: edgeId, source: source, target: target, label: street } });
+                    edgeCounter++;
+                } else {
+                    console.log('Skipping line due to missing source or target:', lines[i]);
+                }
+            }
+            cy.layout().run();
+        }
+
+
+
+
+        function generateGraph2(data) {
+            var cy = cytoscape({
+                container: document.getElementById('cy'),
+                layout: {
+                    name: 'preset'
+                },
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            'background-color': '#999', // Default node color
+                            'label': 'data(id)'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 2,
+                            'line-color': '#ccc',
+                            'target-arrow-color': '#ccc',
+                            'target-arrow-shape': 'triangle',
+                            'label': 'data(carText)', // Add label style for car text
+                            'text-background-color': '#fff',
+                            'text-background-opacity': 0.8,
+                            'text-background-padding': 2,
+                            'color': '#333',
+                            'font-size': 10,
+                            'text-wrap': 'wrap'
+                        }
+                    }
+                ]
+            });
+
+            var lines = data.split('\n');
+            var nodes = {};
+            var colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#00ffff', '#ff00ff', '#ffa500', '#800080', '#008080']; // Color options for cars
+            var carCount = 0;
+
+            for (var i = 0; i < lines.length; i++) {
+                var carData = lines[i].split(' ');
+                var numStreets = parseInt(carData[0]);
+                var streets = carData.slice(1);
+
+                var carId = 'car' + i; // Generate a unique car ID
+                var carText = 'Car ' + (i + 1); // Car text for the label
+
+                // Set color for the car
+                var color = colors[carCount % colors.length];
+
+                for (var j = 0; j < numStreets - 1; j++) {
+                    var source = 'street_' + streets[j] + '_' + carId; // Add car ID to ensure unique node ID
+                    var target = 'street_' + streets[j + 1] + '_' + carId; // Add car ID to ensure unique node ID
+                    var street = 'street' + j;
+
+                    if (!nodes[source]) {
+                        nodes[source] = true;
+                        cy.add({ data: { id: source }, position: { x: Math.random() * 1000, y: Math.random() * 1000 } });
+                    }
+
+                    if (!nodes[target]) {
+                        nodes[target] = true;
+                        cy.add({ data: { id: target }, position: { x: Math.random() * 1000, y: Math.random() * 1000 } });
+                    }
+
+                    cy.add({ data: { id: source + '-' + target, source: source, target: target, label: street, carText: carText } }); // Assign carText to the label
+                }
+
+                cy.nodes().forEach(function (node) {
+                    if (node.id().endsWith('_' + carId)) {
+                        node.style('background-color', color);
+                    }
+                });
+
+                carCount++;
+            }
+
+            // Apply the "cose" layout to the graph
+            cy.layout({
+                name: 'cose',
+                idealEdgeLength: 100, // Adjust this value to control the spacing between nodes
+                randomize: false, // Set to true if you want a different layout each time
+                animate: false, // Set to true to animate the layout
+            }).run();
+        }
+
+
+
+
+        // function generateGraph(data) {
+        //     var cy = cytoscape({
+        //         container: document.getElementById('cy'),
+        //         layout: {
+        //             name: 'preset'
+        //         },
+        //         style: [
+        //             {
+        //                 selector: 'node',
+        //                 style: {
+        //                     'label': 'data(id)',
+        //                     'width': 40,
+        //                     'height': 40,
+        //                     'background-color': '#fff',
+        //                     'border-color': '#000',
+        //                     'border-width': 2,
+        //                     'border-opacity': 1,
+        //                     'text-valign': 'center',
+        //                     'text-halign': 'center',
+        //                     'font-size': '12px',
+        //                     'font-weight': 'bold'
+        //                 }
+        //             },
+        //             {
+        //                 selector: 'edge',
+        //                 style: {
+        //                     'width': 2,
+        //                     'label': 'data(label)',
+        //                     'curve-style': 'bezier',
+        //                     'line-color': '#ccc',
+        //                     'target-arrow-color': '#ccc',
+        //                     'target-arrow-shape': 'triangle'
+        //                 }
+        //             }
+        //         ]
+        //     });
+
+        //     var lines = data.split('\n');
+        //     var nodes = {};
+        //     var maxX = 0;
+        //     var maxY = 0;
+        //     for (var i = 0; i < lines.length; i++) {
+        //         var parts = lines[i].split(' ');
+        //         var source = parts[0];
+        //         var target = parts[1];
+        //         var street = parts[2];
+        //         var duration = parts[3];
+
+        //         if (!nodes[source]) {
+        //             nodes[source] = true;
+        //             var x = Math.random() * 1000;
+        //             var y = Math.random() * 1000;
+        //             cy.add({ data: { id: source }, position: { x: x, y: y } });
+        //             maxX = Math.max(maxX, x);
+        //             maxY = Math.max(maxY, y);
+        //         }
+
+        //         if (!nodes[target]) {
+        //             nodes[target] = true;
+        //             var x = Math.random() * 1000;
+        //             var y = Math.random() * 1000;
+        //             cy.add({ data: { id: target }, position: { x: x, y: y } });
+        //             maxX = Math.max(maxX, x);
+        //             maxY = Math.max(maxY, y);
+        //         }
+
+        //         cy.add({ data: { id: source + '-' + target, source: source, target: target, label: street } });
+        //     }
+
+        //     var scaleFactor = 1000 / Math.max(maxX, maxY);
+        //     cy.zoom(scaleFactor);
+        //     cy.fit();
+
+        //     cy.layout().run();
+        // }
+
+
+
+
+
+
+
+        var data = `83 84 street83 2
+122 124 street372 4
+67 69 street317 1
+95 97 street345 3
+46 48 street296 2
+11 13 street261 3
+109 111 street359 4
+90 92 street340 4
+60 62 street310 2
+6 8 street256 3
+126 128 street376 4
+55 57 street305 2
+66 68 street316 3
+63 65 street313 4
+36 38 street286 2
+12 14 street262 1
+76 78 street326 3
+89 91 street339 2
+116 118 street366 3
+169 170 street169 3
+247 248 street247 1
+72 73 street72 4
+68 69 street68 1
+5 7 street255 4
+97 99 street347 4
+138 139 street138 2
+115 116 street115 4
+116 117 street116 3
+32 34 street282 1
+98 100 street348 4
+114 116 street364 4
+35 37 street285 3
+85 86 street85 3
+129 130 street129 1
+70 72 street320 2
+3 5 street253 1
+218 219 street218 2
+107 109 street357 2
+77 78 street77 3
+112 114 street362 2
+64 66 street314 3
+30 32 street280 4
+65 66 street65 3
+111 113 street361 4
+74 76 street324 1
+220 221 street220 2
+211 212 street211 1
+75 77 street325 1
+181 182 street181 2
+203 204 street203 4
+219 220 street219 2
+216 217 street216 1
+113 114 street113 4
+23 25 street273 4
+33 35 street283 3
+174 175 street174 4
+79 81 street329 3
+127 129 street377 1
+98 99 street98 2
+166 167 street166 4
+68 70 street318 3
+87 88 street87 2
+86 87 street86 1
+102 103 street102 1
+80 82 street330 3
+200 202 street450 1
+61 63 street311 4
+152 154 street402 4
+138 140 street388 2
+161 163 street411 1
+165 167 street415 4
+115 117 street365 1
+64 65 street64 2
+108 109 street108 1
+142 144 street392 1
+71 72 street71 4
+146 147 street146 2
+189 190 street189 4
+121 122 street121 1
+74 75 street74 4
+78 79 street78 3
+131 132 street131 3
+221 222 street221 3
+236 237 street236 3
+128 129 street128 2
+72 74 street322 3
+137 139 street387 2
+136 138 street386 4
+240 241 street240 2
+156 158 street406 1
+110 111 street110 4
+178 180 street428 3
+14 15 street14 2
+245 246 street245 2
+37 38 street37 1
+86 88 street336 4
+56 57 street56 3
+183 185 street433 4
+20 22 street270 4
+158 160 street408 3
+91 92 street91 3
+190 192 street440 3
+30 31 street30 1
+137 138 street137 2
+90 91 street90 3
+84 85 street84 3
+239 241 street489 1
+10 11 street10 1
+47 49 street297 4
+32 33 street32 1
+222 224 street472 2
+102 104 street352 1
+21 23 street271 4
+197 198 street197 4
+152 153 street152 2
+53 54 street53 3
+73 74 street73 4
+49 50 street49 3
+112 113 street112 1
+69 71 street319 2
+151 152 street151 3
+149 150 street149 3
+192 194 street442 3
+190 191 street190 4
+103 104 street103 3
+199 200 street199 4
+160 162 street410 3
+120 122 street370 4
+104 105 street104 4
+187 188 street187 3
+233 234 street233 2
+164 165 street164 3
+105 107 street355 3
+40 42 street290 2
+103 105 street353 1
+134 135 street134 3
+147 149 street397 3
+185 186 street185 2
+52 54 street302 4
+203 205 street453 1
+157 158 street157 2
+50 51 street50 2
+207 209 street457 4
+145 147 street395 3
+28 30 street278 2
+135 137 street385 4
+209 210 street209 3
+31 32 street31 3
+10 12 street260 3
+232 233 street232 3
+0 1 street0 3
+179 181 street429 1
+50 52 street300 2
+76 77 street76 4
+79 80 street79 2
+242 244 street492 4
+21 22 street21 4
+67 68 street67 3
+191 193 street441 3
+22 23 street22 3
+69 70 street69 1
+224 225 street224 4
+173 174 street173 4
+53 55 street303 1
+96 98 street346 4
+1 2 street1 3
+88 90 street338 2
+209 211 street459 1
+244 246 street494 3
+93 94 street93 2
+234 236 street484 3
+175 177 street425 4
+134 136 street384 1
+24 26 street274 2
+176 177 street176 4
+223 224 street223 4
+118 119 street118 1
+125 126 street125 2
+153 154 street153 3
+47 48 street47 3
+130 131 street130 4
+226 227 street226 1
+154 156 street404 3
+41 43 street291 4
+235 237 street485 4
+3 4 street3 1
+145 146 street145 3
+243 244 street243 3
+237 239 street487 3
+1 3 street251 4
+156 157 street156 4
+11 12 street11 1
+4 5 street4 1
+133 135 street383 3
+233 235 street483 1
+244 245 street244 1
+100 102 street350 2
+205 207 street455 1
+17 19 street267 3
+75 76 street75 2
+113 115 street363 4
+6 7 street6 2
+124 126 street374 3
+181 183 street431 4
+78 80 street328 2
+122 123 street122 4
+198 200 street448 2
+150 151 street150 1
+184 186 street434 2
+193 194 street193 4
+0 2 street250 1
+35 36 street35 1
+26 28 street276 4
+213 215 street463 1
+20 21 street20 2
+192 193 street192 4
+119 121 street369 3
+8 10 street258 3
+33 34 street33 4
+238 240 street488 3
+62 64 street312 3
+167 169 street417 3
+82 84 street332 4
+42 43 street42 2
+18 20 street268 2
+24 25 street24 1
+173 175 street423 2
+65 67 street315 3
+133 134 street133 2
+110 112 street360 1
+212 214 street462 4
+111 112 street111 2
+121 123 street371 3
+94 96 street344 4
+40 41 street40 1
+195 197 street445 1
+144 146 street394 1
+142 143 street142 3
+94 95 street94 2
+170 171 street170 3
+119 120 street119 1
+29 31 street279 2
+141 143 street391 1
+25 26 street25 4
+58 59 street58 4
+208 210 street458 3
+38 39 street38 1
+101 103 street351 1
+34 35 street34 1
+51 52 street51 2
+51 53 street301 2
+114 115 street114 3
+157 159 street407 1
+101 102 street101 4
+136 137 street136 4
+81 83 street331 3
+170 172 street420 1
+226 228 street476 3
+2 3 street2 1
+58 60 street308 3
+34 36 street284 3
+106 107 street106 4
+160 161 street160 4
+108 110 street358 1
+195 196 street195 3
+177 179 street427 1
+4 6 street254 4
+104 106 street354 2
+225 226 street225 2
+214 216 street464 1
+28 29 street28 2
+92 93 street92 2
+25 27 street275 4
+185 187 street435 4
+18 19 street18 4
+13 15 street263 1
+204 206 street454 1
+91 93 street341 4
+7 8 street7 3
+83 85 street333 2
+229 230 street229 2
+231 232 street231 4
+124 125 street124 1
+45 47 street295 2
+71 73 street321 3
+201 203 street451 2
+235 236 street235 1
+38 40 street288 2
+27 28 street27 4
+77 79 street327 1
+221 223 street471 3
+127 128 street127 2
+66 67 street66 4
+19 20 street19 4
+215 217 street465 4
+39 40 street39 4
+99 100 street99 2
+85 87 street335 1
+43 44 street43 2
+144 145 street144 1
+39 41 street289 4
+210 211 street210 1
+81 82 street81 1
+204 205 street204 3
+117 119 street367 3
+92 94 street342 3
+123 124 street123 4
+36 37 street36 2
+31 33 street281 4
+153 155 street403 3
+54 55 street54 1
+242 243 street242 1
+93 95 street343 2
+106 108 street356 4
+163 164 street163 3
+9 10 street9 1
+172 174 street422 4
+125 127 street375 4
+187 189 street437 3
+212 213 street212 3
+178 179 street178 1
+238 239 street238 2
+45 46 street45 1
+164 166 street414 3
+189 191 street439 4
+23 24 street23 4
+135 136 street135 4
+194 196 street444 2
+139 140 street139 1
+117 118 street117 4
+5 6 street5 3
+59 60 street59 2
+163 165 street413 4
+60 61 street60 2
+43 45 street293 2
+202 203 street202 3
+49 51 street299 4
+109 110 street109 2
+210 212 street460 2
+139 141 street389 1
+54 56 street304 2
+228 229 street228 1
+227 228 street227 1
+105 106 street105 2
+205 206 street205 4
+224 226 street474 4
+16 17 street16 3
+166 168 street416 1
+179 180 street179 1
+151 153 street401 3
+99 101 street349 4
+118 120 street368 4
+214 215 street214 1
+120 121 street120 2
+169 171 street419 3
+87 89 street337 3
+168 169 street168 3
+132 134 street382 4
+63 64 street63 2
+231 233 street481 2
+88 89 street88 3
+57 59 street307 1
+246 247 street246 3
+131 133 street381 2
+48 49 street48 3
+19 21 street269 2
+196 197 street196 2
+186 187 street186 2
+80 81 street80 2
+140 142 street390 2
+73 75 street323 2
+123 125 street373 1
+84 86 street334 3
+22 24 street272 3
+130 132 street380 2
+158 159 street158 2
+206 208 street456 4
+168 170 street418 4
+2 4 street252 1
+55 56 street55 1
+13 14 street13 2
+219 221 street469 1
+41 42 street41 4
+82 83 street82 1
+16 18 street266 1
+129 131 street379 1
+208 209 street208 3
+52 53 street52 3
+95 96 street95 4
+162 164 street412 4
+186 188 street436 3
+228 230 street478 1
+201 202 street201 3
+15 17 street265 4
+213 214 street213 2
+182 183 street182 1
+61 62 street61 3
+234 235 street234 2
+217 218 street217 1
+8 9 street8 2
+42 44 street292 3
+239 240 street239 3
+220 222 street470 4
+199 201 street449 1
+200 201 street200 3
+37 39 street287 3
+202 204 street452 2
+56 58 street306 4
+14 16 street264 2
+29 30 street29 1
+182 184 street432 1
+15 16 street15 4
+9 11 street259 4
+132 133 street132 4
+44 46 street294 4
+89 90 street89 2
+194 195 street194 1
+172 173 street172 1
+48 50 street298 2
+249 0 street249 1
+184 185 street184 2
+198 199 street198 2
+128 130 street378 2
+57 58 street57 2
+17 18 street17 2
+12 13 street12 1
+70 71 street70 1
+230 231 street230 2
+59 61 street309 3
+237 238 street237 4
+7 9 street257 3
+193 195 street443 1
+126 127 street126 2
+177 178 street177 1
+217 219 street467 3
+247 249 street497 4
+97 98 street97 3
+232 234 street482 3
+154 155 street154 1
+207 208 street207 2
+26 27 street26 4
+180 182 street430 3
+46 47 street46 2
+243 245 street493 1
+171 173 street421 2
+245 247 street495 1
+188 190 street438 1
+246 248 street496 3
+249 1 street499 2
+146 148 street396 4
+143 144 street143 3
+161 162 street161 2
+248 249 street248 2
+44 45 street44 4
+196 198 street446 4
+188 189 street188 4
+62 63 street62 1
+107 108 street107 1
+100 101 street100 3
+174 176 street424 3
+171 172 street171 2
+150 152 street400 4
+159 161 street409 1
+176 178 street426 1
+191 192 street191 1
+140 141 street140 2
+248 0 street498 3
+225 227 street475 4
+227 229 street477 4
+218 220 street468 3
+183 184 street183 4
+241 242 street241 3
+206 207 street206 4
+222 223 street222 3
+223 225 street473 4
+159 160 street159 2
+240 242 street490 2
+143 145 street393 2
+165 166 street165 1
+155 156 street155 1
+162 163 street162 3
+236 238 street486 3
+175 176 street175 3
+241 243 street491 3
+141 142 street141 2
+180 181 street180 1
+197 199 street447 4
+211 213 street461 1
+230 232 street480 3
+148 149 street148 4
+27 29 street277 1
+167 168 street167 2
+149 151 street399 4
+147 148 street147 4
+229 231 street479 3
+148 150 street398 1
+96 97 street96 1
+216 218 street466 4
+155 157 street405 4
+215 216 street215 3
+`;
+
+
+        let data2 = `9 street392 street335 street194 street2 street34 street319 street292 street118 street322
+3 street142 street84 street134
+10 street326 street252 street412 street372 street327 street437 street434 street116 street379 street52
+6 street198 street282 street366 street355 street399 street483
+11 street137 street434 street287 street449 street139 street212 street421 street445 street120 street382 street373
+7 street24 street74 street454 street341 street157 street81 street188
+9 street283 street386 street273 street492 street310 street97 street302 street60 street311
+11 street497 street266 street247 street381 street397 street274 street376 street93 street64 street294 street21
+10 street342 street191 street433 street435 street58 street427 street26 street192 street119 street314
+10 street195 street335 street298 street474 street161 street20 street309 street156 street498 street148
+6 street283 street462 street94 street11 street269 street410
+10 street57 street208 street495 street256 street46 street449 street182 street23 street371 street135
+8 street392 street250 street323 street340 street217 street358 street318 street221
+11 street428 street400 street406 street243 street4 street418 street210 street154 street354 street189 street412
+6 street470 street259 street122 street35 street395 street28
+6 street185 street152 street119 street452 street401 street50
+5 street374 street376 street111 street318 street145
+8 street172 street64 street356 street459 street112 street482 street472 street181
+5 street377 street3 street432 street32 street100
+10 street412 street220 street369 street482 street290 street239 street108 street103 street353 street170
+8 street224 street158 street40 street178 street179 street136 street97 street162
+6 street337 street322 street268 street306 street387 street190
+5 street44 street121 street478 street429 street196
+2 street7 street461
+5 street170 street246 street267 street467 street34
+10 street352 street32 street274 street424 street432 street239 street325 street156 street243 street350
+7 street327 street126 street122 street115 street181 street236 street292
+7 street96 street110 street469 street347 street239 street294 street259
+6 street326 street265 street445 street444 street142 street123
+2 street162 street274
+6 street175 street289 street366 street184 street19 street156
+5 street481 street275 street412 street423 street316
+4 street461 street137 street222 street106
+6 street264 street239 street75 street55 street145 street293
+4 street71 street4 street294 street455
+8 street220 street273 street263 street0 street217 street200 street264 street42
+11 street323 street87 street116 street14 street165 street499 street226 street481 street39 street385 street192
+9 street354 street49 street211 street71 street228 street427 street385 street424 street73
+5 street379 street324 street403 street353 street229
+5 street201 street163 street21 street314 street295
+9 street44 street16 street377 street32 street183 street210 street388 street457 street395
+2 street440 street359
+5 street207 street223 street271 street480 street454
+10 street24 street472 street16 street141 street13 street36 street170 street323 street325 street336
+7 street420 street487 street76 street451 street194 street61 street340
+6 street186 street478 street362 street297 street431 street292
+3 street327 street421 street430
+3 street78 street312 street460
+7 street412 street330 street174 street263 street90 street338 street206
+9 street218 street412 street478 street167 street383 street334 street222 street497 street351
+4 street488 street50 street339 street150
+8 street86 street200 street126 street41 street471 street89 street341 street227
+10 street21 street469 street470 street486 street467 street2 street402 street56 street116 street296
+10 street279 street335 street233 street265 street270 street316 street88 street240 street131 street198
+8 street136 street343 street353 street476 street97 street40 street318 street436
+7 street208 street190 street10 street411 street344 street203 street404
+4 street378 street422 street457 street368
+3 street238 street274 street383
+8 street478 street396 street383 street82 street99 street0 street343 street48
+8 street492 street288 street406 street122 street79 street472 street395 street274
+11 street67 street217 street402 street353 street456 street120 street319 street50 street31 street336 street260
+3 street7 street222 street312
+4 street61 street66 street123 street151
+11 street261 street122 street61 street285 street302 street412 street278 street241 street317 street435 street188
+6 street242 street4 street86 street314 street498 street277
+11 street470 street394 street107 street485 street8 street182 street172 street336 street497 street197 street240
+7 street493 street181 street222 street292 street236 street175 street54
+4 street108 street325 street61 street94
+11 street235 street77 street459 street78 street201 street424 street465 street144 street285 street49 street41
+4 street454 street179 street144 street346
+6 street182 street59 street143 street192 street334 street305
+7 street385 street18 street471 street213 street406 street178 street407
+2 street428 street401
+2 street412 street34
+5 street472 street98 street179 street431 street424
+9 street346 street202 street37 street326 street234 street379 street71 street204 street23
+10 street420 street136 street192 street59 street242 street339 street292 street124 street194 street29
+9 street435 street117 street459 street209 street126 street191 street147 street473 street361
+5 street447 street210 street374 street203 street63
+3 street30 street204 street40
+8 street437 street497 street131 street5 street36 street351 street51 street323
+11 street217 street184 street377 street319 street30 street16 street442 street345 street208 street83 street247
+2 street146 street339
+8 street234 street439 street493 street129 street378 street397 street413 street495
+11 street474 street329 street491 street146 street198 street253 street464 street11 street311 street252 street279
+11 street181 street262 street159 street277 street346 street307 street3 street247 street209 street77 street42
+2 street175 street229
+4 street239 street179 street315 street199
+11 street464 street258 street225 street479 street492 street306 street249 street247 street343 street298 street366
+6 street420 street248 street240 street22 street66 street422
+8 street396 street422 street487 street433 street96 street342 street338 street436
+6 street433 street215 street20 street189 street301 street150
+5 street188 street499 street397 street226 street298
+7 street231 street464 street489 street277 street312 street30 street113
+11 street226 street482 street99 street216 street56 street49 street258 street373 street442 street118 street138
+10 street346 street125 street487 street171 street495 street267 street165 street296 street239 street290
+6 street183 street314 street227 street156 street98 street50
+6 street383 street125 street194 street495 street418 street340
+3 street319 street72 street115
+5 street95 street274 street172 street106 street191
+4 street181 street475 street349 street14
+9 street162 street385 street214 street143 street67 street462 street417 street287 street248
+2 street349 street498
+6 street232 street57 street391 street215 street136 street457
+4 street189 street300 street417 street212
+5 street396 street423 street420 street271 street83
+5 street308 street57 street485 street115 street387
+8 street192 street272 street342 street228 street397 street121 street93 street216
+6 street348 street389 street44 street364 street482 street204
+8 street405 street2 street374 street291 street348 street448 street82 street161
+5 street395 street367 street244 street316 street324
+8 street181 street373 street120 street324 street253 street237 street446 street72
+5 street58 street114 street424 street5 street89
+2 street82 street179
+3 street95 street311 street86
+11 street223 street210 street335 street188 street107 street427 street337 street82 street231 street378 street447
+6 street118 street199 street236 street466 street487 street350
+7 street141 street446 street116 street459 street51 street260 street80
+9 street168 street319 street446 street328 street124 street349 street126 street411 street478
+7 street432 street471 street357 street269 street280 street150 street238
+9 street344 street29 street304 street202 street252 street354 street306 street469 street211
+9 street129 street17 street335 street333 street438 street364 street79 street479 street295
+6 street2 street157 street340 street445 street322 street256
+4 street221 street478 street53 street421
+10 street487 street404 street424 street233 street322 street379 street114 street102 street323 street144
+7 street195 street88 street143 street181 street352 street188 street456
+9 street320 street100 street484 street254 street421 street364 street34 street214 street213
+4 street292 street398 street499 street191
+4 street440 street165 street180 street116
+11 street327 street47 street197 street485 street19 street21 street95 street177 street493 street152 street33
+2 street228 street462
+2 street93 street376
+4 street417 street471 street203 street15
+4 street288 street147 street439 street342
+2 street169 street143
+11 street252 street396 street203 street265 street347 street236 street257 street395 street70 street249 street36
+5 street303 street451 street157 street90 street178
+5 street253 street416 street440 street347 street91
+11 street485 street224 street316 street60 street152 street260 street143 street16 street129 street400 street416
+4 street287 street169 street120 street438
+3 street66 street200 street218
+2 street203 street407
+6 street274 street398 street248 street297 street449 street191
+10 street258 street325 street127 street451 street3 street158 street407 street91 street370 street272
+3 street455 street54 street184
+4 street14 street273 street428 street420
+5 street466 street478 street29 street306 street425
+11 street91 street145 street54 street103 street121 street27 street218 street381 street22 street299 street461
+10 street250 street37 street50 street484 street387 street205 street214 street65 street82 street323
+4 street338 street286 street381 street150
+7 street236 street244 street328 street292 street188 street279 street119
+5 street412 street293 street130 street243 street334
+6 street441 street246 street311 street199 street478 street160
+10 street102 street5 street275 street141 street266 street485 street45 street125 street466 street74
+7 street460 street459 street423 street286 street121 street245 street132
+4 street452 street204 street114 street495
+3 street406 street456 street324
+9 street333 street397 street88 street476 street291 street298 street40 street195 street287
+7 street413 street319 street370 street462 street466 street341 street17
+3 street226 street187 street221
+9 street416 street307 street477 street63 street39 street203 street228 street64 street474
+5 street82 street411 street487 street414 street265
+6 street449 street232 street157 street132 street68 street495
+2 street371 street386
+4 street480 street187 street279 street16
+5 street151 street381 street486 street109 street194
+9 street231 street285 street140 street353 street94 street235 street286 street496 street194
+2 street79 street173
+5 street306 street245 street470 street378 street175
+9 street147 street407 street96 street312 street16 street33 street238 street222 street301
+6 street324 street350 street87 street179 street405 street263
+9 street115 street305 street454 street129 street402 street367 street269 street274 street34
+3 street276 street444 street260
+2 street306 street459
+10 street493 street404 street421 street482 street345 street92 street344 street50 street11 street410
+3 street491 street400 street64
+3 street377 street169 street90
+9 street253 street85 street240 street91 street284 street349 street490 street451 street141
+2 street231 street6
+7 street290 street236 street83 street345 street132 street467 street182
+9 street292 street466 street227 street440 street268 street223 street199 street71 street260
+8 street321 street117 street440 street427 street362 street348 street181 street338
+11 street133 street481 street426 street438 street146 street85 street76 street115 street47 street365 street370
+11 street431 street464 street116 street419 street111 street316 street357 street473 street430 street249 street298
+6 street339 street73 street58 street469 street419 street40
+7 street438 street29 street220 street212 street482 street116 street249
+10 street181 street398 street38 street289 street72 street233 street2 street23 street373 street189
+6 street94 street135 street392 street199 street449 street439
+9 street239 street466 street338 street229 street51 street189 street294 street395 street13
+9 street268 street323 street285 street364 street39 street303 street283 street474 street434
+8 street292 street170 street211 street447 street15 street106 street414 street421
+3 street157 street397 street313
+5 street38 street447 street304 street347 street258
+7 street50 street192 street236 street456 street144 street186 street339
+11 street32 street359 street453 street144 street324 street239 street438 street346 street155 street102 street127
+7 street124 street129 street257 street192 street211 street146 street151
+4 street382 street70 street59 street306
+2 street89 street397
+4 street202 street153 street310 street9
+10 street344 street257 street88 street68 street471 street138 street423 street173 street212 street320
+`;
+
+        // generateGraph(data);
+        // generateGraph2(data2);
+
+        function generateCombinedGraph(data1, data2) {
+            var cy = cytoscape({
+                container: document.getElementById('cy'),
+                layout: {
+                    name: 'preset'
+                },
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            'label': 'data(id)',
+                            'width': 40,
+                            'height': 40,
+                            'background-color': '#fff',
+                            'border-color': '#000',
+                            'border-width': 2,
+                            'border-opacity': 1,
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                            'font-size': '12px',
+                            'font-weight': 'bold'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 2,
+                            'curve-style': 'bezier',
+                            'line-color': '#ccc',
+                            'target-arrow-color': '#ccc',
+                            'target-arrow-shape': 'triangle',
+                            'label': 'data(label)', // Label for streets
+                            'text-background-color': '#fff',
+                            'text-background-opacity': 0.8,
+                            'text-background-padding': 2,
+                            'color': '#333',
+                            'font-size': 10,
+                            'text-wrap': 'wrap'
+                        }
+                    }
+                ]
+            });
+
+            var lines = data1.split('\n');
+            var nodes = {};
+            var edgeCounter = 1;
+
+            for (var i = 0; i < lines.length; i++) {
+                var parts = lines[i].split(' ');
+                var source = parts[0];
+                var target = parts[1];
+                var street = parts[2];
+                var duration = parts[3];
+
+                console.log('Source:', source);
+                console.log('Target:', target);
+
+                if (source && target) {
+                    if (!nodes[source]) {
+                        nodes[source] = true;
+                        cy.add({ data: { id: source }, position: { x: Math.random() * 3000, y: Math.random() * 3000 } });
+                    }
+
+                    if (!nodes[target]) {
+                        nodes[target] = true;
+                        cy.add({ data: { id: target }, position: { x: Math.random() * 3000, y: Math.random() * 3000 } });
+                    }
+
+                    var edgeId = `edge${edgeCounter}`;
+                    var formattedStreet = street.replace(/[^a-zA-Z0-9]/g, '-') + `-(${duration})`;
+                    cy.add({ data: { id: edgeId, source: source, target: target, label: street } });
+                    edgeCounter++;
+                } else {
+                    console.log('Skipping line due to missing source or target:', lines[i]);
+                }
+            }
+
+
+
+            var lines2 = data2.split('\n');
+            var nodes2 = {};
+            var colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#00ffff', '#ff00ff', '#ffa500', '#800080', '#008080']; // Color options for cars
+            var carCount = 0;
+
+            for (var i = 0; i < lines2.length; i++) {
+                var carData = lines2[i].split(' ');
+                var numStreets = parseInt(carData[0]);
+                var streets = carData.slice(1);
+
+                var carId = 'car' + i; // Generate a unique car ID
+                var carText = 'Car ' + (i + 1); // Car text for the label
+                // Set color for the car
+                var color = colors[carCount % colors.length];
+
+                for (var j = 0; j < numStreets - 1; j++) {
+                    var source = 'street_' + streets[j] + '_' + carId; // Add car ID to ensure unique node ID
+                    var target = 'street_' + streets[j + 1] + '_' + carId; // Add car ID to ensure unique node ID
+                    var street = 'street' + j;
+
+                    if (!nodes2[source]) {
+                        nodes2[source] = true;
+                        cy.add({ data: { id: source }, position: { x: Math.random() * 1000, y: Math.random() * 1000 } });
+                    }
+
+                    if (!nodes2[target]) {
+                        nodes2[target] = true;
+                        cy.add({ data: { id: target }, position: { x: Math.random() * 1000, y: Math.random() * 1000 } });
+                    }
+
+                    cy.add({ data: { id: source + '-' + target, source: source, target: target, label: street, carText: carText } }); // Assign carText to the label
+                }
+
+                cy.nodes().forEach(function (node) {
+                    if (node.id().endsWith('_' + carId)) {
+                        node.style('background-color', color);
+                    }
+                });
+
+                carCount++;
+            }
+
+            // Apply the "cose" layout to the graph
+            cy.layout({
+                name: 'cose',
+                idealEdgeLength: 100, // Adjust this value to control the spacing between nodes
+                randomize: false, // Set to true if you want a different layout each time
+                animate: false, // Set to true to animate the layout
+            }).run();
+
+            // Fit the graph to the viewport
+            cy.fit();
+
+            // Customize the style of the nodes
+            cy.style()
+                .selector('node')
+                .css({
+                    'width': 20, // Adjust the size of the nodes to resemble intersections
+                    'height': 20,
+                    'background-color': 'gray', // Customize the color of the intersections
+                    'label': 'data(id)', // Display the ID of the intersections as labels
+                    'font-size': 12,
+                    'text-valign': 'center',
+                    'text-halign': 'center'
+                })
+                .selector('.car-route') // Select elements with the 'car-route' class
+                .css({
+                    'line-color': 'blue', // Customize the color of the car routes
+                    'target-arrow-color': 'blue', // Customize the color of the arrowheads
+                    'target-arrow-shape': 'triangle'
+                })
+                .update();
+
+            // Add the 'car-route' class to the elements representing car routes
+            cy.elements('.car-route').addClass('car-route');
+
+            // Remove the 'car-route' class from other elements (streets and intersections)
+            cy.elements().not('.car-route').removeClass('car-route');
+        }
+
+
+
+
+
+        function createGraph2(data) {
+            const lines = data.split('\n');
+            const nodes = new Set();
+            const edges = [];
+
+            // Extract nodes and edges from data
+            lines.forEach((line, index) => {
+                const parts = line.split(' ');
+                const car = `Car ${index + 1}`;
+
+                parts.shift(); // Remove the first element
+
+                // Add nodes (streets) to the set
+                parts.forEach((street) => nodes.add(street));
+
+                // Create edges between consecutive streets
+                for (let i = 1; i < parts.length; i++) {
+                    edges.push({ data: { id: `${car}-${i}`, source: parts[i - 1], target: parts[i], label: car } });
+                }
+
+                // Handle the number of streets the car will go
+                if (parts.length > 1) {
+                    edges.push({ data: { id: `${car}-${parts.length}`, source: parts[parts.length - 1], target: parts[0], label: car } });
+                }
+            });
+
+            const cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements: {
+                    nodes: Array.from(nodes).map((street) => {
+                        return { data: { id: street } };
+                    }),
+                    edges: edges
+                },
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            'background-color': '#666',
+                            'label': 'data(id)',
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                            'color': 'black',
+                            'width': '30px',
+                            'height': '30px'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 2,
+                            'line-color': 'darkgrey',
+                            'target-arrow-color': 'darkgrey',
+                            'target-arrow-shape': 'triangle',
+                            'content': 'data(label)',
+                            'font-size': '12px',
+                            'text-wrap': 'wrap',
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                            'text-background-color': '#fff',
+                            'text-background-opacity': 0.7,
+                            'text-background-padding': '2px',
+                            'curve-style': 'bezier'
+                        }
+                    }
+                ],
+                layout: {
+                    name: 'cola', // Use the cola layout algorithm
+                    animate: true, // Enable animation during layout
+                    refresh: 1, // Refresh rate of the layout animation
+                    fit: true, // Fit the graph to the container
+                    padding: 30, // Padding around the graph
+                    edgeLength: 1500, // Ideal edge length
+                    edgeSymDiffLength: 10, // Edge length difference for symmetric differences
+                    nodeSpacing: 170, // Minimum spacing between nodes
+                    randomize: false, // Disable randomization of node positions
+                    maxSimulationTime: 7777 // Maximum duration of the layout simulation
+                }
+            });
+        }
+
+        function generateCombinedGraph2(data1, data2) {
+            const streetLines = data1.split('\n');
+            const carLines = data2.split('\n');
+            const nodes = new Set();
+            const edges = [];
+
+            const cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements: [],
+                layout: {
+                    name: 'preset'
+                },
+                style: [
+                    {
+                        selector: 'node',
+                        style: {
+                            'background-color': '#666',
+                            'label': 'data(id)',
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                            'color': 'black',
+                            'width': '30px',
+                            'height': '30px'
+                        }
+                    },
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 2,
+                            'line-color': 'darkgrey',
+                            'target-arrow-color': 'darkgrey',
+                            'target-arrow-shape': 'triangle',
+                            'content': 'data(label)',
+                            'font-size': '12px',
+                            'text-wrap': 'wrap',
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                            'text-background-color': '#fff',
+                            'text-background-opacity': 0.7,
+                            'text-background-padding': '2px',
+                            'curve-style': 'bezier'
+                        }
+                    }
+                ]
+            });
+
+            // Process street and intersection data
+            streetLines.forEach((line) => {
+                const parts = line.split(' ');
+                const source = parts[0];
+                const target = parts[1];
+                const street = parts[2];
+                const duration = parts[3];
+
+                if (source && target) {
+                    if (!nodes.has(source)) {
+                        nodes.add(source);
+                        cy.add({ data: { id: source }, position: { x: Math.random() * 5000, y: Math.random() * 5000 } });
+                    }
+
+                    if (!nodes.has(target)) {
+                        nodes.add(target);
+                        cy.add({ data: { id: target }, position: { x: Math.random() * 5000, y: Math.random() * 5000 } });
+                    }
+
+                    const edgeId = `${source}-${target}`;
+                    const formattedStreet = street.replace(/[^a-zA-Z0-9]/g, '-') + `-(${duration})`;
+                    cy.add({ data: { id: edgeId, source: source, target: target, label: street } });
+                } else {
+                    console.log('Skipping line due to missing source or target:', line);
+                }
+            });
+
+            // Process car route data
+            carLines.forEach((line, index) => {
+                const parts = line.split(' ');
+
+                const car = `Car ${index + 1}`;
+                parts.forEach((street) => {
+                    if (!nodes.has(street)) {
+                        nodes.add(street);
+                        cy.add({ data: { id: street }, position: { x: Math.random() * 5000, y: Math.random() * 5000 } });
+                    }
+                });
+
+                for (let i = 1; i < parts.length; i++) {
+                    edges.push({ data: { id: `${car}-${i}`, source: parts[i - 1], target: parts[i], label: car } });
+                }
+
+                if (parts.length > 1) {
+                    edges.push({ data: { id: `${car}-${parts.length}`, source: parts[parts.length - 1], target: parts[0], label: car } });
+                }
+            });
+
+            // Add edges for car routes
+            cy.add({ elements: edges });
+
+            cy.layout().run();
+        }
+
+
+    </script>
+
+    <style>
+        #cy {
+            width: 100%;
+            height: 600px;
+            border: 3px solid #ccc;
+        }
+    </style>
+
+</body>
+
+</html>
