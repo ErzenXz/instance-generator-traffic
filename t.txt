@@ -1,0 +1,652 @@
+// // Create a button to start the process
+// const button = document.createElement("button");
+// button.textContent = "Start";
+// document.body.appendChild(button);
+
+// // Add a click event listener to the button
+// function getTrafficData(bbox, cityId, duration, bonus, cars) {
+//     // Disable the button to prevent multiple clicks
+
+//     let bboxD = bbox.join(",");
+//     // Load the map data from OpenStreetMap using the Overpass API
+//     // You can change the query parameters to get the data for a different city or area
+//     const query = `[out:json][timeout:25];
+// (
+//   node["highway"="traffic_signals"](${bboxD});
+//   way["highway"](area);
+//   relation["highway"](area);
+// );
+// out body;
+// >;
+// out skel qt;`;
+//     const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+//     fetch(url)
+//         .then(response => response.json())
+//         .then(data => {
+//             // Parse the map data and extract the information about intersections, streets and connections
+//             // Store the information in an object with the following structure:
+//             // {
+//             //   intersections: {
+//             //     id: {
+//             //       lat: number,
+//             //       lon: number,
+//             //       incoming: [streetId],
+//             //       outgoing: [streetId]
+//             //     }
+//             //   },
+//             //   streets: {
+//             //     id: {
+//             //       name: string,
+//             //       start: intersectionId,
+//             //       end: intersectionId,
+//             //       duration: number
+//             //     }
+//             //   }
+//             // }
+//             const map = { intersections: {}, streets: {} };
+//             const nodes = data.elements.filter(element => element.type === "node");
+//             const ways = data.elements.filter(element => element.type === "way");
+//             const relations = data.elements.filter(element => element.type === "relation");
+
+//             // Create intersections from nodes with traffic signals
+//             nodes.forEach(node => {
+//                 if (node.tags && node.tags.highway === "traffic_signals") {
+//                     map.intersections[node.id] = {
+//                         lat: node.lat,
+//                         lon: node.lon,
+//                         incoming: [],
+//                         outgoing: []
+//                     };
+//                 }
+//             });
+
+//             // Create streets from ways with highway tags
+//             ways.forEach(way => {
+//                 if (way.tags && way.tags.highway) {
+//                     const name = way.tags.name || way.id;
+//                     const nodes = way.nodes;
+//                     for (let i = 0; i < nodes.length - 1; i++) {
+//                         const start = nodes[i];
+//                         const end = nodes[i + 1];
+//                         if (map.intersections[start] && map.intersections[end]) {
+//                             const id = `${start}-${end}`;
+//                             map.streets[id] = {
+//                                 name,
+//                                 start,
+//                                 end,
+//                                 duration: Math.floor(Math.random() * 10) + 1 // Random duration between 1 and 10 seconds
+//                             };
+//                             map.intersections[start].outgoing.push(id);
+//                             map.intersections[end].incoming.push(id);
+//                         }
+//                     }
+//                 }
+//             });
+
+//             // Update streets with relation tags (such as maxspeed, oneway, etc.)
+//             relations.forEach(relation => {
+//                 if (relation.tags && relation.tags.highway) {
+//                     relation.members.forEach(member => {
+//                         if (member.type === "way" && member.role === "") {
+//                             const way = ways.find(way => way.id === member.ref);
+//                             if (way) {
+//                                 const nodes = way.nodes;
+//                                 for (let i = 0; i < nodes.length - 1; i++) {
+//                                     const start = nodes[i];
+//                                     const end = nodes[i + 1];
+//                                     const id = `${start}-${end}`;
+//                                     if (map.streets[id]) {
+//                                         // Update the street with the relation tags
+//                                         if (relation.tags.maxspeed) {
+//                                             map.streets[id].maxspeed = relation.tags.maxspeed;
+//                                         }
+//                                         if (relation.tags.oneway) {
+//                                             map.streets[id].oneway = relation.tags.oneway;
+//                                         }
+//                                         // Add more tags as needed
+//                                     }
+//                                 }
+//                             }
+//                         }
+//                     });
+//                 }
+//             });
+
+//             // Randomly disable 1/3 of the streets by setting their duration to zero
+//             const streetIds = Object.keys(map.streets);
+//             const disabledCount = Math.floor(streetIds.length / 3);
+//             for (let i = 0; i < disabledCount; i++) {
+//                 const randomIndex = Math.floor(Math.random() * streetIds.length);
+//                 const randomId = streetIds[randomIndex];
+//                 map.streets[randomId].duration = 0;
+//                 streetIds.splice(randomIndex, 1); // Remove the disabled street from the array
+//             }
+
+//             // Convert the modified map data into a Google Hashcode Traffic Signaling input file
+//             const intersectionIds = Object.keys(map.intersections);
+//             const inputLines = [];
+
+//             // The first line contains the following values separated by single spaces:
+//             // - the duration of the simulation, in seconds. For this example, we use 1000 seconds.
+//             // - the number of intersections (with IDs from 0 to I-1)
+//             // - the number of streets
+//             // - the number of cars
+//             // - the bonus points for each car that reaches its destination before the end of the simulation
+//             inputLines.push(`1000 ${intersectionIds.length} ${streetIds.length} 0 1000`);
+
+//             // The following S lines describe the streets. Each line contains the following values separated by single spaces:
+//             // - the ID of the start intersection
+//             // - the ID of the end intersection
+//             // - the street name (a string without spaces)
+//             // - the time it takes a car to get from the start intersection to the end intersection using this street
+//             streetIds.forEach(id => {
+//                 const street = map.streets[id];
+//                 inputLines.push(`${street.start} ${street.end} ${street.name} ${street.duration}`);
+//             });
+
+//             // The following V lines describe the cars. Each line contains the following values separated by single spaces:
+//             // - the number of streets that the car wants to travel
+//             // - the names of those streets, in the order that the car will travel them
+//             // For this example, we don't have any cars, so we skip this part.
+
+//             // Write the input file to disk using a Blob object and a download link
+//             const input = inputLines.join("\n");
+//             const blob = new Blob([input], { type: "text/plain" });
+//             const url = URL.createObjectURL(blob);
+//             const link = document.createElement("a");
+//             link.href = url;
+//             link.download = "input.txt";
+//             document.body.appendChild(link);
+//             link.click();
+//         })
+//         .catch(error => {
+//             console.error(error);
+//         });
+// }
+
+// let V = 50;
+
+// // Create a button to start the process
+// const button = document.createElement("button");
+// button.textContent = "Start";
+// document.body.appendChild(button);
+
+// // Add a click event listener to the button
+// button.addEventListener("click", () => {
+//     // Disable the button to prevent multiple clicks
+//     button.disabled = true;
+
+//     // Load the map data from OpenStreetMap using the Overpass API
+//     // You can change the query parameters to get the data for a different city or area
+//     const query = `[out:json][timeout:25];
+// (
+//   node["highway"="traffic_signals"](${bbox});
+//   way["highway"](area);
+//   relation["highway"](area);
+// );
+// out body;
+// >;
+// out skel qt;`;
+//     const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+//     fetch(url)
+//         .then(response => response.json())
+//         .then(data => {
+//             // Parse the map data and extract the information about intersections, streets and connections
+//             // Store the information in an object with the following structure:
+//             // {
+//             //   intersections: {
+//             //     id: {
+//             //       lat: number,
+//             //       lon: number,
+//             //       incoming: [streetId],
+//             //       outgoing: [streetId]
+//             //     }
+//             //   },
+//             //   streets: {
+//             //     id: {
+//             //       name: string,
+//             //       start: intersectionId,
+//             //       end: intersectionId,
+//             //       duration: number
+//             //     }
+//             //   }
+//             // }
+//             const map = { intersections: {}, streets: {} };
+//             const nodes = data.elements.filter(element => element.type === "node");
+//             const ways = data.elements.filter(element => element.type === "way");
+//             const relations = data.elements.filter(element => element.type === "relation");
+
+//             // Create intersections from nodes with traffic signals
+//             nodes.forEach(node => {
+//                 if (node.tags && node.tags.highway === "traffic_signals") {
+//                     map.intersections[node.id] = {
+//                         lat: node.lat,
+//                         lon: node.lon,
+//                         incoming: [],
+//                         outgoing: []
+//                     };
+//                 }
+//             });
+
+//             // Create streets from ways with highway tags
+//             ways.forEach(way => {
+//                 if (way.tags && way.tags.highway) {
+//                     const name = way.tags.name || way.id;
+//                     const nodes = way.nodes;
+//                     for (let i = 0; i < nodes.length - 1; i++) {
+//                         const start = nodes[i];
+//                         const end = nodes[i + 1];
+//                         if (map.intersections[start] && map.intersections[end]) {
+//                             const id = `${start}-${end}`;
+//                             map.streets[id] = {
+//                                 name,
+//                                 start,
+//                                 end,
+//                                 duration: Math.floor(Math.random() * 10) + 1 // Random duration between 1 and 10 seconds
+//                             };
+//                             map.intersections[start].outgoing.push(id);
+//                             map.intersections[end].incoming.push(id);
+//                         }
+//                     }
+//                 }
+//             });
+
+//             // Update streets with relation tags (such as maxspeed, oneway, etc.)
+//             relations.forEach(relation => {
+//                 if (relation.tags && relation.tags.highway) {
+//                     relation.members.forEach(member => {
+//                         if (member.type === "way" && member.role === "") {
+//                             const way = ways.find(way => way.id === member.ref);
+//                             if (way) {
+//                                 const nodes = way.nodes;
+//                                 for (let i = 0; i < nodes.length - 1; i++) {
+//                                     const start = nodes[i];
+//                                     const end = nodes[i + 1];
+//                                     const id = `${start}-${end}`;
+//                                     if (map.streets[id]) {
+//                                         // Update the street with the relation tags
+//                                         if (relation.tags.maxspeed) {
+//                                             map.streets[id].maxspeed = relation.tags.maxspeed;
+//                                         }
+//                                         if (relation.tags.oneway) {
+//                                             map.streets[id].oneway = relation.tags.oneway;
+//                                         }
+//                                         // Add more tags as needed
+//                                     }
+//                                 }
+//                             }
+//                         }
+//                     });
+//                 }
+//             });
+
+//             // Randomly disable 1/3 of the streets by setting their duration to zero
+//             const streetIds = Object.keys(map.streets);
+//             const disabledCount = Math.floor(streetIds.length / 3);
+//             for (let i = 0; i < disabledCount; i++) {
+//                 const randomIndex = Math.floor(Math.random() * streetIds.length);
+//                 const randomId = streetIds[randomIndex];
+//                 map.streets[randomId].duration = 0;
+//                 streetIds.splice(randomIndex, 1); // Remove the disabled street from the array
+//             }
+
+//             // Convert the modified map data into a Google Hashcode Traffic Signaling input file
+//             const intersectionIds = Object.keys(map.intersections);
+//             const inputLines = [];
+
+//             // The first line contains the following values separated by single spaces:
+//             // - the duration of the simulation, in seconds. For this example, we use 1000 seconds.
+//             // - the number of intersections (with IDs from 0 to I-1)
+//             // - the number of streets
+//             // - the number of cars
+//             // - the bonus points for each car that reaches its destination before the end of the simulation
+//             inputLines.push(`1000 ${intersectionIds.length} ${streetIds.length} ${V} 1000`);
+
+//             // The following S lines describe the streets. Each line contains the following values separated by single spaces:
+//             // - the ID of the start intersection
+//             // - the ID of the end intersection
+//             // - the street name (a string without spaces)
+//             // - the time it takes a car to get from the start intersection to the end intersection using this street
+//             streetIds.forEach(id => {
+//                 const street = map.streets[id];
+//                 inputLines.push(`${street.start} ${street.end} ${street.name} ${street.duration}`);
+//             });
+
+//             // The following V lines describe the cars. Each line contains the following values separated by single spaces:
+//             // - the number of streets that the car wants to travel
+//             // - the names of those streets, in the order that the car will travel them
+
+//             // Generate some random cars for this example
+//             for (let i = 0; i < V; i++) {
+//                 // Pick a random start and end intersection
+//                 const start = intersectionIds[Math.floor(Math.random() * intersectionIds.length)];
+//                 const end = intersectionIds[Math.floor(Math.random() * intersectionIds.length)];
+
+//                 // Find a path from start to end using a simple breadth-first search algorithm
+//                 // This may not be the optimal or shortest path, and may not exist at all
+//                 // You may want to use a different algorithm or heuristic for this task
+//                 const queue = [start]; // A queue of intersections to visit
+//                 const visited = new Set(); // A set of visited intersections
+//                 const parent = {}; // A map of parent intersections for each intersection
+//                 let found = false; // A flag to indicate if the path is found
+
+//                 while (queue.length > 0 && !found) {
+//                     // Dequeue the first intersection from the queue
+//                     const current = queue.shift();
+//                     // Mark it as visited
+//                     visited.add(current);
+//                     // Check if it is the end intersection
+//                     if (current === end) {
+//                         found = true;
+//                         break;
+//                     }
+//                     // Enqueue its outgoing streets' end intersections if they are not visited and not disabled
+//                     map.intersections[current].outgoing.forEach(streetId => {
+//                         const street = map.streets[streetId];
+//                         if (street.duration > 0 && !visited.has(street.end)) {
+//                             queue.push(street.end);
+//                             parent[street.end] = current;
+//                         }
+//                     });
+//                 }
+
+//                 if (found) {
+//                     // If the path is found, backtrack from the end to the start using the parent map
+//                     // and collect the street names along the way
+//                     const path = [];
+//                     let current = end;
+//                     while (current !== start) {
+//                         const previous = parent[current];
+//                         const streetId = `${previous}-${current}`;
+//                         const streetName = map.streets[streetId].name;
+//                         path.unshift(streetName); // Add the street name to the beginning of the path array
+//                         current = previous;
+//                     }
+//                     // Add a line for this car with the number of streets and the names of those streets
+//                     inputLines.push(`${path.length} ${path.join(" ")}`);
+//                 } else {
+//                     // If the path is not found, add a line for this car with zero streets
+//                     inputLines.push(`0`);
+//                 }
+//             }
+
+//             // Write the input file to disk using a Blob object and a download link
+//             const input = inputLines.join("\n");
+//             const blob = new Blob([input], { type: "text/plain" });
+//             const url = URL.createObjectURL(blob);
+
+//             const link = document.createElement("a");
+//             link.href = url;
+//             link.download = "input.txt";
+//             link.click();
+//         });
+// });
+
+
+
+// */ * / * /* / * / * / * * /* /* /* /* / */* / /* /*/*/ */ * /* 
+
+
+// A function to convert degrees to radians
+function toRadians(degrees) {
+    return degrees * Math.PI / 180;
+}
+
+// A function to convert radians to degrees
+function toDegrees(radians) {
+    return radians * 180 / Math.PI;
+}
+
+// A function to calculate the distance between two points on a sphere using the haversine formula
+function haversineDistance(lat1, lon1, lat2, lon2) {
+    // The radius of the earth in kilometers
+    const R = 6371;
+    // Convert the latitudes and longitudes to radians
+    const phi1 = toRadians(lat1);
+    const phi2 = toRadians(lat2);
+    const deltaPhi = toRadians(lat2 - lat1);
+    const deltaLambda = toRadians(lon2 - lon1);
+    // Calculate the haversine of the central angle
+    const a =
+        Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+        Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+    // Calculate the central angle in radians
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    // Calculate the distance in kilometers
+    const d = R * c;
+    return d;
+}
+
+// A function to calculate the radius of a city given its bounding box and center coordinates
+function cityRadius(data) {
+    // Extract the relevant data from the input object
+    const { boundingbox, lat, lon } = data;
+    // Convert the bounding box and center coordinates to numbers
+    const [minLat, maxLat, minLon, maxLon] = boundingbox.map(Number);
+    const centerLat = Number(lat);
+    const centerLon = Number(lon);
+    // Calculate the distance from the center to each corner of the bounding box
+    const distances = [
+        haversineDistance(centerLat, centerLon, minLat, minLon),
+        haversineDistance(centerLat, centerLon, minLat, maxLon),
+        haversineDistance(centerLat, centerLon, maxLat, minLon),
+        haversineDistance(centerLat, centerLon, maxLat, maxLon),
+    ];
+    // Find the maximum distance among them
+    const maxDistance = Math.max(...distances);
+    // Return the maximum distance as the radius of the city in kilometers
+    return maxDistance;
+}
+
+// A function to shrink the bounding box by a given amount of kilometers
+function shrinkBoundingBox(data, km) {
+    // Extract the relevant data from the input object
+    const { boundingbox } = data;
+    // Convert the bounding box coordinates to numbers
+    let [minLat, maxLat, minLon, maxLon] = boundingbox.map(Number);
+    // Calculate the angular distance corresponding to the given kilometers
+    const delta = km / (6371 * Math.PI / 180);
+    // Adjust the bounding box coordinates by adding or subtracting the angular distance
+    minLat += delta;
+    maxLat -= delta;
+    minLon += delta;
+    maxLon -= delta;
+    // Return the new bounding box as an array of strings
+    return [minLat.toFixed(7), maxLat.toFixed(7), minLon.toFixed(7), maxLon.toFixed(7)];
+}
+
+
+
+
+function getTrafficData(bbox) {
+    let t = new Date().getTime();
+
+    toast("Please wait... Fetching data from OpenStreetMap API.");
+
+    let city = document.getElementById("city").value || "Lipjan";
+    let duration = document.getElementById("duration").value || 15;
+    let bonus = document.getElementById("bonus").value || 500;
+    let cars = document.getElementById("cars").value || 250;
+
+    if (cars > 1000) {
+        cars = 5000;
+    }
+
+    if (duration > 1000) {
+        duration = 50;
+    }
+
+    if (bonus > 1000) {
+        bonus = 500;
+    }
+
+    let k = 0;
+    let b = 0;
+
+    const cityEndpoint = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
+
+
+    fetch(cityEndpoint)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length === 0) {
+                throw new Error('City not found.');
+            }
+
+
+
+            const cityData = data[0];
+            const cityId = cityData.place_id;
+            const bbox = cityData.boundingbox;
+
+            console.log(cityData);
+
+            const latMin = parseFloat(bbox[0]);
+            const latMax = parseFloat(bbox[1]);
+            const lonMin = parseFloat(bbox[2]);
+            const lonMax = parseFloat(bbox[3]);
+
+            const latRange = latMax - latMin;
+            const lonRange = lonMax - lonMin;
+
+            const latStep = latRange / 50;
+            const lonStep = lonRange / 50;
+
+            let requests = [];
+            for (let i = 0; i < 50; i++) {
+                const partLatMin = latMin + latStep * i;
+                const partLatMax = partLatMin + latStep;
+                const partLonMin = lonMin + lonStep * i;
+                const partLonMax = partLonMin + lonStep;
+                const mapEndpoint = `https://api.openstreetmap.org/api/0.6/map?bbox=${partLonMin},${partLatMin},${partLonMax},${partLatMax}`;
+                requests.push(fetch(mapEndpoint));
+                let v = i + 1;
+                console.log("Fetching data from OpenStreetMap API. " + v + " / 50");
+                toast("Please wait... Fetching data from OpenStreetMap API. " + v + " / 50", 2000, 50);
+            }
+
+            Promise.all(requests)
+                .then(responses => Promise.all(responses.map(response => response.text())))
+                .then(datas => {
+                    let intersections = {};
+                    let streets = [];
+
+                    // let g = 0;
+
+                    for (const data of datas) {
+                        // toast("Please wait...", "Completing data from OpenStreetMap API. " + g + " / 50", "info");
+                        // g++;
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(data, 'application/xml');
+
+                        const nodes = xmlDoc.getElementsByTagName('node');
+                        for (const node of nodes) {
+                            intersections[node.getAttribute('id')] = {
+                                lat: node.getAttribute('lat'),
+                                lon: node.getAttribute('lon')
+                            };
+                            b++;
+                        }
+
+
+                        const ways = xmlDoc.getElementsByTagName('way');
+                        for (const way of ways) {
+                            const nds = way.getElementsByTagName('nd');
+                            const wayNodes = Array.from(nds).map(nd => nd.getAttribute('ref'));
+
+                            let x = streets.length ?? 0;
+                            for (let i = 0; i < wayNodes.length - 1; i++) {
+                                const nameTag = way.querySelector('tag[k="name"]');
+                                // const name = nameTag ? nameTag.getAttribute('v') : `street-${x++}`;
+                                const name = `street${x++}`;
+
+                                streets.push({
+                                    start: wayNodes[i],
+                                    end: wayNodes[i + 1],
+                                    name: name
+                                });
+                            }
+                        }
+                    }
+
+
+                    toast("Please wait... Completing data.");
+
+                    let DATA = [];
+
+                    let result = [];
+
+                    for (const street of streets) {
+                        const start = street.start;
+                        const end = street.end;
+                        const name = street.name;
+
+                        result.push(`${start} ${end} ${name} ${getRandomInt(1, 7)}`);
+                    }
+
+                    DATA.push(`${duration} ${Object.keys(intersections).length} ${streets.length} ${cars} ${bonus}`);
+
+                    let resultstr = result.join("\n");
+
+                    DATA.push(resultstr);
+
+
+                    let carsArr = [];
+
+                    // generate cars
+                    for (let i = 0; i < cars; i++) {
+                        const P = Math.floor(Math.random() * 10) + 2; // random number between 2 and 11
+                        const path = Array.from({ length: P }, (_, i) => `street${Math.floor(Math.random() * streets.length)}`);
+
+                        let set = new Set(path);
+                        let clo = [...set]; // Change to path to allow duplicates
+
+                        carsArr.push(`${clo.length} ${clo.join(" ")}`);
+                    }
+
+                    let carsStr = carsArr.join("\n");
+
+                    DATA.push(carsStr);
+
+                    let DATAstr = DATA.join("\n");
+
+
+
+                    // Log the formatted result
+
+                    const blob = new Blob([DATAstr], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = url;
+                    downloadLink.download = `D:${new Date().getTime()}.txt`;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+
+                    toast("Success The data was successfully generated ");
+                    let t2 = new Date().getTime();
+
+                    console.log(`Time: ${t2 - t}ms`);
+
+                    toast("Success The data was successfully generated in " + `${t2 - t}ms`);
+
+                    if (streets.length < 1000 && x < 1999) {
+                        toast("Please wait... Creating Graphs");
+                        createGraph(resultstr, "network");
+                        createGraph2(carsStr);
+                    }
+
+
+                    console.log(result);
+                })
+                .catch(error => {
+                    console.error('Error:', error.message);
+                    toast("Error" + error.message);
+                });
+        })
+        .catch(error => {
+            console.error('Error:', error.message);
+            toast("Error" + error.message);
+        });
+
+}
