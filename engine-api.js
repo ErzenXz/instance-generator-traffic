@@ -1121,7 +1121,6 @@ function getCityData(city, duration, bonus, cars, string) {
             V = cars;
 
             let carsS = generateCarsPaths(streetsArray, intersectionsArray)
-            console.log(cars)
 
             // Prepend the number of streets and intersections to the output string
             output2 = `${duration} ${streetCount} ${intersectionCount} ${cars} ${bonus}\n` + output2;
@@ -1174,15 +1173,24 @@ let V = 10;
 
 // A function that takes a streets and intersections objects as parameters
 function generateCarsPaths(streets, intersections) {
+
+    // Check if streets and intersecions its not empty!
+    if (streets.length === 0 || intersections.length === 0) {
+        toast("An error has occurred while loading data from API, please try again later if the problem persists, please contact us");
+        return false;
+    }
+
     // An array to store the cars paths
     let carsPaths = [];
+
+    toast("Generating cars...", 4500, 0);
 
     // A loop to generate V cars
     for (let i = 0; i < V; i++) {
         // A random number to choose a street as the starting point
         let streetIndex = Math.floor(Math.random() * streets.length);
 
-        // The street object and its name
+        // The street object and its name 
         let street = streets[streetIndex];
         let streetName = street[0][0];
 
@@ -1190,11 +1198,12 @@ function generateCarsPaths(streets, intersections) {
         let intersection = intersections[streetIndex];
         let intersectionName = intersection[0][0];
 
+
         // A variable to store the current time
         let time = 0;
 
         // An array to store the path of the car
-        let path = [streetName];
+        let path = [intersectionName];
 
         // A loop to traverse the street until reaching the end or exceeding the time limit
         while (time < 60) {
@@ -1219,8 +1228,11 @@ function generateCarsPaths(streets, intersections) {
             let nextStreet = streets[intersection[direction][1]];
             let nextStreetName = nextStreet[0][0];
 
+            let nextIntersection = intersections[intersection[direction][1]];
+            let nextIntersectionName = nextIntersection[0][0];
+
             // Add the next street name to the path
-            path.push(nextStreetName);
+            path.push(nextIntersectionName);
 
             // Update the street and intersection variables
             street = nextStreet;
@@ -1237,15 +1249,43 @@ function generateCarsPaths(streets, intersections) {
 
     for (let i = 0; i < carsPaths.length; i++) {
         let b = i + 1;
-        output += `${carsPaths[i].length} ${carsPaths[i].join(" ")}\n`;
-    }
 
-    carsData = output;
+        let arrCopy = carsPaths[i];
+
+        // Remove duplicates from the array of paths if there are more than 1 intersections
+        if (arrCopy.length > 1) {
+            arrCopy = arrCopy.filter((item, index) => arrCopy.indexOf(item) === index);
+        }
+
+        // Remove undefined values from the array of paths
+        arrCopy = arrCopy.filter((item) => item);
+
+
+        // Lowercase and replace spaces with dashes and remove unnecessary characters and fix spacing issues
+
+        for (let i = 0; i < arrCopy.length; i++) {
+            arrCopy[i] = arrCopy[i].replace(/ /g, "-");
+            arrCopy[i] = arrCopy[i].toLowerCase();
+            arrCopy[i] = arrCopy[i].replace(/[^a-zA-Z0-9-]/g, "");
+            arrCopy[i] = arrCopy[i].replace(/-+/g, "-");
+            arrCopy[i] = arrCopy[i].replace(/^-+/, "");
+            arrCopy[i] = arrCopy[i].replace(/-+$/, "");
+        }
+
+        let length = arrCopy.length;
+        let path = arrCopy.join(" ");
+
+        if (length == 0) {
+            output += ``;
+        } else {
+            output += `${length} ${path}\n`;
+        }
+
+    }
 
     // Return the cars paths array
     return output;
 }
-
 function addText(input, text, value) {
     // create a regular expression that matches the value and then some text and then a newline
     let regex = new RegExp(value + ".*\\n", "g");
@@ -1256,25 +1296,47 @@ function addText(input, text, value) {
 }
 
 
+
 function getData() {
 
-    toast("Please wait while we validate your data.");
-
+    toast("Generating file...", 4500, 0);
     let city = document.getElementById("city").value;
     let duration = document.getElementById("duration").value;
     let bonus = document.getElementById("bonus").value;
     let cars = document.getElementById("cars").value;
 
-    if (city && duration && bonus && cars) {
-        getCityData(city, duration, bonus, cars).then((data) => {
-            document.getElementById("output").value = data;
-        });
+    if (duration == "") {
+        duration = 60;
+    } else if (duration > 1000) {
+        duration = 1000;
+    } else if (duration < 1) {
+        duration = 1;
+    }
+
+    if (bonus == "") {
+        bonus = 1000;
+    } else if (bonus > 1000) {
+        bonus = 1000;
+    } else if (bonus < 1) {
+        bonus = 1;
+    }
+
+    if (cars == "") {
+        cars = 10;
+    } else if (cars > 1000) {
+        cars = 1000;
+    } else if (cars < 1) {
+        cars = 1;
+    }
+
+
+    if (city != "" && duration != "" && bonus != "" && cars != "") {
+        getCityData(city, duration, bonus, cars, "~");
     } else {
         toast("Please fill all the fields");
     }
 
 
-    getCityData(city, duration, bonus, cars, "~");
 }
 
 
