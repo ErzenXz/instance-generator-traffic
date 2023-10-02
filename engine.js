@@ -12,8 +12,8 @@ function getRandomInt(min, max) {
 let INPUT = "";
 let graph = [];
 
-const maxIntersections = 450;
-const maxStreets = 500;
+let maxIntersections = 450;
+let maxStreets = 500;
 
 
 function getData() {
@@ -31,6 +31,8 @@ function getData() {
    let streets = document.getElementById("streets").value;
    let totalCars = document.getElementById("totalCars").value;
    let bonusPoints = document.getElementById("bonusPoints").value;
+   let maxStreetsPerIntersection = 3;
+   let maxStreetsInPath = document.getElementById("maxStreetsInPath").value;
 
    // Validate the data
 
@@ -50,6 +52,19 @@ function getData() {
       bonusPoints = getRandomInt(1, 1000);
    }
 
+   if (maxStreetsPerIntersection <= 3 || maxStreetsPerIntersection > 8 || maxStreetsPerIntersection == "") {
+      maxStreetsPerIntersection = getRandomInt(3, 8);
+   }
+
+   let streetPathFormula = streets / 2;
+
+   if (maxStreetsInPath <= 3 || maxStreetsInPath > streetPathFormula || maxStreetsInPath == "") {
+      maxStreetsInPath = getRandomInt(2, streets / 2);
+   }
+
+   let maxIntersections = Math.floor(streets / maxStreetsPerIntersection);
+
+
    document.getElementById("data").classList.add("hidden");
    document.getElementById("running").classList.remove("hidden");
 
@@ -59,7 +74,7 @@ function getData() {
    console.time("Generation time");
 
    setTimeout(() => {
-      generateInputFile(duration, intersections, streets, totalCars, bonusPoints);
+      generateInputFile(duration, intersections, streets, totalCars, bonusPoints, maxStreetsPerIntersection, maxStreetsInPath);
    }, 500);
 
 }
@@ -68,7 +83,104 @@ function getData() {
 
 
 
-function generateInputFile(D, I, S, V, F) {
+// function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsInPath) {
+//    running = true;
+
+//    let inputFile = "";
+//    inputFile += `${D} ${I} ${S} ${V} ${F}\n`;
+
+//    // generate streets
+//    let g = 0;
+//    let set = new Set(); // use a set instead of an array
+//    for (let i = 0; i < S; i++) {
+//       let c = i % I;
+//       if (c == 0) {
+//          g = g + 1;
+//       }
+//       let street = `${i % I} ${(i % I + g) % I} street${i} ${getRandomInt(1, 4)}`; // create a street string
+//       let reversed = reverseStreet(street); // reverse the street string
+//       if (!set.has(street) && !set.has(reversed)) { // check if the street or its reverse is not already in the set
+//          set.add(street); // add the street to the set
+//       }
+//    }
+
+//    // a function that reverses a street string
+//    function reverseStreet(street) {
+//       let parts = street.split(" "); // split the string by spaces
+//       let reversed = parts[1] + " " + parts[0] + " " + parts[2] + " " + parts[3]; // swap the first two parts and keep the rest
+//       return reversed; // return the reversed string
+//    }
+
+//    let arr = Array.from(set); // convert the set to an array
+
+//    // Shuffle the array
+//    arr.sort(() => Math.random() - 0.5);
+
+
+//    // Add the array to the input file
+//    arr.forEach((element) => {
+//       inputFile += `${element}\n`;
+//       if (I < maxIntersections && S < maxStreets) {
+//          graph.push(element);
+//       }
+//    });
+
+
+//    let carsArr = [];
+
+//    // generate cars
+//    for (let i = 0; i < V; i++) {
+//       const P = Math.floor(Math.random() * 50) + 2; // random number between 2 and 71
+//       const path = Array.from({ length: P }, (_, i) => `street${Math.floor(Math.random() * S)}`);
+
+//       let set = new Set(path);
+//       let clo = [...set]; // Change to path to allow duplicates
+
+//       inputFile += `${clo.length} ${clo.join(" ")}\n`;
+
+
+//       if (I < maxIntersections && S < maxStreets) {
+//          carsArr.push(`${clo.length} ${clo.join(" ")}`);
+//       }
+//    }
+
+//    INPUT = inputFile;
+
+//    if (I < maxIntersections && S < maxStreets) {
+//       let data = graph.join("\n");
+//       let data2 = carsArr.join("\n");
+//       generateGraph(data);
+//       generateGraph2(data2);
+//       document.getElementById("cy").classList.remove("hidden");
+//       document.getElementById("cy2").classList.remove("hidden");
+
+//       document.getElementById("download").classList.remove("hidden");
+//    } else {
+//       document.getElementById("textArea").classList.remove("hidden");
+//       document.getElementById("download").classList.remove("hidden");
+//       document.getElementById("textArea").value = INPUT;
+//    }
+//    // Create download link for the file
+
+
+//    console.timeEnd("Generation time");
+//    document.getElementById("data").classList.remove("hidden");
+//    document.getElementById("running").classList.add("hidden");
+//    document.getElementById("loading").classList.add("hidden");
+
+//    document.getElementById("data").classList.remove("hidden");
+//    document.getElementById("running").classList.add("hidden");
+//    document.getElementById("loading").classList.add("hidden");
+
+//    running = false;
+// }
+
+
+
+
+
+
+function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsInPath) {
    running = true;
 
    let inputFile = "";
@@ -111,20 +223,22 @@ function generateInputFile(D, I, S, V, F) {
    });
 
 
+   // generate cars
    let carsArr = [];
 
-   // generate cars
    for (let i = 0; i < V; i++) {
-      const P = Math.floor(Math.random() * 50) + 2; // random number between 2 and 71
-      const path = Array.from({ length: P }, (_, i) => `street${Math.floor(Math.random() * S)}`);
+      const P = Math.floor(Math.random() * (maxStreetsInPath - 1)) + 2; // Random number between 2 and maxStreetsInPath
+      const path = Array.from({ length: P }, (_, i) => {
+         const randomStreetIndex = Math.floor(Math.random() * S);
+         return `street${randomStreetIndex}`;
+      });
 
-      let set = new Set(path);
-      let clo = [...set]; // Change to path to allow duplicates
+      if (path.length <= maxStreetsInPath) {
+         let set = new Set(path);
+         let clo = [...set]; // Change to path to allow duplicates
 
-      inputFile += `${clo.length} ${clo.join(" ")}\n`;
+         inputFile += `${clo.length} ${clo.join(" ")}\n`;
 
-
-      if (I < maxIntersections && S < maxStreets) {
          carsArr.push(`${clo.length} ${clo.join(" ")}`);
       }
    }
@@ -159,6 +273,12 @@ function generateInputFile(D, I, S, V, F) {
 
    running = false;
 }
+
+
+
+
+
+
 
 function downloadFile() {
    if (INPUT == "") {

@@ -338,7 +338,7 @@ function getCityData(city, duration, bonus, cars, string) {
 
             V = cars;
 
-            let carsS = generateCarsPaths(streetsArray, intersectionsArray)
+            let carsS = generateCarsPaths(streetsArray, intersectionsArray, duration);
 
 
             // Turn the DATA Matrix into a string
@@ -402,7 +402,7 @@ let h;
 let V = 10;
 
 // A function that takes a streets and intersections objects as parameters
-function generateCarsPaths(streets, intersections) {
+function generateCarsPaths(streets, intersections, dur) {
 
     // Check if streets and intersecions its not empty!
     if (streets.length === 0 || intersections.length === 0) {
@@ -418,7 +418,9 @@ function generateCarsPaths(streets, intersections) {
     // A loop to generate V cars
     for (let i = 0; i < V; i++) {
         // A random number to choose a street as the starting point
+
         let streetIndex = Math.floor(Math.random() * streets.length);
+
 
         // The street object and its name 
         let street = streets[streetIndex];
@@ -428,15 +430,16 @@ function generateCarsPaths(streets, intersections) {
         let intersection = intersections[streetIndex];
         let intersectionName = intersection[0][0];
 
-
         // A variable to store the current time
         let time = 0;
+
+        console.log(intersectionName);
 
         // An array to store the path of the car
         let path = [intersectionName];
 
         // A loop to traverse the street until reaching the end or exceeding the time limit
-        while (time < 60) {
+        while (time < dur) {
             // The length of the street in seconds
             let streetLength = street[street.length - 1][1] - street[0][1];
 
