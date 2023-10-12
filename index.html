@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script> -->
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script defer src="./engine.js?v2=true"></script>
     <script defer src="graph.js"></script>
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
@@ -56,8 +56,15 @@
 
                 <div class="flex flex-col">
                     <label for="streets" class="text-gray-700">Number of streets</label>
-                    <input type="number" name="streets" id="streets" min="2" max="100000" required
+
+                    <select name="streets" id="streets"
                         class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+                        <option value="3" selected>3 * Number of Intersections</option>
+                        <option value="4">4 * Number of Intersections</option>
+                        <option value="5">5 * Number of Intersections</option>
+                        <option value="6">6 * Number of Intersections</option>
+                    </select>
+
                 </div>
 
                 <div class="flex flex-col">
@@ -80,10 +87,22 @@
 
                 <div class="flex flex-col">
                     <label for="maxSpeed" class="text-gray-700">Maximum number of streets for the path of car</label>
-                    <input type="number" name="maxSpeed" id="maxStreetsInPath" min="1" max="100" required
+                    <input type="number" name="maxSpeed" id="maxStreetsInPath" min="2" max="100" required
                         class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
                 </div>
 
+
+                <div class="flex flex-col">
+                    <label for="maxSpeed" class="text-gray-700">Export to</label>
+
+                    <select name="Export" id="export"
+                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+                        <option value="txt" selected>TXT</option>
+                        <option value="json">JSON</option>
+                        <option value="yaml" disabled>YAML</option>
+                    </select>
+
+                </div>
 
                 <br><br>
 
@@ -109,14 +128,7 @@
         </div>
 
 
-        <br><br>
-        <div class="flex justify-center mt-4">
-            <a href="v2.html"
-                class="inline-block bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-full">
-                Prefer Old Look
-            </a>
-        </div>
-
+        <br>
 
 
 
@@ -133,6 +145,8 @@
     <div class="graphs flex justify-center mt-8">
         <div id="cy" style="width: 90vw; height: 80vh;" class="hidden"></div>
         <div id="cy2" style="width: 90vw; height: 80vh;" class="hidden"></div>
+        <div id="cy1" style="width: 90vw; height: 80vh;" class="hidden"></div>
+
 
         <textarea name="text" id="textArea" readonly cols="30" rows="10"
             class="hidden bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
@@ -152,11 +166,11 @@
     </div>
 
     <footer class="text-center mt-8">
-        <p class="text-gray-700 text-sm">Version <span class="text-blue-500">2.5</span></p>
+        <p class="text-gray-700 text-sm">Version <span class="text-blue-500">2.6</span></p>
         <pre class="text-gray-600 text-xs">ErzenK     All rights reserved     2022 - 2023©</pre>
     </footer>
 
-    <p id="build">B1-31/5#23_updated-ui</p>
+    <p id="build">B1-12/10#23_feature-update</p>
 
 </body>
 

@@ -1286,6 +1286,8 @@ function generateCarsPaths(streets, intersections) {
     // Return the cars paths array
     return output;
 }
+
+
 function addText(input, text, value) {
     // create a regular expression that matches the value and then some text and then a newline
     let regex = new RegExp(value + ".*\\n", "g");

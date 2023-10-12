@@ -197,10 +197,9 @@ function createGraph(fileInput, div) {
     // Creating the network graph
     var container = document.getElementById(div);
     var network = new vis.Network(container, data, options);
-    document.getElementById("network").classList.remove("hidden");
 }
 
-function createGraph2(data) {
+function createGraph2(data, div) {
 
     const lines = data.split('\n');
     const nodes = new Set();
@@ -306,7 +305,7 @@ function createGraph2(data) {
         }
     };
     const network = new vis.Network(container, graphData, options);
-    document.getElementById("network2").classList.remove("hidden");
+    document.getElementById(div).classList.remove("hidden");
 }
 
 
@@ -472,7 +471,7 @@ function createGraph2(data) {
 
 function generateGraph(data) {
     var cy = cytoscape({
-        container: document.getElementById('cy'),
+        container: document.getElementById('cy1'),
         style: [
             {
                 selector: 'node',

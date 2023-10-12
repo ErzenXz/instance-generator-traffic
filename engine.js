@@ -42,9 +42,11 @@ function getData() {
    if (intersections <= 2 || intersections > 100000 || intersections == "") {
       intersections = getRandomInt(2, 100000);
    }
-   if (streets <= 2 || streets > 100000 || streets == "") {
-      streets = getRandomInt(2, 100000);
-   }
+
+   streets = intersections * streets;
+
+   console.log(streets);
+
    if (totalCars <= 1 || totalCars > 1000 || totalCars == "") {
       totalCars = getRandomInt(1, 1000);
    }
@@ -58,7 +60,7 @@ function getData() {
 
    let streetPathFormula = streets / 2;
 
-   if (maxStreetsInPath <= 3 || maxStreetsInPath > streetPathFormula || maxStreetsInPath == "") {
+   if (maxStreetsInPath <= 2 || maxStreetsInPath > streetPathFormula || maxStreetsInPath == "") {
       maxStreetsInPath = getRandomInt(2, streets / 2);
    }
 
@@ -189,12 +191,13 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
    // generate streets
    let g = 0;
    let set = new Set(); // use a set instead of an array
+   let z = Math.floor(D / 2);
    for (let i = 0; i < S; i++) {
       let c = i % I;
       if (c == 0) {
          g = g + 1;
       }
-      let street = `${i % I} ${(i % I + g) % I} street${i} ${getRandomInt(1, 4)}`; // create a street string
+      let street = `${i % I} ${(i % I + g) % I} street${i} ${getRandomInt(1, z)}`; // create a street string
       let reversed = reverseStreet(street); // reverse the street string
       if (!set.has(street) && !set.has(reversed)) { // check if the street or its reverse is not already in the set
          set.add(street); // add the street to the set
@@ -248,9 +251,11 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
    if (I < maxIntersections && S < maxStreets) {
       let data = graph.join("\n");
       let data2 = carsArr.join("\n");
-      generateGraph(data);
+      createGraph(data, "cy");
       generateGraph2(data2);
+      generateGraph(data);
       document.getElementById("cy").classList.remove("hidden");
+      document.getElementById("cy1").classList.remove("hidden");
       document.getElementById("cy2").classList.remove("hidden");
 
       document.getElementById("download").classList.remove("hidden");
@@ -275,23 +280,103 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
 }
 
 
-
-
-
-
-
 function downloadFile() {
    if (INPUT == "") {
       alert("Please generate the input file first");
       return;
    }
 
-   const blob = new Blob([INPUT], { type: "text/plain" });
-   const url = URL.createObjectURL(blob);
-   const downloadLink = document.createElement("a");
-   downloadLink.href = url;
-   downloadLink.download = `D:${new Date().getTime()}.txt`;
-   document.body.appendChild(downloadLink);
-   downloadLink.click();
-   document.body.removeChild(downloadLink);
+   let type = document.getElementById("export").value;
+
+   if (type == "json") {
+      let jsonStr = convertDataToJSON(INPUT);
+
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = url;
+      downloadLink.download = `D:${new Date().getTime()}.json`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+   } else if (type == "yaml") {
+
+      let xmlData = dataToYAML(INPUT);
+
+      const blob = new Blob([xmlData], { type: "application/x-yaml" });
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = url;
+      downloadLink.download = `D:${new Date().getTime()}.yml`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+   } else {
+      const blob = new Blob([INPUT], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = url;
+      downloadLink.download = `D:${new Date().getTime()}.txt`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+   }
+}
+
+// A function that takes a string of data as input and returns a JSON object
+function convertDataToJSON(data) {
+   // Split the data by line breaks
+   let lines = data.split("\n");
+   // Initialize an empty object to store the JSON output
+   let output = {};
+   // Get the simulation parameters from the first line
+   let [duration, intersections, streets, cars, bonus] = lines[0].split(" ").map(Number);
+   // Add the simulation and bonus keys to the output object
+   output.simulation = { duration, intersections, streets, cars, bonus };
+   // Call a helper function to get the streets information
+   output.streets = getStreets(lines, streets);
+   // Call another helper function to get the cars information
+   output.cars = getCars(lines, streets);
+   // Return the output object as JSON
+   return JSON.stringify(output);
+}
+
+// A helper function that takes an array of lines and a number of streets as input and returns an array of street objects
+function getStreets(lines, streets) {
+   // Initialize an empty array to store the street objects
+   let streetsArray = [];
+   // Loop through the next S lines to get the streets details
+   for (let i = 1; i <= streets; i++) {
+      // Split each line by space
+      let [start, end, name, time] = lines[i].split(" ");
+      // Convert the start, end and time values to numbers
+      start = Number(start);
+      end = Number(end);
+      time = Number(time);
+      // Create an object for each street and push it to the streets array
+      let streetObject = { start, end, name, time };
+      streetsArray.push(streetObject);
+   }
+   // Return the streets array
+   return streetsArray;
+}
+
+// Another helper function that takes an array of lines and a number of streets as input and returns an array of car objects
+function getCars(lines, streets) {
+   // Initialize an empty array to store the car objects
+   let carsArray = [];
+   // Loop through the remaining lines to get the cars details
+   for (let i = streets + 1; i < lines.length; i++) {
+      // Split each line by space
+      let [path_length, ...path] = lines[i].split(" ");
+      // Convert the path_length value to a number
+      path_length = Number(path_length);
+      // Create an object for each car and push it to the cars array
+      let carObject = { path_length, path };
+      if (path_length > 1) {
+         carsArray.push(carObject);
+      }
+   }
+   // Return the cars array
+   return carsArray;
 }
