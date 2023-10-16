@@ -116,3 +116,10 @@ input[type="number"] {
     justify-content: center;
     margin: 10px;
 }
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20vh;
+}

@@ -7,19 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instance Generator for Traffic Signaling</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="new.css">
+    <link rel="stylesheet" href="css/index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <script defer src="./engine.js?v2=true"></script>
-    <script defer src="graph.js"></script>
+    <script defer src="./js/engine.js"></script>
+    <script defer src="./js/graph.js"></script>
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
     <script src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
     <script src="https://unpkg.com/cytoscape-cola/cytoscape-cola.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-
-    <!-- <script defer src="./solve.js"></script> -->
 </head>
 
 <body class="bg-gray-100">
@@ -32,14 +29,10 @@
 
 
 
-
-
-
-
     <main id="data" class="container mx-auto px-4 py-8">
 
         <div class="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-8">
-            <h2 class="text-xl font-bold mb-4">Generate Instance</h2>
+            <h2 class="text-xl font-bold mb-4">Generate a new Instance</h2>
 
             <div class="space-y-4">
                 <div class="flex flex-col">
@@ -63,6 +56,7 @@
                         <option value="4">4 * Number of Intersections</option>
                         <option value="5">5 * Number of Intersections</option>
                         <option value="6">6 * Number of Intersections</option>
+                        <option value="auto">Auto Mode (New)</option>
                     </select>
 
                 </div>
@@ -91,6 +85,16 @@
                         class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
                 </div>
 
+                <div class="flex flex-col">
+                    <label for="maxSpeed" class="text-gray-700">Street names</label>
+
+                    <select name="Names" id="names"
+                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+                        <option value="1" selected>Default</option>
+                        <option value="2">Random Real-Life Streets</option>
+                    </select>
+
+                </div>
 
                 <div class="flex flex-col">
                     <label for="maxSpeed" class="text-gray-700">Export to</label>
@@ -99,7 +103,7 @@
                         class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
                         <option value="txt" selected>TXT</option>
                         <option value="json">JSON</option>
-                        <option value="yaml" disabled>YAML</option>
+                        <!-- <option value="yaml" disabled>YAML</option> -->
                     </select>
 
                 </div>
@@ -142,6 +146,24 @@
 
     </main>
 
+    <div class="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-xl font-bold mb-4">Choose a Preset</h2>
+
+        <div class="presets">
+            <div class="item" onclick="preset('downtownrush')">Downtown Rush</div>
+            <div class="item" onclick="preset('suburbanserenity')">Suburban Serenity</div>
+            <div class="item" onclick="preset('industrialhustle')">Industrial Hustle</div>
+            <div class="item" onclick="preset('coastalcruise')">Coastal Cruise</div>
+            <div class="item" onclick="preset('mountainretreat')">Mountain Retreat</div>
+            <div class="item" onclick="preset('historicjourney')">Historic Journey</div>
+            <div class="item" onclick="preset('metropolitanmadness')">Metropolitan Madness</div>
+            <div class="item" onclick="preset('ruralrespite')">Rural Respite</div>
+            <div class="item" onclick="preset('technologyhub')">Technology Hub</div>
+            <div class="item" onclick="preset('universitytown')">University Town</div>
+        </div>
+
+    </div>
+
     <div class="graphs flex justify-center mt-8">
         <div id="cy" style="width: 90vw; height: 80vh;" class="hidden"></div>
         <div id="cy2" style="width: 90vw; height: 80vh;" class="hidden"></div>
@@ -166,11 +188,11 @@
     </div>
 
     <footer class="text-center mt-8">
-        <p class="text-gray-700 text-sm">Version <span class="text-blue-500">2.6</span></p>
+        <p class="text-gray-700 text-sm">Version <span class="text-blue-500">3.0 Beta 1</span></p>
         <pre class="text-gray-600 text-xs">ErzenK     All rights reserved     2022 - 2023©</pre>
     </footer>
 
-    <p id="build">B1-12/10#23_feature-update</p>
+    <p id="build">B1-16/10#23_masive-update-critical-bug-fixed</p>
 
 </body>
 

@@ -1,5 +1,13 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
 input[type="text"],
 input[type="number"] {
+
     transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) 0ms;
 }
 
@@ -113,4 +121,33 @@ footer {
 .graphs {
     flex-wrap: wrap;
     gap: 10px;
+}
+
+.presets {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    user-select: none;
+}
+
+.presets>div {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid lightgrey;
+    text-align: center;
+    border-radius: 12px;
+    padding: 10px;
+    width: 150px;
+    height: 50px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1) 0ms;
+}
+
+.presets>div:hover {
+    background-color: #f2f2f29b;
 }

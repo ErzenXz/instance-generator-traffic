@@ -8,9 +8,9 @@
     <title>Generate from OpenStreetMap Map</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <script defer src="engine-api.js"></script>
-    <script defer src="graph.js"></script>
-    <link rel="stylesheet" href="api-data.css">
+    <script defer src="./js/engine-api.js"></script>
+    <script defer src="./js/graph.js"></script>
+    <link rel="stylesheet" href="./css/api-data.css">
     <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-borderless@5.0.15/borderless.min.css"
@@ -20,6 +20,14 @@
 </head>
 
 <body class="bg-gray-100">
+
+    <div class="center">
+        <div class="bg-red-500 text-white p-4 rounded-lg max-w-md">
+            <p class="text-center">Disclaimer: This instance generator is still in heavy development and may generate
+                completely wrong results. Please use with caution.</p>
+
+        </div>
+    </div>
 
     <main class="container mx-auto py-8">
 
@@ -89,7 +97,7 @@
 
     <div class="flex items-center version">
         <span class="text-gray-700 text-sm">Version</span>
-        <span class="ml-1 text-blue-500 text-sm font-medium">1.4 Beta</span>
+        <span class="ml-1 text-blue-500 text-sm font-medium">1.4 Beta 2 Unstable</span>
     </div>
 
 
