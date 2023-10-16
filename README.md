@@ -39,10 +39,8 @@ The generator creates a random graph of intersections and streets, where each st
 To use the instance generator, follow these steps:
 
 1. Clone or download the repository containing the instance generator.
-2. Install the necessary dependencies by running `pip install -r requirements.txt`.
-3. Run the `generate_instance.py` script.
-4. Follow the prompts to specify the parameters for the instance.
-5. The generator will output an input file in the format specified by the problem statement.
+2. Open the `index.html` page.
+3. The generator will open where you can enter your values.
 
 Or go to the link below.
 
