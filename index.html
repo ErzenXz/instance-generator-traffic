@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <script defer src="./js/engine.js"></script>
+    <script defer src="./jsDEV/engine.js"></script>
 
 </head>
 
@@ -55,7 +55,7 @@
                         <option value="4">4 * Number of Intersections</option>
                         <option value="5">5 * Number of Intersections</option>
                         <option value="6">6 * Number of Intersections</option>
-                        <option value="auto">Auto Mode (New)</option>
+                        <option value="auto">Auto Mode (Random)</option>
                     </select>
 
                 </div>
@@ -72,36 +72,43 @@
                         class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
                 </div>
 
-                <!-- <div class="flex flex-col">
-                    <label for="seed" class="text-gray-700">Maximum number of streets in a intersection</label>
-                    <input type="number" name="seed" id="maxStreetsPerIntersection" min="3" max="8" required
-                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                </div> -->
-
                 <div class="flex flex-col">
-                    <label for="maxSpeed" class="text-gray-700">Maximum number of streets for the path of car</label>
+                    <label for="maxStreetsInPath" class="text-gray-700">Maximum number of streets for the path of
+                        car</label>
                     <input type="number" name="maxSpeed" id="maxStreetsInPath" min="2" max="100" required
                         class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
                 </div>
 
                 <div class="flex flex-col">
-                    <label for="maxSpeed" class="text-gray-700">Street names</label>
+                    <label for="names" class="text-gray-700">Street names</label>
 
                     <select name="Names" id="names"
                         class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                        <option value="1" selected>Default</option>
-                        <option value="2">Random Real-Life Streets</option>
+                        <option value="2" selected>Random Real-Life Streets</option>
+                        <option value="1">Sequential Street Names</option>
                     </select>
 
                 </div>
 
                 <div class="flex flex-col">
-                    <label for="maxSpeed" class="text-gray-700">Export to</label>
+                    <label for="export" class="text-gray-700">Export to</label>
 
                     <select name="Export" id="export"
                         class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
                         <option value="txt" selected>TXT</option>
                         <option value="json">JSON</option>
+                        <!-- <option value="yaml" disabled>YAML</option> -->
+                    </select>
+
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="engine" class="text-gray-700">Engine Model</label>
+
+                    <select name="Export" id="engine"
+                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+                        <option value="1" selected>ED Engine</option>
+                        <option value="2">GRID Engine (Experimental)</option>
                         <!-- <option value="yaml" disabled>YAML</option> -->
                     </select>
 
@@ -183,23 +190,44 @@
         onclick="downloadFile()" id="download">Download File</button>
 
     <div class="running hidden" id="running">
-        The engine is running...
+        The Engine is processing and generating the items...
     </div>
 
+    <div class="bg-gray-100 p-8 rounded-lg shadow-md">
+        <div class="max-w-full mx-auto flex items-center justify-around">
+            <a href="https://traffic-signaling.netlify.app/" target="_blank"
+                class="text-blue-500 hover:text-blue-600 transition duration-300">
+                <div class="text-center">
+                    <h3 class="text-lg font-bold mb-2">Visualization App</h3>
+                    <p class="text-gray-600 text-sm">A tool for creating interactive visualizations</p>
+                </div>
+            </a>
+            <a href="https://validator.erzen.tk/" target="_blank"
+                class="text-blue-500 hover:text-blue-600 transition duration-300">
+                <div class="text-center">
+                    <h3 class="text-lg font-bold mb-2">Solution Validator</h3>
+                    <p class="text-gray-600 text-sm">A tool to validate the solutions.</p>
+                </div>
+            </a>
+            <a href="https://traffic-light-scheduling.uni-pr.edu/" target="_blank"
+                class="text-blue-500 hover:text-blue-600 transition duration-300">
+                <div class="text-center">
+                    <h3 class="text-lg font-bold mb-2">Problem Site</h3>
+                    <p class="text-gray-600 text-sm">Official Website with information about this project.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+
     <footer class="text-center mt-8">
-        <p class="text-gray-700 text-sm">Version <span class="text-blue-500">3.0 Beta 1</span></p>
+        <p class="text-gray-700 text-sm">Version <span class="text-blue-500">3.0 Beta 2</span></p>
         <pre class="text-gray-600 text-xs">ErzenK     All rights reserved     2022 - 2023©</pre>
     </footer>
 
-    <div class="bg-gray-100 flex items-center justify-center mb-8">
-        <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-2xl mb-4">Report Bugs on GitHub</h2>
-            <p class="mb-4">Help us improve by reporting any bugs you encounter:</p>
-            <a href="https://github.com/ErzenXz/instance-generator-traffic/issues/new" target="_blank"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Report Bugs
-            </a>
-        </div>
+    <div id="bug-reporter"
+        class="fixed bottom-4 right-4 w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg">
+        <span class="text-xl">!</span>
     </div>
 
 

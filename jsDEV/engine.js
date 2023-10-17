@@ -40,7 +40,7 @@ function getData() {
       duration = getRandomInt(1, 10000);
    }
    if (intersections <= 2 || intersections > 100000 || intersections == "") {
-      intersections = getRandomInt(2, 100000);
+      intersections = getRandomInt(2, 100);
    }
 
    if (streets == "auto") {
@@ -76,7 +76,7 @@ function getData() {
    console.log(streets);
 
    if (totalCars <= 1 || totalCars > 1000 || totalCars == "") {
-      totalCars = getRandomInt(1, 1000);
+      totalCars = getRandomInt(1, 500);
    }
    if (bonusPoints <= 1 || bonusPoints > 1000 || bonusPoints == "") {
       bonusPoints = getRandomInt(1, 1000);
@@ -103,15 +103,26 @@ function getData() {
 
    console.time("Generation time");
 
-   setTimeout(() => {
-      generateInputFile(duration, intersections, streets, totalCars, bonusPoints, maxStreetsPerIntersection, maxStreetsInPath);
-   }, 500);
+
+   let engine = document.getElementById("engine").value;
+
+   if (engine == "1") {
+      setTimeout(() => {
+         generateInputFile(duration, intersections, streets, totalCars, bonusPoints, maxStreetsPerIntersection, maxStreetsInPath);
+      }, 500);
+   } else {
+      setTimeout(() => {
+         generateInputFile2(duration, intersections, streets, totalCars, bonusPoints, maxStreetsPerIntersection, maxStreetsInPath);
+      }, 500);
+   }
 
 }
 
 
 function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsInPath) {
    running = true;
+
+   let timeNow = performance.now();
 
    let inputFile = "";
    inputFile += `${D} ${I} ${S} ${V} ${F}\n`;
@@ -154,6 +165,83 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
    });
 
 
+   // WORKS OK
+
+   // // generate intersections as a grid
+   // let grid = [];
+   // let rows = Math.floor(Math.sqrt(I)); // number of rows in the grid
+   // let cols = Math.ceil(I / rows); // number of columns in the grid
+   // for (let i = 0; i < rows; i++) {
+   //    grid[i] = []; // create a new row
+   //    for (let j = 0; j < cols; j++) {
+   //       grid[i][j] = i * cols + j; // assign an index to each intersection
+   //    }
+   // }
+
+   // // generate streets
+   // let set = new Set(); // use a set instead of an array
+   // let z = Math.floor(D / 7);
+   // let street; // declare the street variable here
+   // let reversed;
+   // for (let i = 0; i < S; i++) {
+   //    let start, end; // start and end intersections of the street
+   //    do {
+   //       // randomly select a row and a column
+   //       let r = getRandomInt(0, rows - 1);
+   //       let c = getRandomInt(0, cols - 1);
+   //       // randomly select a direction (horizontal or vertical)
+   //       let d = getRandomInt(0, 1);
+   //       if (d == 0) { // horizontal direction
+   //          // check if there is a column to the right
+   //          if (c < cols - 1) {
+   //             start = grid[r][c]; // start intersection is the current one
+   //             end = grid[r][c + 1]; // end intersection is the one to the right
+   //          } else { // no column to the right
+   //             start = grid[r][c]; // start intersection is the current one
+   //             end = grid[r][c - 1]; // end intersection is the one to the left
+   //          }
+   //       } else { // vertical direction
+   //          // check if there is a row below
+   //          if (r < rows - 1) {
+   //             start = grid[r][c]; // start intersection is the current one
+   //             end = grid[r + 1][c]; // end intersection is the one below
+   //          } else { // no row below
+   //             start = grid[r][c]; // start intersection is the current one
+   //             end = grid[r - 1][c]; // end intersection is the one above
+   //          }
+   //       }
+   //       street = `${start} ${end} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
+   //       reversed = reverseStreet(street); // reverse the street string
+   //    } while (set.has(street) || set.has(reversed)); // repeat until the street or its reverse is not already in the set
+
+   //    set.add(street); // add the street to the set
+
+   // }
+
+
+   // // a function that reverses a street string
+   // function reverseStreet(street) {
+   //    let parts = street.split(" "); // split the string by spaces
+   //    let reversed = parts[1] + " " + parts[0] + " " + parts[2] + " " + parts[3]; // swap the first two parts and keep the rest
+   //    return reversed; // return the reversed string
+   // }
+
+   // let arr = Array.from(set); // convert the set to an array
+
+   // // Shuffle the array
+   // arr.sort(() => Math.random() - 0.5);
+
+
+   // // Add the array to the input file
+   // arr.forEach((element) => {
+   //    inputFile += `${element}\n`;
+   //    if (I < maxIntersections && S < maxStreets) {
+   //       graph.push(element);
+   //    }
+   // });
+
+
+
    INPUT = inputFile;
 
    let carPaths = generateCarPaths(INPUT, maxStreetsInPath);
@@ -167,6 +255,17 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
 
       carPathsS2 += pathStr;
    }
+
+   // Reset the graphs
+
+   document.getElementById("cy").innerHTML = "";
+   document.getElementById("cy1").innerHTML = "";
+   document.getElementById("cy2").innerHTML = "";
+
+   // Reset the textarea and the download link
+
+   document.getElementById("textArea").value = "";
+
 
    // Append to the input file
 
@@ -219,6 +318,229 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
    document.getElementById("running").classList.add("hidden");
    document.getElementById("loading").classList.add("hidden");
 
+   let timeDone = performance.now();
+
+   let timeDiff = timeDone - timeNow;
+
+   let timeDiff2 = timeDiff / 1000;
+
+   let timeDiff3 = timeDiff2.toFixed(2);
+
+   toast(`Generation time: ${timeDiff3} seconds`);
+   running = false;
+}
+
+
+
+function generateInputFile2(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsInPath) {
+   running = true;
+
+   let timeNow = performance.now();
+
+   let inputFile = "";
+   inputFile += `${D} ${I} ${S} ${V} ${F}\n`;
+
+   // WORKS FINE!!
+   // // generate streets
+   // let g = 0;
+   // let set = new Set(); // use a set instead of an array
+   // let z = Math.floor(D / 7);
+   // for (let i = 0; i < S; i++) {
+   //    let c = i % I;
+   //    if (c == 0) {
+   //       g = g + 1;
+   //    }
+   //    let street = `${i % I} ${(i % I + g) % I} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
+   //    let reversed = reverseStreet(street); // reverse the street string
+   //    if (!set.has(street) && !set.has(reversed)) { // check if the street or its reverse is not already in the set
+   //       set.add(street); // add the street to the set
+   //    }
+   // }
+
+   // // a function that reverses a street string
+   // function reverseStreet(street) {
+   //    let parts = street.split(" "); // split the string by spaces
+   //    let reversed = parts[1] + " " + parts[0] + " " + parts[2] + " " + parts[3]; // swap the first two parts and keep the rest
+   //    return reversed; // return the reversed string
+   // }
+
+   // let arr = Array.from(set); // convert the set to an array
+
+   // // Shuffle the array
+   // arr.sort(() => Math.random() - 0.5);
+
+
+   // // Add the array to the input file
+   // arr.forEach((element) => {
+   //    inputFile += `${element}\n`;
+   //    if (I < maxIntersections && S < maxStreets) {
+   //       graph.push(element);
+   //    }
+   // });
+
+
+   // WORKS OK
+
+   // generate intersections as a grid
+   let grid = [];
+   let rows = Math.floor(Math.sqrt(I)); // number of rows in the grid
+   let cols = Math.ceil(I / rows); // number of columns in the grid
+   for (let i = 0; i < rows; i++) {
+      grid[i] = []; // create a new row
+      for (let j = 0; j < cols; j++) {
+         grid[i][j] = i * cols + j; // assign an index to each intersection
+      }
+   }
+
+   // generate streets
+   let set = new Set(); // use a set instead of an array
+   let z = Math.floor(D / 7);
+   let street; // declare the street variable here
+   let reversed;
+   for (let i = 0; i < S; i++) {
+      let start, end; // start and end intersections of the street
+      do {
+         // randomly select a row and a column
+         let r = getRandomInt(0, rows - 1);
+         let c = getRandomInt(0, cols - 1);
+         // randomly select a direction (horizontal or vertical)
+         let d = getRandomInt(0, 1);
+         if (d == 0) { // horizontal direction
+            // check if there is a column to the right
+            if (c < cols - 1) {
+               start = grid[r][c]; // start intersection is the current one
+               end = grid[r][c + 1]; // end intersection is the one to the right
+            } else { // no column to the right
+               start = grid[r][c]; // start intersection is the current one
+               end = grid[r][c - 1]; // end intersection is the one to the left
+            }
+         } else { // vertical direction
+            // check if there is a row below
+            if (r < rows - 1) {
+               start = grid[r][c]; // start intersection is the current one
+               end = grid[r + 1][c]; // end intersection is the one below
+            } else { // no row below
+               start = grid[r][c]; // start intersection is the current one
+               end = grid[r - 1][c]; // end intersection is the one above
+            }
+         }
+         street = `${start} ${end} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
+         reversed = reverseStreet(street); // reverse the street string
+      } while (set.has(street) || set.has(reversed)); // repeat until the street or its reverse is not already in the set
+
+      set.add(street); // add the street to the set
+
+   }
+
+
+   // a function that reverses a street string
+   function reverseStreet(street) {
+      let parts = street.split(" "); // split the string by spaces
+      let reversed = parts[1] + " " + parts[0] + " " + parts[2] + " " + parts[3]; // swap the first two parts and keep the rest
+      return reversed; // return the reversed string
+   }
+
+   let arr = Array.from(set); // convert the set to an array
+
+   // Shuffle the array
+   arr.sort(() => Math.random() - 0.5);
+
+
+   // Add the array to the input file
+   arr.forEach((element) => {
+      inputFile += `${element}\n`;
+      if (I < maxIntersections && S < maxStreets) {
+         graph.push(element);
+      }
+   });
+
+
+
+   INPUT = inputFile;
+
+   let carPaths = generateCarPaths(INPUT, maxStreetsInPath);
+
+   let carPathsS2 = "";
+
+   for (let i = 0; i < carPaths.length; i++) {
+      let path = carPaths[i];
+      let pathStr = `${path.length} ${path.join(" ")}\n`;
+      INPUT += pathStr;
+
+      carPathsS2 += pathStr;
+   }
+
+   // Reset the graphs
+
+   document.getElementById("cy").innerHTML = "";
+   document.getElementById("cy1").innerHTML = "";
+   document.getElementById("cy2").innerHTML = "";
+
+   // Reset the textarea and the download link
+
+   document.getElementById("textArea").value = "";
+
+
+   // Append to the input file
+
+   if (I < maxIntersections && S < maxStreets) {
+      let data = graph.join("\n");
+      let data2 = carPathsS2;
+
+      try {
+         createGraph(data, "cy");
+         document.getElementById("cy").classList.remove("hidden");
+      } catch (error) {
+         console.log("Error creating graph");
+         document.getElementById("cy").classList.add("hidden");
+
+      }
+
+      try {
+         document.getElementById("cy2").classList.remove("hidden");
+         generateGraph2(data2);
+      } catch (error) {
+         console.log("Error creating graph of cars");
+         document.getElementById("cy2").classList.add("hidden");
+
+      }
+
+      try {
+         generateGraph(data);
+         document.getElementById("cy1").classList.remove("hidden");
+      } catch (error) {
+         console.log("Error creating graph");
+         document.getElementById("cy1").classList.add("hidden");
+      }
+
+
+      document.getElementById("download").classList.remove("hidden");
+   } else {
+      document.getElementById("textArea").classList.remove("hidden");
+      document.getElementById("download").classList.remove("hidden");
+      document.getElementById("textArea").value = INPUT;
+   }
+   // Create download link for the file
+
+
+   console.timeEnd("Generation time");
+   document.getElementById("data").classList.remove("hidden");
+   document.getElementById("running").classList.add("hidden");
+   document.getElementById("loading").classList.add("hidden");
+
+   document.getElementById("data").classList.remove("hidden");
+   document.getElementById("running").classList.add("hidden");
+   document.getElementById("loading").classList.add("hidden");
+
+   let timeDone = performance.now();
+
+   let timeDiff = timeDone - timeNow;
+
+   let timeDiff2 = timeDiff / 1000;
+
+   let timeDiff3 = timeDiff2.toFixed(2);
+
+   toast(`Generation time: ${timeDiff3} seconds`);
    running = false;
 }
 
@@ -288,6 +610,72 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
 // }
 
 
+// function generateCarPaths(inputData, maxStreetsInPath) {
+//    let lines = inputData.split("\n");
+//    let [duration, intersections, streets, cars, bonus] = lines[0].split(" ").map(Number);
+//    let streetMap = {};
+//    for (let i = 1; i <= streets; i++) {
+//       let tokens = lines[i].split(" ");
+//       streetMap[tokens[2]] = {
+//          start: parseInt(tokens[0]),
+//          end: parseInt(tokens[1]),
+//          length: parseInt(tokens[3])
+//       };
+//    }
+//    let carPaths = [];
+//    let maxStreets = maxStreetsInPath;
+//    for (let i = 0; i < cars; i++) {
+//       // Create an array to store the current car path
+//       let path = [];
+//       // Choose a random intersection as the current one
+//       let current = Math.floor(Math.random() * intersections);
+//       // Create a set to store visited intersections
+//       let visited = new Set();
+//       // Create a variable to store time spent
+//       let time = 0;
+
+//       // Choose a random number of streets for this car
+//       let numStreets = Math.floor(Math.random() * maxStreets) + 1;
+//       if (numStreets < 2) numStreets = 2;
+
+//       // While number of streets is not reached
+//       while (path.length < numStreets) {
+//          // Add current intersection to visited
+//          visited.add(current);
+//          // Create an array to store possible street options
+//          let options = [];
+//          // Loop through streetMap entries
+//          for (let [name, info] of Object.entries(streetMap)) {
+//             // If the street starts from the current intersection, add it to options
+//             if (info.start === current) {
+//                options.push(name);
+//             }
+//          }
+//          // If no options are available, break out of the loop
+//          if (options.length === 0) {
+//             break;
+//          }
+//          // Choose a random street from options
+//          let choice = options[Math.floor(Math.random() * options.length)];
+//          // Add the chosen street to the path
+//          path.push(choice);
+//          // Update the current intersection to be the end of the chosen street
+//          current = streetMap[choice].end;
+//          // Update the time spent to be the sum of previous time and the length of the chosen street
+//          time += streetMap[choice].length;
+//          // If time exceeds duration, break out of the loop
+//          if (time > duration) {
+//             break;
+//          }
+//       }
+//       // Add the path to carPaths
+//       carPaths.push(path);
+//    }
+//    // Return carPaths
+//    return carPaths;
+// }
+
+
 function generateCarPaths(inputData, maxStreetsInPath) {
    let lines = inputData.split("\n");
    let [duration, intersections, streets, cars, bonus] = lines[0].split(" ").map(Number);
@@ -302,6 +690,10 @@ function generateCarPaths(inputData, maxStreetsInPath) {
    }
    let carPaths = [];
    let maxStreets = maxStreetsInPath;
+
+   let beforeUsedPaths = [];
+   // Check that maxStreets is not less than 2
+   if (maxStreets < 2) maxStreets = 2;
    for (let i = 0; i < cars; i++) {
       // Create an array to store the current car path
       let path = [];
@@ -311,8 +703,12 @@ function generateCarPaths(inputData, maxStreetsInPath) {
       let visited = new Set();
       // Create a variable to store time spent
       let time = 0;
+
       // Choose a random number of streets for this car
-      let numStreets = Math.floor(Math.random() * maxStreets) + 2;
+      let numStreets = Math.floor(Math.random() * maxStreets) + 1;
+      // Assign 2 to numStreets if it is less than 2
+      if (numStreets < 2) numStreets = 2;
+
       // While number of streets is not reached
       while (path.length < numStreets) {
          // Add current intersection to visited
@@ -343,12 +739,26 @@ function generateCarPaths(inputData, maxStreetsInPath) {
             break;
          }
       }
+
+
+      // If the path is empty use a path that was generated in the previous iteration
+
+      if (path.length == 0) {
+         // Use a random path from beforeUsedPaths
+         let randomPath = beforeUsedPaths[Math.floor(Math.random() * beforeUsedPaths.length)];
+         // Copy the path to the current path
+         path = [...randomPath];
+      }
+
+
       // Add the path to carPaths
       carPaths.push(path);
+      beforeUsedPaths.push(path);
    }
    // Return carPaths
    return carPaths;
 }
+
 
 
 
@@ -606,7 +1016,7 @@ function generateStreetName() {
 function preset(value) {
    switch (value) {
       case "downtownrush":
-         document.getElementById("duration").value = 750;
+         document.getElementById("duration").value = 550;
          document.getElementById("intersections").value = 100;
          document.getElementById("streets").value = 5;
          document.getElementById("totalCars").value = 500;
@@ -614,7 +1024,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 4;
          break;
       case "suburbanserenity":
-         document.getElementById("duration").value = 1000;
+         document.getElementById("duration").value = 850;
          document.getElementById("intersections").value = 80;
          document.getElementById("streets").value = 3;
          document.getElementById("totalCars").value = 300;
@@ -622,7 +1032,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 3;
          break;
       case "industrialhustle":
-         document.getElementById("duration").value = 1000;
+         document.getElementById("duration").value = 750;
          document.getElementById("intersections").value = 120;
          document.getElementById("streets").value = 6;
          document.getElementById("totalCars").value = 400;
@@ -630,7 +1040,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 5;
          break;
       case "coastalcruise":
-         document.getElementById("duration").value = 1000;
+         document.getElementById("duration").value = 800;
          document.getElementById("intersections").value = 150;
          document.getElementById("streets").value = "auto";
          document.getElementById("totalCars").value = 100;
@@ -647,7 +1057,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 4;
          break;
       case "historicjourney":
-         document.getElementById("duration").value = 1000;
+         document.getElementById("duration").value = 950;
          document.getElementById("intersections").value = 110;
          document.getElementById("streets").value = 3;
          document.getElementById("totalCars").value = 450;
@@ -655,7 +1065,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 3;
          break;
       case "metropolitanmadness":
-         document.getElementById("duration").value = 1000;
+         document.getElementById("duration").value = 850;
          document.getElementById("intersections").value = 180;
          document.getElementById("streets").value = 6;
          document.getElementById("totalCars").value = 800;
@@ -663,7 +1073,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 5;
          break;
       case "ruralrespite":
-         document.getElementById("duration").value = 600;
+         document.getElementById("duration").value = 500;
          document.getElementById("intersections").value = 70;
          document.getElementById("streets").value = 3;
          document.getElementById("totalCars").value = 200;
@@ -680,7 +1090,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 6;
          break;
       case "universitytown":
-         document.getElementById("duration").value = 500;
+         document.getElementById("duration").value = 350;
          document.getElementById("intersections").value = 130;
          document.getElementById("streets").value = 4;
          document.getElementById("totalCars").value = 600;
@@ -688,7 +1098,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 4;
          break;
       default:
-         document.getElementById("duration").value = 500;
+         document.getElementById("duration").value = 400;
          document.getElementById("intersections").value = 100;
          document.getElementById("streets").value = 3;
          document.getElementById("totalCars").value = 100;
@@ -738,3 +1148,9 @@ function toast(message, duration = 4500, delay = 0) {
 
    setTimeout(showToast, delay);
 }
+
+
+const bugReporter = document.getElementById('bug-reporter');
+bugReporter.addEventListener('click', () => {
+   window.open('https://github.com/ErzenXz/instance-generator-traffic/issues/new', '_blank');
+});
