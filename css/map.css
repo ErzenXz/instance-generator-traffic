@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    height: 50px;
+}
+
+
+.head select {
+    width: 10vw;
+}
+
+
+#map {
+    margin: 20px;
+}
+
+@media (max-width: 600px) {
+
+    #map {
+        height: 300px;
+        margin: 10px;
+    }
+
+}
+
+.pre {
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #333;
+}
+
+.hidden {
+    display: none;
+}
