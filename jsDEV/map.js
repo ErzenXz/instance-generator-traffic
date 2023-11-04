@@ -3,7 +3,12 @@
 let data = [
 
     {   // Te furra qerimi
-        lat: "42.654109", lon: "21.167656", name: "Udhëkryqi tek Furra Qerimi", times: [
+        lat: "42.654109",
+        lon: "21.167656",
+        name: "Udhëkryqi tek Furra Qerimi",
+        group: "Furra Qerimi",
+        color: "red",
+        times: [
             { time: "00:00", cars: 10 },
             { time: "01:00", cars: 35 },
             { time: "02:00", cars: 71 },

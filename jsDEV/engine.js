@@ -73,8 +73,6 @@ function getData() {
    }
 
 
-   console.log(streets);
-
    if (totalCars <= 1 || totalCars > 1000 || totalCars == "") {
       totalCars = getRandomInt(1, 500);
    }
@@ -83,7 +81,7 @@ function getData() {
    }
 
    if (maxStreetsPerIntersection <= 3 || maxStreetsPerIntersection > 8 || maxStreetsPerIntersection == "") {
-      maxStreetsPerIntersection = getRandomInt(3, 8);
+      maxStreetsPerIntersection = getRandomInt(3, 27);
    }
 
    let streetPathFormula = streets / 2;
@@ -393,10 +391,10 @@ function generateInputFile2(D, I, S, V, F, maxStreetsPerIntersection, maxStreets
    let inputFile = "";
    inputFile += `${D} ${I} ${S} ${V} ${F}\n`;
 
-   // WORKS FINE!!
+   // WORKS FINE!! OLD!!!
    // generate streets
    let g = 0;
-   let set = new Set(); // use a set instead of an array
+   let set = new Set();
    let z = Math.floor(D / 7);
    for (let i = 0; i < S; i++) {
       let c = i % I;
@@ -1045,7 +1043,7 @@ function generateStreetName() {
    }
 
    // Create an array to store possible prefixes and suffixes for street names
-   let prefixes = ["rue", "avenue", "boulevard", "place", "square", "lane", "road", "street"];
+   let prefixes = ["rue", "avenue", "boulevard", "place", "square", "lane", "road", "street", "rruga", "bulevardi", "sheshi", "rrethi", "bulevard", "buleva"];
    let suffixes = ["de", "d'", "du", "des", "le", "la", "les"];
    // Create an array to store possible words for street names
    let words = ["paris", "berlin", "london", "rome", "athens", "moscow", "tokyo", "newyork", "lisbon", "madrid", "cairo", "beijing", "sydney", "rio", "prishtina"];
@@ -1073,7 +1071,7 @@ function generateStreetName() {
 function preset(value) {
    switch (value) {
       case "downtownrush":
-         document.getElementById("duration").value = 550;
+         document.getElementById("duration").value = 120;
          document.getElementById("intersections").value = 100;
          document.getElementById("streets").value = 5;
          document.getElementById("totalCars").value = 500;
@@ -1081,7 +1079,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 4;
          break;
       case "suburbanserenity":
-         document.getElementById("duration").value = 850;
+         document.getElementById("duration").value = 70;
          document.getElementById("intersections").value = 80;
          document.getElementById("streets").value = 3;
          document.getElementById("totalCars").value = 300;
@@ -1089,7 +1087,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 3;
          break;
       case "industrialhustle":
-         document.getElementById("duration").value = 750;
+         document.getElementById("duration").value = 200;
          document.getElementById("intersections").value = 120;
          document.getElementById("streets").value = 6;
          document.getElementById("totalCars").value = 400;
@@ -1097,7 +1095,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 5;
          break;
       case "coastalcruise":
-         document.getElementById("duration").value = 800;
+         document.getElementById("duration").value = 250;
          document.getElementById("intersections").value = 150;
          document.getElementById("streets").value = "auto";
          document.getElementById("totalCars").value = 100;
@@ -1106,7 +1104,7 @@ function preset(value) {
          break;
 
       case "mountainretreat":
-         document.getElementById("duration").value = 1000;
+         document.getElementById("duration").value = 147;
          document.getElementById("intersections").value = 90;
          document.getElementById("streets").value = 4;
          document.getElementById("totalCars").value = 400;
@@ -1114,7 +1112,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 4;
          break;
       case "historicjourney":
-         document.getElementById("duration").value = 950;
+         document.getElementById("duration").value = 318;
          document.getElementById("intersections").value = 110;
          document.getElementById("streets").value = 3;
          document.getElementById("totalCars").value = 450;
@@ -1122,7 +1120,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 3;
          break;
       case "metropolitanmadness":
-         document.getElementById("duration").value = 850;
+         document.getElementById("duration").value = 350;
          document.getElementById("intersections").value = 180;
          document.getElementById("streets").value = 6;
          document.getElementById("totalCars").value = 800;
@@ -1130,7 +1128,7 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 5;
          break;
       case "ruralrespite":
-         document.getElementById("duration").value = 500;
+         document.getElementById("duration").value = 110;
          document.getElementById("intersections").value = 70;
          document.getElementById("streets").value = 3;
          document.getElementById("totalCars").value = 200;
@@ -1139,7 +1137,7 @@ function preset(value) {
          break;
 
       case "technologyhub":
-         document.getElementById("duration").value = 1000;
+         document.getElementById("duration").value = 289;
          document.getElementById("intersections").value = 200;
          document.getElementById("streets").value = "auto";
          document.getElementById("totalCars").value = 1000;
@@ -1147,12 +1145,36 @@ function preset(value) {
          document.getElementById("maxStreetsInPath").value = 6;
          break;
       case "universitytown":
-         document.getElementById("duration").value = 350;
+         document.getElementById("duration").value = 247;
          document.getElementById("intersections").value = 130;
          document.getElementById("streets").value = 4;
          document.getElementById("totalCars").value = 600;
          document.getElementById("bonusPoints").value = 650;
          document.getElementById("maxStreetsInPath").value = 4;
+         break;
+      case "example":
+         document.getElementById("duration").value = 6;
+         document.getElementById("intersections").value = 4;
+         document.getElementById("streets").value = 3;
+         document.getElementById("totalCars").value = 2;
+         document.getElementById("bonusPoints").value = 1000;
+         document.getElementById("maxStreetsInPath").value = 15;
+         break;
+      case "etoile":
+         document.getElementById("duration").value = 676;
+         document.getElementById("intersections").value = 500;
+         document.getElementById("streets").value = 3;
+         document.getElementById("totalCars").value = 1000;
+         document.getElementById("bonusPoints").value = 500;
+         document.getElementById("maxStreetsInPath").value = 15;
+         break;
+      case "checkmate":
+         document.getElementById("duration").value = 164;
+         document.getElementById("intersections").value = 1000;
+         document.getElementById("streets").value = 3;
+         document.getElementById("totalCars").value = 1000;
+         document.getElementById("bonusPoints").value = 100;
+         document.getElementById("maxStreetsInPath").value = 9;
          break;
       default:
          document.getElementById("duration").value = 400;
@@ -1225,7 +1247,6 @@ if (getMode && getMode === "dark") {
 
 modeToggle.addEventListener("click", () => {
    body.classList.toggle("dark");
-   //body.classList.toggle("dark2");
    if (body.classList.contains("dark")) {
       localStorage.setItem("mode", "dark");
    } else {
