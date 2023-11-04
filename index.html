@@ -6,21 +6,41 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instance Generator for Traffic Signaling</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
         integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
     <link rel="stylesheet" href="css/index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <script defer src="./jsDEV/engine.js"></script>
+    <script defer src="./js/engine.js"></script>
 
 </head>
 
 <body class="bg-gray-100">
 
-    <h1 class="text-3xl text-center font-bold mt-8">Instance Generator for Traffic Signaling Problem</h1>
+    <div class="top">
+
+        <h1 class="text-3xl text-center font-bold mt-8">Instance Generator for Traffic Signaling Problem</h1>
+
+        <div class="presets">
+            <a href="index.html"
+                class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">Synthetic</a>
+            <a href="map.html"
+                class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">Prishtina
+                Intersections</a>
+            <a href="api-data.html"
+                class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">OpenStreet
+                Map</a>
+            <a href="real-life.html"
+                class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">Real-Life</a>
+
+        </div>
+
+    </div>
+
 
     <div class="loading-screen hidden" id="loading">
         <div class="loading-spinner"></div>
@@ -28,151 +48,101 @@
 
 
 
-    <main id="data" class="container mx-auto px-4 py-8">
+    <main id="data" class="container">
 
-        <div class="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <div class="items">
             <h2 class="text-xl font-bold mb-4">Generate a new Instance</h2>
 
-            <div class="space-y-4">
-                <div class="flex flex-col">
-                    <label for="duration" class="text-gray-700">Duration (seconds)</label>
-                    <input type="number" name="duration" id="duration" min="1" max="10000" required
-                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                </div>
+            <div class="inputs">
 
-                <div class="flex flex-col">
-                    <label for="intersections" class="text-gray-700">Number of intersections</label>
-                    <input type="number" name="intersections" id="intersections" min="2" max="100000" required
-                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                </div>
+                <label for="duration" class="text-gray-700">Duration (seconds)</label>
+                <input type="number" name="duration" id="duration" min="1" max="10000" required
+                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
 
-                <div class="flex flex-col">
-                    <label for="streets" class="text-gray-700">Number of streets</label>
+                <label for="intersections" class="text-gray-700">Number of intersections</label>
+                <input type="number" name="intersections" id="intersections" min="2" max="100000" required
+                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
 
-                    <select name="streets" id="streets"
-                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                        <option value="3" selected>3 * Number of Intersections</option>
-                        <option value="4">4 * Number of Intersections</option>
-                        <option value="5">5 * Number of Intersections</option>
-                        <option value="6">6 * Number of Intersections</option>
-                        <option value="auto">Auto Mode (Random)</option>
-                    </select>
+                <label for="streets" class="text-gray-700">Number of streets</label>
 
-                </div>
+                <select name="streets" id="streets"
+                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+                    <option value="3" selected>3 * Number of Intersections</option>
+                    <option value="4">4 * Number of Intersections</option>
+                    <option value="5">5 * Number of Intersections</option>
+                    <option value="6">6 * Number of Intersections</option>
+                    <option value="auto">Auto Mode (Random)</option>
+                </select>
 
-                <div class="flex flex-col">
-                    <label for="totalCars" class="text-gray-700">Total number of cars</label>
-                    <input type="number" name="totalCars" id="totalCars" min="1" max="1000" required
-                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                </div>
 
-                <div class="flex flex-col">
-                    <label for="bonusPoints" class="text-gray-700">Bonus points</label>
-                    <input type="number" name="bonusPoints" id="bonusPoints" min="1" max="1000" required
-                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                </div>
+                <label for="totalCars" class="text-gray-700">Total number of cars</label>
+                <input type="number" name="totalCars" id="totalCars" min="1" max="1000" required
+                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
 
-                <div class="flex flex-col">
-                    <label for="maxStreetsInPath" class="text-gray-700">Maximum number of streets for the path of
-                        car</label>
-                    <input type="number" name="maxSpeed" id="maxStreetsInPath" min="2" max="100" required
-                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                </div>
+                <label for="bonusPoints" class="text-gray-700">Bonus points</label>
+                <input type="number" name="bonusPoints" id="bonusPoints" min="1" max="1000" required
+                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+                <label for="maxStreetsInPath" class="text-gray-700">Maximum number of streets for the path of car
+                </label>
+                <input type="number" name="maxSpeed" id="maxStreetsInPath" min="2" max="100" required
+                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
 
-                <div class="flex flex-col">
-                    <label for="names" class="text-gray-700">Street names</label>
+                <label for="names" class="text-gray-700">Street name format</label>
 
-                    <select name="Names" id="names"
-                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                        <option value="2" selected>Random Real-Life Streets</option>
-                        <option value="1">Sequential Street Names</option>
-                    </select>
+                <select name="Names" id="names"
+                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+                    <option value="2" selected>Random Real-Life Streets</option>
+                    <option value="1">Sequential Street Names</option>
+                </select>
 
-                </div>
 
-                <div class="flex flex-col">
-                    <label for="export" class="text-gray-700">Export to</label>
+                <label for="export" class="text-gray-700">Export to</label>
 
-                    <select name="Export" id="export"
-                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                        <option value="txt" selected>TXT</option>
-                        <option value="json">JSON</option>
-                        <!-- <option value="yaml" disabled>YAML</option> -->
-                    </select>
+                <select name="Export" id="export"
+                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+                    <option value="txt" selected>TXT</option>
+                    <option value="json">JSON</option>
+                    <!-- <option value="yaml" disabled>YAML</option> -->
+                </select>
 
-                </div>
 
-                <div class="flex flex-col">
-                    <label for="engine" class="text-gray-700">Engine Model</label>
+                <label for="engine" class="text-gray-700">Engine Model</label>
 
-                    <select name="Export" id="engine"
-                        class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                        <option value="1" selected>NR2 Engine (Experimental)</option>
-                        <option value="2" selected>D-method</option>
-                    </select>
+                <select name="Export" id="engine"
+                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+                    <option value="2" selected>D-method</option>
+                    <option value="1">NR2 Engine (Experimental)</option>
+                </select>
 
-                </div>
 
-                <br><br>
-
-                <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full mt-4"
-                    onclick="getData()">Generate File</button>
-
+                <button class="btn" onclick="getData()">Generate File</button>
             </div>
+
+
 
         </div>
+        <div class="items">
+            <h2 class="tt">Choose a Preset</h2>
 
-        <div class="flex justify-center mt-8">
-            <div class="border border-gray-300 rounded-lg overflow-hidden">
-                <div class="flex">
-                    <a href="index.html"
-                        class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">Synthetic</a>
-                    <a href="map.html"
-                        class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">Prishtina
-                        Intersections</a>
-                    <a href="api-data.html"
-                        class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">OpenStreet
-                        Map</a>
-                    <a href="real-life.html"
-                        class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">Real-Life</a>
-                </div>
+            <div class="presets2">
+                <div class="item" onclick="preset('downtownrush')">Downtown Rush</div>
+                <div class="item" onclick="preset('suburbanserenity')">Suburban Serenity</div>
+                <div class="item" onclick="preset('industrialhustle')">Industrial Hustle</div>
+                <div class="item" onclick="preset('coastalcruise')">Coastal Cruise</div>
+                <div class="item" onclick="preset('mountainretreat')">Mountain Retreat</div>
+                <div class="item" onclick="preset('historicjourney')">Historic Journey</div>
+                <div class="item" onclick="preset('metropolitanmadness')">Metropolitan Madness</div>
+                <div class="item" onclick="preset('ruralrespite')">Rural Respite</div>
+                <div class="item" onclick="preset('technologyhub')">Technology Hub</div>
+                <div class="item" onclick="preset('universitytown')">University Town</div>
             </div>
-        </div>
 
-
-        <br>
-
-
-
-        <div class="charts hidden" id="charts">
-            <div>
-                <canvas id="chart" width="400" height="400"></canvas>
-            </div>
-            <br><br>
-            <canvas id="street-usage-chart"></canvas>
         </div>
 
     </main>
 
-    <div class="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h2 class="text-xl font-bold mb-4">Choose a Preset</h2>
 
-        <div class="presets">
-            <div class="item" onclick="preset('downtownrush')">Downtown Rush</div>
-            <div class="item" onclick="preset('suburbanserenity')">Suburban Serenity</div>
-            <div class="item" onclick="preset('industrialhustle')">Industrial Hustle</div>
-            <div class="item" onclick="preset('coastalcruise')">Coastal Cruise</div>
-            <div class="item" onclick="preset('mountainretreat')">Mountain Retreat</div>
-            <div class="item" onclick="preset('historicjourney')">Historic Journey</div>
-            <div class="item" onclick="preset('metropolitanmadness')">Metropolitan Madness</div>
-            <div class="item" onclick="preset('ruralrespite')">Rural Respite</div>
-            <div class="item" onclick="preset('technologyhub')">Technology Hub</div>
-            <div class="item" onclick="preset('universitytown')">University Town</div>
-        </div>
-
-    </div>
-
-    <div class="graphs flex justify-center mt-8">
+    <div class="graphs">
         <div id="cy" style="width: 90vw; height: 80vh;" class="hidden"></div>
         <div id="cy2" style="width: 90vw; height: 80vh;" class="hidden"></div>
         <div id="cy1" style="width: 90vw; height: 80vh;" class="hidden"></div>
@@ -188,57 +158,61 @@
 
 
     <br>
-    <button class="hidden download bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full mt-4"
-        onclick="downloadFile()" id="download">Download File</button>
+    <button class="hidden download" onclick="downloadFile()" id="download">Download File</button>
 
     <div class="running hidden" id="running">
         The Engine is processing and generating the items...
     </div>
 
-    <div class="bg-gray-100 p-8 rounded-lg shadow-md">
-        <div class="max-w-full mx-auto flex items-center justify-around">
-            <a href="https://traffic-signaling.netlify.app/" target="_blank"
-                class="text-blue-500 hover:text-blue-600 transition duration-300">
-                <div class="text-center">
-                    <h3 class="text-lg font-bold mb-2">Visualization App</h3>
-                    <p class="text-gray-600 text-sm">A tool for creating interactive visualizations</p>
-                </div>
-            </a>
-            <a href="https://validator.erzen.tk/" target="_blank"
-                class="text-blue-500 hover:text-blue-600 transition duration-300">
-                <div class="text-center">
-                    <h3 class="text-lg font-bold mb-2">Solution Validator</h3>
-                    <p class="text-gray-600 text-sm">A tool to validate the solutions.</p>
-                </div>
-            </a>
-            <a href="https://traffic-light-scheduling.uni-pr.edu/" target="_blank"
-                class="text-blue-500 hover:text-blue-600 transition duration-300">
-                <div class="text-center">
-                    <h3 class="text-lg font-bold mb-2">Problem Site</h3>
-                    <p class="text-gray-600 text-sm">Official Website with information about this project.</p>
-                </div>
-            </a>
-        </div>
+    <div class="links">
+        <a href="https://traffic-signaling.netlify.app/" target="_blank"
+            class="text-blue-500 hover:text-blue-600 transition duration-300">
+            <div class="text-center">
+                <h3 class="text-lg font-bold mb-2">Visualization App</h3>
+                <p class="text-gray-600 text-sm">A tool for creating interactive visualizations</p>
+            </div>
+        </a>
+        <a href="https://validator.erzen.tk/" target="_blank"
+            class="text-blue-500 hover:text-blue-600 transition duration-300">
+            <div class="text-center">
+                <h3 class="text-lg font-bold mb-2">Solution Validator</h3>
+                <p class="text-gray-600 text-sm">A tool to validate the solutions.</p>
+            </div>
+        </a>
+        <a href="https://traffic-light-scheduling.uni-pr.edu/" target="_blank"
+            class="text-blue-500 hover:text-blue-600 transition duration-300">
+            <div class="text-center">
+                <h3 class="text-lg font-bold mb-2">Problem Site</h3>
+                <p class="text-gray-600 text-sm">Official Website with information about this project.</p>
+            </div>
+        </a>
     </div>
 
 
-    <footer class="text-center mt-8">
-        <p class="text-gray-700 text-sm">Version <span class="text-blue-500">3.0 Beta 2</span></p>
+    <footer class="footer">
+        <p class="text-gray-700 text-sm">Version <span class="text-blue-500">3.0 Beta 3</span></p>
         <pre class="text-gray-600 text-xs">ErzenK     All rights reserved     2022 - 2023©</pre>
     </footer>
 
-    <div id="bug-reporter"
-        class="fixed bottom-4 right-4 w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white cursor-pointer shadow-lg">
+    <div id="bug-reporter">
         <span class="text-xl">!</span>
     </div>
 
+    <div class="ctr">
+        <div class="circle" id="theme-switcher">
+            <i class="fas fa-adjust"></i>
+        </div>
+    </div>
 
-    <p id="build">B1-18/10#23_bug-fixes</p>
+    <p id="build">B1-04/11#23_new_user-interface</p>
+
 
     <script defer src="./js/graph.js"></script>
     <script defer src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
     <script defer src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
     <script defer src="https://unpkg.com/cytoscape-cola/cytoscape-cola.js"></script>
+    <script defer src="https://kit.fontawesome.com/f45cd9c28c.js" crossorigin="anonymous" defer></script>
+
 </body>
 
 </html>
