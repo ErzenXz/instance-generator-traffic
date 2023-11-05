@@ -1108,6 +1108,23 @@ function showMap(data, time) {
     // Set map's center to the first location in the data array with zoom 14.
     map.setView([data[0].lat, data[0].lon], 14);
 
+    var blueMarker = L.divIcon({
+        html: '<span style="background-color: #279EFF; width: 20px; height: 20px; display: block; border-radius: 50%;"></span>'
+    });
+
+    var yellowMarker = L.divIcon({
+        html: '<span style="background-color: #FCE38A; width: 20px; height: 20px; display: block; border-radius: 50%;"></span>'
+    });
+
+    var redMarker = L.divIcon({
+        html: '<span style="background-color: #F38181; width: 20px; height: 20px; display: block; border-radius: 50%;"></span>'
+    });
+
+    var greenMarker = L.divIcon({
+        html: '<span style="background-color: #95E1D3; width: 20px; height: 20px; display: block; border-radius: 50%;"></span>'
+    });
+
+
     // Loop through the data array
     for (var i = 0; i < data.length; i++) {
         // Get the current location
@@ -1116,7 +1133,25 @@ function showMap(data, time) {
 
         // Create a marker on the map for the current location
 
-        var marker = L.marker([location.lat, location.lon]).addTo(map);
+        let marker;
+
+        if (location.color === "blue") {
+            marker = L.marker([location.lat, location.lon], { icon: blueMarker }).addTo(map);
+        }
+        else if (location.color === "yellow") {
+            marker = L.marker([location.lat, location.lon], { icon: yellowMarker }).addTo(map);
+        }
+        else if (location.color === "red") {
+            marker = L.marker([location.lat, location.lon], { icon: redMarker }).addTo(map);
+        }
+        else if (location.color === "green") {
+            marker = L.marker([location.lat, location.lon], { icon: greenMarker }).addTo(map);
+        } else {
+            marker = L.marker([location.lat, location.lon]).addTo(map);
+        }
+
+
+        // var marker = L.marker([location.lat, location.lon], { icon: blueMarker }).addTo(map);
 
         // Initialize a variable to store the number of cars
         var cars = 0;
