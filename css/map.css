@@ -71,16 +71,16 @@ body.dark {
 body {
     font-family: 'Lato', sans-serif;
     color: var(--text-color) !important;
-    background-color: var(--button);
+    background-color: var(--button) !important;
     transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms;
 }
 
 .head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 20px;
     padding: 10px;
-    background-color: var(--navbar-blur);
+    background-color: var(--navbar);
     color: var(--text-color);
     height: 50px;
     border-bottom: 1.5px solid var(--border);
@@ -112,8 +112,37 @@ body {
     border-radius: 5px;
     box-shadow: 0 0 5px var(--border);
     border: 1px solid var(--border);
+    background-color: var(--button);
 }
 
 .hidden {
     display: none;
+}
+
+.leaflet-popup-content-wrapper {
+    background: var(--white-color) !important;
+    color: var(--text-color) !important;
+    border-radius: 5px !important;
+    box-shadow: 0 0 5px var(--border) !important;
+    border: 1px solid var(--border) !important;
+}
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--link-hover);
+}
+
+select {
+    border-radius: 5px !important;
+    border: 1px solid var(--border) !important;
+    background-color: var(--button) !important;
+    color: var(--text-color) !important;
+}
+
+select:hover {
+    border: 1px solid var(--border-hover);
 }
