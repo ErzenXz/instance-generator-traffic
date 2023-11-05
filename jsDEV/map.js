@@ -1194,7 +1194,7 @@ function showMap(data, start, end) {
 
     // Create a tile layer from OpenStreetMap
     var osmLayer = L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-        attribution: '© <a href="^4^">OpenStreetMap</a> contributors'
+        attribution: '© <a target="_blank" href="https://erzen.tk">Erzen Krasniqi</a>'
     });
 
     // Add the tile layer to the map
@@ -1204,7 +1204,7 @@ function showMap(data, start, end) {
     // Add OSM tile layer to the Leaflet map.
     L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
         attribution:
-            '© <a href="^9^">OpenStreetMap</a> contributors',
+            '© <a target="_blank" href="https://erzen.tk">Erzen Krasniqi</a>',
     }).addTo(map);
 
     // Set map's center to the first location in the data array with zoom 14.
