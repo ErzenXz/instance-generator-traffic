@@ -1180,9 +1180,10 @@ let map;
 //     document.getElementById("pre").classList.add("hidden");
 // }
 
+let mapS = "http://{s}.tile.osm.org/{z}/{x}/{y}.png";
 
 // A function that takes an array of data and a start and end time as parameters
-function showMap(data, start, end) {
+function showMap(data, start, end, mapStyle) {
     // Where you want to render the map.
     var element = document.getElementById("map");
 
@@ -1193,7 +1194,7 @@ function showMap(data, start, end) {
     map = L.map(element);
 
     // Create a tile layer from OpenStreetMap
-    var osmLayer = L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+    var osmLayer = L.tileLayer(mapStyle, {
         attribution: '© <a target="_blank" href="https://erzen.tk">Erzen Krasniqi</a>'
     });
 
@@ -1202,7 +1203,7 @@ function showMap(data, start, end) {
 
 
     // Add OSM tile layer to the Leaflet map.
-    L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+    L.tileLayer(mapStyle, {
         attribution:
             '© <a target="_blank" href="https://erzen.tk">Erzen Krasniqi</a>',
     }).addTo(map);
@@ -1296,6 +1297,36 @@ function showMap(data, start, end) {
     document.getElementById("totalCars").innerHTML = `<strong>${ttCars}</strong> cars have circulated in Prishtina from <i>${start}</i> until <i>${end}</i> o'clock.`;
 
     document.getElementById("pre").classList.add("hidden");
+
+    if (mapS == "http://{s}.tile.osm.org/{z}/{x}/{y}.png" && body.classList.contains("dark")) {
+        var styles = `
+        .leaflet-layer,
+        .leaflet-control-zoom-in,
+        .leaflet-control-zoom-out,
+        .leaflet-control-attribution {
+          filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+        `;
+
+        var styleSheet = document.createElement("style")
+        styleSheet.innerText = styles
+
+        document.head.appendChild(styleSheet)
+    } else {
+        var styles = `
+        .leaflet-layer,
+        .leaflet-control-zoom-in,
+        .leaflet-control-zoom-out,
+        .leaflet-control-attribution {
+          filter: invert(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+        }
+        `;
+
+        var styleSheet = document.createElement("style")
+        styleSheet.innerText = styles
+
+        document.head.appendChild(styleSheet);
+    }
 }
 
 
@@ -1366,7 +1397,7 @@ document.getElementById("time2").addEventListener("change", function () {
         map.remove();
     }
     // Call your showMap function with the selected start and end times
-    showMap(data, start, end);
+    showMap(data, start, end, mapS);
 });
 
 
@@ -1377,9 +1408,9 @@ function refresh() {
     }
 
     if (start && end) {
-        showMap(data, start, end);
+        showMap(data, start, end, mapS);
     } else {
-        showMap(data, "06:00", "17:45");
+        showMap(data, "06:00", "17:45", mapS);
     }
 }
 
@@ -1393,18 +1424,22 @@ if (getMode && getMode === "dark") {
     body.classList.toggle("dark");
     // Add the following css code to the head of the document
 
-    var styles = `
-            .leaflet-layer,
-            .leaflet-control-zoom-in,
-            .leaflet-control-zoom-out,
-            .leaflet-control-attribution {
-              filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
-            }
-            `;
 
-    var styleSheet = document.createElement("style")
-    styleSheet.innerText = styles
-    document.head.appendChild(styleSheet)
+    if (mapS == "http://{s}.tile.osm.org/{z}/{x}/{y}.png") {
+        var styles = `
+        .leaflet-layer,
+        .leaflet-control-zoom-in,
+        .leaflet-control-zoom-out,
+        .leaflet-control-attribution {
+          filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+        `;
+
+        var styleSheet = document.createElement("style")
+        styleSheet.innerText = styles
+
+        document.head.appendChild(styleSheet)
+    }
 }
 
 
@@ -1415,38 +1450,56 @@ modeToggle.addEventListener("click", () => {
 
         // Add the following css code to the head of the document
 
-        var styles = `
-.leaflet-layer,
-.leaflet-control-zoom-in,
-.leaflet-control-zoom-out,
-.leaflet-control-attribution {
-  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
-}
-`;
+        if (mapS == "http://{s}.tile.osm.org/{z}/{x}/{y}.png") {
+            var styles = `
+            .leaflet-layer,
+            .leaflet-control-zoom-in,
+            .leaflet-control-zoom-out,
+            .leaflet-control-attribution {
+              filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+            }
+            `;
 
-        var styleSheet = document.createElement("style")
-        styleSheet.innerText = styles
-        document.head.appendChild(styleSheet)
+            var styleSheet = document.createElement("style")
+            styleSheet.innerText = styles
 
+            document.head.appendChild(styleSheet)
+        }
 
     } else {
         localStorage.setItem("mode", "light");
 
         // Remove the css code from the head of the document
 
-        // Add the following css code to the head of the document
-
         var styles = `
-.leaflet-layer,
-.leaflet-control-zoom-in,
-.leaflet-control-zoom-out,
-.leaflet-control-attribution {
-  filter: invert(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
-}
-`;
+            .leaflet-layer,
+            .leaflet-control-zoom-in,
+            .leaflet-control-zoom-out,
+            .leaflet-control-attribution {
+              filter: invert(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
+            }
+            `;
 
         var styleSheet = document.createElement("style")
         styleSheet.innerText = styles
+
         document.head.appendChild(styleSheet)
+    }
+});
+
+
+document.getElementById("mapStyle").addEventListener("change", function () {
+    // Get the end time value
+    mapS = this.value;
+    // Destroy the map if it exists
+    if (map) {
+        map.remove();
+    }
+
+    if (start && end) {
+        showMap(data, start, end, mapS);
+    }
+    else {
+        showMap(data, "06:00", "17:45", mapS);
     }
 });
