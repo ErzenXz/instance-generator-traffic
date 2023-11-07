@@ -1188,10 +1188,12 @@ function showMap(data, start, end, mapStyle) {
     var element = document.getElementById("map");
 
     // Set the element widht and height to fill the screen. - 100px at the top for the title.
-    element.style = "height: calc(100vh - 100px); width: calc(100vw - 50px);";
+    element.style = "height: calc(100vh); width: calc(100vw);";
 
     // Create Leaflet map on map element.
-    map = L.map(element);
+    map = L.map(element, {
+        zoomControl: false
+    });
 
     // Create a tile layer from OpenStreetMap
     var osmLayer = L.tileLayer(mapStyle, {
@@ -1208,8 +1210,12 @@ function showMap(data, start, end, mapStyle) {
             '© <a target="_blank" href="https://erzen.tk">Erzen Krasniqi</a>',
     }).addTo(map);
 
+    L.control.zoom({
+        position: 'bottomleft'
+    }).addTo(map);
+
     // Set map's center to the first location in the data array with zoom 14.
-    map.setView([data[0].lat, data[0].lon], 14);
+    map.setView([data[0].lat, data[0].lon], 14,);
 
     var blueMarker = L.divIcon({
         html: '<span style="background-color: #279EFF; width: 20px; height: 20px; display: block; border-radius: 50%;"></span>'
@@ -1409,8 +1415,19 @@ function refresh() {
 
     if (start && end) {
         showMap(data, start, end, mapS);
+        // Rotate the refresh button
+        document.getElementById("refresh").classList.add("rotate");
+        // Remove the rotation after 1 second
+        setTimeout(function () {
+            document.getElementById("refresh").classList.remove("rotate");
+        }, 500);
     } else {
         showMap(data, "06:00", "17:45", mapS);
+        document.getElementById("refresh").classList.add("rotate");
+        // Remove the rotation after 1 second
+        setTimeout(function () {
+            document.getElementById("refresh").classList.remove("rotate");
+        }, 500);
     }
 }
 
@@ -1488,18 +1505,31 @@ modeToggle.addEventListener("click", () => {
 });
 
 
-document.getElementById("mapStyle").addEventListener("change", function () {
-    // Get the end time value
-    mapS = this.value;
+
+function changeMapStyle(url) {
     // Destroy the map if it exists
     if (map) {
         map.remove();
     }
 
+    mapS = url;
+
     if (start && end) {
-        showMap(data, start, end, mapS);
+        showMap(data, start, end, url);
+        mapS = url;
+        document.getElementById("refresh").classList.add("rotate");
+        setTimeout(function () {
+            document.getElementById("refresh").classList.remove("rotate");
+        }, 500);
     }
     else {
-        showMap(data, "06:00", "17:45", mapS);
+        showMap(data, "06:00", "17:45", url);
+        mapS = url;
+        document.getElementById("refresh").classList.add("rotate");
+        setTimeout(function () {
+            document.getElementById("refresh").classList.remove("rotate");
+        }, 500);
     }
-});
+}
+
+showMap(data, "06:00", "17:45", mapS);
