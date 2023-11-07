@@ -184,23 +184,23 @@
 
     <div class="maptypes">
         <div class="item1">
-            <img src="./images/normal.jpg" alt="Normal Map" width="30px" height="30px"
+            <img src="./images/normal.jpg" alt="Normal Map" title="Default Map" width="30px" height="30px"
                 onclick="changeMapStyle(`http://{s}.tile.osm.org/{z}/{x}/{y}.png`)">
         </div>
         <div class="item1">
-            <img src="./images/france.jpg" alt="Normal Map" width="30px" height="30px"
+            <img src="./images/france.jpg" alt="Normal Map" title="Streets View" width="30px" height="30px"
                 onclick="changeMapStyle(`https://tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token=R5Wnky3x68GoHNm8oLHIblV1E1aaciH4zWUo0vYIEwuCM2gf53jAU8SbmLoimCsH`)">
         </div>
         <div class="item1">
-            <img src="./images/terrain.png" alt="Normal Map" width="30px" height="30px"
+            <img src="./images/terrain.png" alt="Normal Map" title="Terrain View" width="30px" height="30px"
                 onclick="changeMapStyle(`https://tile.jawg.io/jawg-terrain/{z}/{x}/{y}{r}.png?access-token=R5Wnky3x68GoHNm8oLHIblV1E1aaciH4zWUo0vYIEwuCM2gf53jAU8SbmLoimCsH`)">
         </div>
         <div class="item1">
-            <img src="./images/cyto.jpg" alt="Normal Map" width="30px" height="30px"
+            <img src="./images/cyto.jpg" alt="Normal Map" title="CyclOSM Map" width="30px" height="30px"
                 onclick="changeMapStyle(`https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png`)">
         </div>
         <div class="item1">
-            <img src="./images/satellite.jpg" alt="Normal Map" width="30px" height="30px"
+            <img src="./images/satellite.jpg" alt="Normal Map" title="Satellite View" width="30px" height="30px"
                 onclick="changeMapStyle(`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`)">
         </div>
     </div>
@@ -208,6 +208,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="jsDEV/map_data.js"></script>
     <script src="jsDEV/map.js"></script>
     <script src="https://kit.fontawesome.com/f45cd9c28c.js"></script>
 </body>

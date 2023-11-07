@@ -84,7 +84,7 @@ body {
     backdrop-filter: blur(5px);
     color: var(--text-color);
     height: 60px;
-    border-bottom: 1.5px solid var(--border);
+    border-bottom: 1px solid var(--border);
     box-shadow: 0 0 5px var(--border);
     justify-content: space-around;
     position: fixed;
@@ -184,7 +184,12 @@ a:hover {
 select {
     border-radius: 5px !important;
     border: 1px solid var(--border) !important;
-    background-color: var(--button) !important;
+    background-color: var(--navbar-blur) !important;
+    color: var(--text-color) !important;
+}
+
+option {
+    background-color: var(--navbar) !important;
     color: var(--text-color) !important;
 }
 
