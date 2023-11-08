@@ -267,3 +267,31 @@ select:hover {
     margin: 10px;
     position: fixed;
 }
+
+.leaflet-geosearch-bar {
+    top: 60px !important;
+    margin: 0px !important;
+    margin-top: 7px !important;
+    left: 10px !important;
+    width: 200px !important;
+    background-color: var(--navbar-blur) !important;
+    backdrop-filter: blur(5px) !important;
+    color: var(--text-color) !important;
+    padding: 5px !important;
+
+}
+
+.leaflet-control-geosearch {
+    background-color: var(--navbar-blur) !important;
+    backdrop-filter: blur(5px) !important;
+    color: var(--text-color) !important;
+    border: 1.5px solid var(--border) !important;
+    border-radius: 5px !important;
+    box-shadow: 0 0 5px var(--border) !important;
+}
+
+.leaflet-control-geosearch .results {
+    background-color: var(--navbar-blur) !important;
+    backdrop-filter: blur(5px) !important;
+    color: var(--text-color) !important;
+}

@@ -1,106 +1,6 @@
 
 let map;
 
-// // A function that takes an array of data and a time value as parameters
-// function showMap(data, time) {
-//     // Where you want to render the map.
-//     var element = document.getElementById("map");
-
-//     // Set the element widht and height to fill the screen. - 100px at the top for the title.
-//     element.style = "height: calc(100vh - 100px); width: calc(100vw - 50px);";
-
-//     // Create Leaflet map on map element.
-//     map = L.map(element);
-
-//     // Create a tile layer from OpenStreetMap
-//     var osmLayer = L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-//         attribution: '© <a href="^4^">OpenStreetMap</a> contributors'
-//     });
-
-//     // Add the tile layer to the map
-//     osmLayer.addTo(map);
-
-
-//     // Add OSM tile layer to the Leaflet map.
-//     L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-//         attribution:
-//             '© <a href="^9^">OpenStreetMap</a> contributors',
-//     }).addTo(map);
-
-//     // Set map's center to the first location in the data array with zoom 14.
-//     map.setView([data[0].lat, data[0].lon], 14);
-
-//     var blueMarker = L.divIcon({
-//         html: '<span style="background-color: #279EFF; width: 20px; height: 20px; display: block; border-radius: 50%;"></span>'
-//     });
-
-//     var yellowMarker = L.divIcon({
-//         html: '<span style="background-color: #FCE38A; width: 20px; height: 20px; display: block; border-radius: 50%;"></span>'
-//     });
-
-//     var redMarker = L.divIcon({
-//         html: '<span style="background-color: #F38181; width: 20px; height: 20px; display: block; border-radius: 50%;"></span>'
-//     });
-
-//     var greenMarker = L.divIcon({
-//         html: '<span style="background-color: #95E1D3; width: 20px; height: 20px; display: block; border-radius: 50%;"></span>'
-//     });
-
-
-//     // Loop through the data array
-//     for (var i = 0; i < data.length; i++) {
-//         // Get the current location
-//         var location = data[i];
-//         let name = location.name;
-
-//         // Create a marker on the map for the current location
-
-//         let marker;
-
-//         if (location.color === "blue") {
-//             marker = L.marker([location.lat, location.lon], { icon: blueMarker }).addTo(map);
-//         }
-//         else if (location.color === "yellow") {
-//             marker = L.marker([location.lat, location.lon], { icon: yellowMarker }).addTo(map);
-//         }
-//         else if (location.color === "red") {
-//             marker = L.marker([location.lat, location.lon], { icon: redMarker }).addTo(map);
-//         }
-//         else if (location.color === "green") {
-//             marker = L.marker([location.lat, location.lon], { icon: greenMarker }).addTo(map);
-//         } else {
-//             marker = L.marker([location.lat, location.lon]).addTo(map);
-//         }
-
-
-//         // var marker = L.marker([location.lat, location.lon], { icon: blueMarker }).addTo(map);
-
-//         // Initialize a variable to store the number of cars
-//         var cars = 0;
-
-//         // Loop through the times array of the current location
-//         for (var j = 0; j < location.times.length; j++) {
-//             // Get the current time object
-//             var timeObj = location.times[j];
-
-//             // Check if the time value matches the parameter
-//             if (timeObj.time === time) {
-//                 // Update the number of cars
-//                 cars = timeObj.cars;
-//                 // Break out of the loop
-//                 break;
-//             }
-//         }
-
-//         // Create a popup with the number of cars as the content
-//         var popup = L.popup().setContent(name + "<br>" + cars + " cars have passed here from " + time + " until " + addTime(time) + " o'clock. <br> Location: " + location.lat + ", " + location.lon + ".");
-
-//         // Bind the popup to the marker
-//         marker.bindPopup(popup);
-//     }
-
-//     document.getElementById("pre").classList.add("hidden");
-// }
 
 let mapS = "http://{s}.tile.osm.org/{z}/{x}/{y}.png";
 
@@ -136,8 +36,20 @@ function showMap(data, start, end, mapStyle) {
         position: 'bottomleft'
     }).addTo(map);
 
+
     // Set map's center to the first location in the data array with zoom 14.
     map.setView([data[0].lat, data[0].lon], 14,);
+
+    const provider = new window.GeoSearch.OpenStreetMapProvider();
+    const search = new GeoSearch.GeoSearchControl({
+        provider: provider,
+        style: 'bar',
+        updateMap: true,
+        autoClose: false,
+        notFoundMessage: 'Sorry, that address could not be found.',
+    });
+
+    map.addControl(search);
 
     var blueMarker = L.divIcon({
         html: '<span style="background-color: #279EFF; width: 20px; height: 20px; display: block; border-radius: 50%;"></span>'
