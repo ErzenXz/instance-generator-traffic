@@ -164,30 +164,77 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
    // });
 
 
-   // Define an array to store the used intersections
-   let usedIntersections = new Array(I).fill(false);
+   // // Define an array to store the used intersections
+   // let usedIntersections = new Array(I).fill(false);
 
-   // Generate streets
-   let set = new Set(); // use a set instead of an array
+   // // Generate streets
+   // let set = new Set(); // use a set instead of an array
+   // let z = Math.floor(D / 7);
+   // for (let i = 0; i < S; i++) {
+   //    let startIntersection, endIntersection;
+   //    let attempts = 0;
+   //    do {
+   //       startIntersection = getRandomInt(0, I - 1); // Randomly select start and end intersections
+   //       endIntersection = getRandomInt(0, I - 1);
+   //       attempts++;
+   //       if (attempts > 1000) {
+   //          // To prevent infinite loop, break if attempts exceed a threshold
+   //          console.error("Exceeded maximum attempts to find suitable intersections.");
+   //          break;
+   //       }
+   //    } while (startIntersection === endIntersection || usedIntersections[startIntersection] || usedIntersections[endIntersection]);
+
+   //    usedIntersections[startIntersection] = true;
+   //    usedIntersections[endIntersection] = true;
+
+   //    let street = `${startIntersection} ${endIntersection} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
+   //    let reversed = reverseStreet(street); // reverse the street string
+   //    if (!set.has(street) && !set.has(reversed)) { // check if the street or its reverse is not already in the set
+   //       set.add(street); // add the street to the set
+   //    }
+   // }
+
+   // // a function that reverses a street string
+   // function reverseStreet(street) {
+   //    let parts = street.split(" "); // split the string by spaces
+   //    let reversed = parts[1] + " " + parts[0] + " " + parts[2] + " " + parts[3]; // swap the first two parts and keep the rest
+   //    return reversed; // return the reversed string
+   // }
+
+   // let arr = Array.from(set); // convert the set to an array
+
+   // // Shuffle the array
+   // arr.sort(() => Math.random() - 0.5);
+
+   // // Add the array to the input file
+   // arr.forEach((element) => {
+   //    inputFile += `${element}\n`;
+   //    if (I < maxIntersections && S < maxStreets) {
+   //       graph.push(element);
+   //    }
+   // });
+
+
+   // generate streets
+   let g = 0;
+   let f = 0;
+   let set = new Set();
    let z = Math.floor(D / 7);
    for (let i = 0; i < S; i++) {
-      let startIntersection, endIntersection;
-      let attempts = 0;
-      do {
-         startIntersection = getRandomInt(0, I - 1); // Randomly select start and end intersections
-         endIntersection = getRandomInt(0, I - 1);
-         attempts++;
-         if (attempts > 1000) {
-            // To prevent infinite loop, break if attempts exceed a threshold
-            console.error("Exceeded maximum attempts to find suitable intersections.");
-            break;
-         }
-      } while (startIntersection === endIntersection || usedIntersections[startIntersection] || usedIntersections[endIntersection]);
+      let c = i % I;
+      if (c == 0) {
+         g = getRandomInt(1, 3);
+         f = getRandomInt(1, 3);
+      }
 
-      usedIntersections[startIntersection] = true;
-      usedIntersections[endIntersection] = true;
+      let o = getRandomInt(1, 2);
+      let street;
 
-      let street = `${startIntersection} ${endIntersection} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
+      if (o == 1) {
+         street = `${i % I} ${(i % I + g) % I} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
+      } else {
+         street = `${i % I} ${(i % I + f) % I} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
+      }
       let reversed = reverseStreet(street); // reverse the street string
       if (!set.has(street) && !set.has(reversed)) { // check if the street or its reverse is not already in the set
          set.add(street); // add the street to the set
@@ -203,9 +250,6 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
 
    let arr = Array.from(set); // convert the set to an array
 
-   // Shuffle the array
-   arr.sort(() => Math.random() - 0.5);
-
    // Add the array to the input file
    arr.forEach((element) => {
       inputFile += `${element}\n`;
@@ -213,6 +257,7 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
          graph.push(element);
       }
    });
+
 
 
 
@@ -408,6 +453,9 @@ function generateInputFile2(D, I, S, V, F, maxStreetsPerIntersection, maxStreets
       }
    }
 
+
+
+
    // a function that reverses a street string
    function reverseStreet(street) {
       let parts = street.split(" "); // split the string by spaces
@@ -418,7 +466,7 @@ function generateInputFile2(D, I, S, V, F, maxStreetsPerIntersection, maxStreets
    let arr = Array.from(set); // convert the set to an array
 
    // Shuffle the array
-   arr.sort(() => Math.random() - 0.5);
+   // arr.sort(() => Math.random() - 0.5);
 
 
    // Add the array to the input file
