@@ -250,6 +250,8 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
 
    let arr = Array.from(set); // convert the set to an array
 
+   arr.sort(() => Math.random() - 0.5);
+
    // Add the array to the input file
    arr.forEach((element) => {
       inputFile += `${element}\n`;
@@ -466,7 +468,7 @@ function generateInputFile2(D, I, S, V, F, maxStreetsPerIntersection, maxStreets
    let arr = Array.from(set); // convert the set to an array
 
    // Shuffle the array
-   // arr.sort(() => Math.random() - 0.5);
+   arr.sort(() => Math.random() - 0.5);
 
 
    // Add the array to the input file
