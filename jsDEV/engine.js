@@ -225,15 +225,37 @@ function generateInputFile(D, I, S, V, F, maxStreetsPerIntersection, maxStreetsI
       if (c == 0) {
          g = getRandomInt(1, 3);
          f = getRandomInt(1, 3);
+
+         // Make sure that g and f are not equal
+         while (g == f) {
+            f = getRandomInt(1, 3);
+         }
+
       }
 
       let o = getRandomInt(1, 2);
       let street;
 
       if (o == 1) {
-         street = `${i % I} ${(i % I + g) % I} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
+
+         let p1 = i % I;
+         let p2 = (i % I + g) % I;
+
+         if (p1 == p2) {
+            p2 = (i % I + f) % I;
+         }
+
+         street = `${p1} ${p2} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
       } else {
-         street = `${i % I} ${(i % I + f) % I} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
+
+         let p1 = i % I;
+         let p2 = (i % I + f) % I;
+
+         if (p1 == p2) {
+            p2 = (i % I + g) % I;
+         }
+
+         street = `${p1} ${p2} ${generateStreetName()}${i} ${getRandomInt(1, z)}`; // create a street string
       }
       let reversed = reverseStreet(street); // reverse the street string
       if (!set.has(street) && !set.has(reversed)) { // check if the street or its reverse is not already in the set
