@@ -1248,6 +1248,70 @@ function preset(value) {
          document.getElementById("bonusPoints").value = 100;
          document.getElementById("maxStreetsInPath").value = 9;
          break;
+      case "rome":
+         document.getElementById("duration").value = 178;
+         document.getElementById("intersections").value = 1387;
+         document.getElementById("streets").value = 3;
+         document.getElementById("totalCars").value = 478;
+         document.getElementById("bonusPoints").value = 250;
+         document.getElementById("maxStreetsInPath").value = 15;
+         break;
+      case "paris":
+         document.getElementById("duration").value = 157;
+         document.getElementById("intersections").value = 1770;
+         document.getElementById("streets").value = 3;
+         document.getElementById("totalCars").value = 800;
+         document.getElementById("bonusPoints").value = 700;
+         document.getElementById("maxStreetsInPath").value = 7;
+         break;
+      case "london":
+         document.getElementById("duration").value = 75;
+         document.getElementById("intersections").value = 7000;
+         document.getElementById("streets").value = 3;
+         document.getElementById("totalCars").value = 147;
+         document.getElementById("bonusPoints").value = 100;
+         document.getElementById("maxStreetsInPath").value = 45;
+         break;
+      case "manhattan":
+         document.getElementById("duration").value = 85;
+         document.getElementById("intersections").value = 2862;
+         document.getElementById("streets").value = 3;
+         document.getElementById("totalCars").value = 350;
+         document.getElementById("bonusPoints").value = 100;
+         document.getElementById("maxStreetsInPath").value = 25;
+         break;
+      case "bronx":
+         document.getElementById("duration").value = 175;
+         document.getElementById("intersections").value = 1768;
+         document.getElementById("streets").value = 4;
+         document.getElementById("totalCars").value = 147;
+         document.getElementById("bonusPoints").value = 250;
+         document.getElementById("maxStreetsInPath").value = 8;
+         break;
+      case "bronoklyn":
+         document.getElementById("duration").value = 89;
+         document.getElementById("intersections").value = 4848;
+         document.getElementById("streets").value = 3;
+         document.getElementById("totalCars").value = 123;
+         document.getElementById("bonusPoints").value = 555;
+         document.getElementById("maxStreetsInPath").value = 46;
+         break;
+      case "queens":
+         document.getElementById("duration").value = 126;
+         document.getElementById("intersections").value = 3432;
+         document.getElementById("streets").value = 3;
+         document.getElementById("totalCars").value = 546;
+         document.getElementById("bonusPoints").value = 561;
+         document.getElementById("maxStreetsInPath").value = 21;
+         break;
+      case "sisland":
+         document.getElementById("duration").value = 45;
+         document.getElementById("intersections").value = 633;
+         document.getElementById("streets").value = 3;
+         document.getElementById("totalCars").value = 431;
+         document.getElementById("bonusPoints").value = 123;
+         document.getElementById("maxStreetsInPath").value = 52;
+         break;
       default:
          document.getElementById("duration").value = 400;
          document.getElementById("intersections").value = 100;
