@@ -73,7 +73,7 @@ function getData() {
    }
 
 
-   if (totalCars <= 1 || totalCars > 1000 || totalCars == "") {
+   if (totalCars <= 1 || totalCars > 10000 || totalCars == "") {
       totalCars = getRandomInt(1, 500);
    }
    if (bonusPoints <= 1 || bonusPoints > 1000 || bonusPoints == "") {
