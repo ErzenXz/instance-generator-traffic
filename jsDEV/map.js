@@ -3,7 +3,13 @@ let map;
 let mapS = "http://{s}.tile.osm.org/{z}/{x}/{y}.png";
 
 // A function that takes an array of data and a start and end time as parameters
-function showMap(data, start, end, mapStyle, selectedIntersection) {
+function showMap(
+  data,
+  start = "06:00",
+  end = "17:45",
+  mapStyle,
+  selectedIntersection
+) {
   // Where you want to render the map.
   var element = document.getElementById("map");
 
@@ -106,10 +112,25 @@ function showMap(data, start, end, mapStyle, selectedIntersection) {
 
     if (selectedIntersection) {
       // Initialize a variable to store the total number of cars
+      var totalCars = 0;
+
+      if (selectedIntersection.group == location.group) {
+        // Loop through the times array of the current location
+        for (var j = 0; j < location.times.length; j++) {
+          // Get the current time object
+          var timeObj = location.times[j];
+
+          // Check if the time value is within the start and end parameters
+          if (timeObj.time >= start && timeObj.time <= end) {
+            // Add the number of cars to the total
+            totalCars += timeObj.cars;
+            ttCars += timeObj.cars;
+          }
+        }
+      }
     } else {
       // Initialize a variable to store the total number of cars
       var totalCars = 0;
-
       // Loop through the times array of the current location
       for (var j = 0; j < location.times.length; j++) {
         // Get the current time object
