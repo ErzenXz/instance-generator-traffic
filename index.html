@@ -1,234 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instance Generator for Traffic Signaling</title>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Instance Generator for Traffic Signaling</title>
+      <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
         integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="css/index.css" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
 
-    <script defer src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <script defer src="./js/engine.js"></script>
-    <script defer src="./js/graph.js"></script>
-    <script defer src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
-    <script defer src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
-    <script defer src="https://unpkg.com/cytoscape-cola/cytoscape-cola.js"></script>
-    <script defer src="https://kit.fontawesome.com/f45cd9c28c.js" crossorigin="anonymous" defer></script>
+      <script defer src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+      <script defer src="./js/engine.js"></script>
+      <script defer src="./js/graph.js"></script>
+      <script defer src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+      <script defer src="https://unpkg.com/webcola/WebCola/cola.min.js"></script>
+      <script defer src="https://unpkg.com/cytoscape-cola/cytoscape-cola.js"></script>
+      <script
+         defer
+         src="https://kit.fontawesome.com/f45cd9c28c.js"
+         crossorigin="anonymous"
+         defer
+      ></script>
+   </head>
 
-</head>
+   <body class="bg-gray-100">
+      <div class="top">
+         <h1 class="text-3xl text-center font-bold mt-8">
+            Instance Generator for Traffic Signaling Problem
+         </h1>
 
-<body class="bg-gray-100">
+         <div class="presets">
+            <a
+               href="index.html"
+               class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300"
+               >Synthetic</a
+            >
+            <a
+               href="map.html"
+               class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300"
+               >Prishtina Intersections</a
+            >
+            <a
+               href="api-data.html"
+               class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300"
+               >OpenStreet Map</a
+            >
+            <a
+               href="real-life.html"
+               class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300"
+               >Real-Life</a
+            >
+         </div>
+      </div>
 
-    <div class="top">
+      <div class="loading-screen hidden" id="loading">
+         <div class="loading-spinner"></div>
+      </div>
 
-        <h1 class="text-3xl text-center font-bold mt-8">Instance Generator for Traffic Signaling Problem</h1>
-
-        <div class="presets">
-            <a href="index.html"
-                class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">Synthetic</a>
-            <a href="map.html"
-                class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">Prishtina
-                Intersections</a>
-            <a href="api-data.html"
-                class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">OpenStreet
-                Map</a>
-            <a href="real-life.html"
-                class="py-3 px-6 bg-gray-200 text-gray-700 font-semibold focus:outline-none transition duration-300 ease-in-out hover:bg-gray-300">Real-Life</a>
-
-        </div>
-
-    </div>
-
-
-    <div class="loading-screen hidden" id="loading">
-        <div class="loading-spinner"></div>
-    </div>
-
-
-
-    <main id="data" class="container">
-
-        <div class="items">
+      <main id="data" class="container">
+         <div class="items">
             <h2 class="text-xl font-bold mb-4">Generate a new Instance</h2>
 
             <div class="inputs">
+               <label for="duration" class="text-gray-700">Duration (seconds)</label>
+               <input
+                  type="number"
+                  name="duration"
+                  id="duration"
+                  min="1"
+                  max="10000"
+                  required
+                  class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500"
+               />
 
-                <label for="duration" class="text-gray-700">Duration (seconds)</label>
-                <input type="number" name="duration" id="duration" min="1" max="10000" required
-                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+               <label for="intersections" class="text-gray-700">Number of intersections</label>
+               <input
+                  type="number"
+                  name="intersections"
+                  id="intersections"
+                  min="2"
+                  max="100000"
+                  required
+                  class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500"
+               />
 
-                <label for="intersections" class="text-gray-700">Number of intersections</label>
-                <input type="number" name="intersections" id="intersections" min="2" max="100000" required
-                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+               <label for="streets" class="text-gray-700">Number of streets</label>
 
-                <label for="streets" class="text-gray-700">Number of streets</label>
+               <select
+                  name="streets"
+                  id="streets"
+                  class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500"
+               >
+                  <option value="3" selected>3 * Number of Intersections</option>
+                  <option value="4">4 * Number of Intersections</option>
+                  <option value="5">5 * Number of Intersections</option>
+                  <option value="6">6 * Number of Intersections</option>
+                  <option value="auto">Auto Mode (Random)</option>
+               </select>
 
-                <select name="streets" id="streets"
-                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                    <option value="3" selected>3 * Number of Intersections</option>
-                    <option value="4">4 * Number of Intersections</option>
-                    <option value="5">5 * Number of Intersections</option>
-                    <option value="6">6 * Number of Intersections</option>
-                    <option value="auto">Auto Mode (Random)</option>
-                </select>
+               <label for="totalCars" class="text-gray-700">Total number of cars</label>
+               <input
+                  type="number"
+                  name="totalCars"
+                  id="totalCars"
+                  min="1"
+                  max="1000"
+                  required
+                  class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500"
+               />
 
+               <label for="bonusPoints" class="text-gray-700">Bonus points</label>
+               <input
+                  type="number"
+                  name="bonusPoints"
+                  id="bonusPoints"
+                  min="1"
+                  max="1000"
+                  required
+                  class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500"
+               />
+               <label for="maxStreetsInPath" class="text-gray-700"
+                  >Maximum number of streets for the path of car
+               </label>
+               <input
+                  type="number"
+                  name="maxSpeed"
+                  id="maxStreetsInPath"
+                  min="2"
+                  max="100"
+                  required
+                  class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500"
+               />
 
-                <label for="totalCars" class="text-gray-700">Total number of cars</label>
-                <input type="number" name="totalCars" id="totalCars" min="1" max="1000" required
-                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+               <label for="names" class="text-gray-700">Street name format</label>
 
-                <label for="bonusPoints" class="text-gray-700">Bonus points</label>
-                <input type="number" name="bonusPoints" id="bonusPoints" min="1" max="1000" required
-                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                <label for="maxStreetsInPath" class="text-gray-700">Maximum number of streets for the path of car
-                </label>
-                <input type="number" name="maxSpeed" id="maxStreetsInPath" min="2" max="100" required
-                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
+               <select
+                  name="Names"
+                  id="names"
+                  class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500"
+               >
+                  <option value="2" selected>Random Real-Life Streets</option>
+                  <option value="1">Sequential Street Names</option>
+               </select>
 
-                <label for="names" class="text-gray-700">Street name format</label>
+               <label for="export" class="text-gray-700">Export to</label>
 
-                <select name="Names" id="names"
-                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                    <option value="2" selected>Random Real-Life Streets</option>
-                    <option value="1">Sequential Street Names</option>
-                </select>
+               <select
+                  name="Export"
+                  id="export"
+                  class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500"
+               >
+                  <option value="txt" selected>TXT</option>
+                  <option value="json">JSON</option>
+                  <!-- <option value="yaml" disabled>YAML</option> -->
+               </select>
 
+               <label for="engine" class="text-gray-700">Engine Model</label>
 
-                <label for="export" class="text-gray-700">Export to</label>
+               <select
+                  name="Export"
+                  id="engine"
+                  class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500"
+               >
+                  <option value="2" selected>D-method</option>
+                  <option value="1">RD-W Engine (Beta)</option>
+               </select>
 
-                <select name="Export" id="export"
-                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                    <option value="txt" selected>TXT</option>
-                    <option value="json">JSON</option>
-                    <!-- <option value="yaml" disabled>YAML</option> -->
-                </select>
-
-
-                <label for="engine" class="text-gray-700">Engine Model</label>
-
-                <select name="Export" id="engine"
-                    class="border border-gray-300 px-3 py-2 mt-1 rounded-md focus:outline-none focus:ring focus:border-blue-500">
-                    <option value="2" selected>D-method</option>
-                    <option value="1">RD-W Engine (Beta)</option>
-                </select>
-
-
-                <button class="btn" onclick="getData()">Generate File</button>
+               <button class="btn" onclick="getData()">Generate File</button>
             </div>
-
-
-
-        </div>
-        <div class="items">
+         </div>
+         <div class="items">
             <h2 class="tt">Choose a Preset</h2>
 
             <div class="presets2">
-                <div class="item" onclick="preset('example')">An Example</div>
-                <div class="item" onclick="preset('downtownrush')">Downtown Rush</div>
-                <div class="item" onclick="preset('suburbanserenity')">Suburban Serenity</div>
-                <div class="item" onclick="preset('industrialhustle')">Industrial Hustle</div>
-                <div class="item" onclick="preset('coastalcruise')">Coastal Cruise</div>
-                <div class="item" onclick="preset('mountainretreat')">Mountain Retreat</div>
-                <div class="item" onclick="preset('etoile')">Etoile</div>
-                <div class="item" onclick="preset('historicjourney')">Historic Journey</div>
-                <div class="item" onclick="preset('metropolitanmadness')">Metropolitan Madness</div>
-                <div class="item" onclick="preset('ruralrespite')">Rural Respite</div>
-                <div class="item" onclick="preset('checkmate')">Checkmate</div>
-                <div class="item" onclick="preset('technologyhub')">Technology Hub</div>
-                <div class="item" onclick="preset('universitytown')">University Town</div>
+               <div class="item" onclick="preset('example')">An Example</div>
+               <div class="item" onclick="preset('downtownrush')">Downtown Rush</div>
+               <div class="item" onclick="preset('suburbanserenity')">Suburban Serenity</div>
+               <div class="item" onclick="preset('industrialhustle')">Industrial Hustle</div>
+               <div class="item" onclick="preset('coastalcruise')">Coastal Cruise</div>
+               <div class="item" onclick="preset('mountainretreat')">Mountain Retreat</div>
+               <div class="item" onclick="preset('etoile')">Etoile</div>
+               <div class="item" onclick="preset('historicjourney')">Historic Journey</div>
+               <div class="item" onclick="preset('metropolitanmadness')">Metropolitan Madness</div>
+               <div class="item" onclick="preset('ruralrespite')">Rural Respite</div>
+               <div class="item" onclick="preset('checkmate')">Checkmate</div>
+               <div class="item" onclick="preset('technologyhub')">Technology Hub</div>
+               <div class="item" onclick="preset('universitytown')">University Town</div>
             </div>
             <h2 class="tt">Choose a City Layot</h2>
 
             <div class="presets2">
-                <div class="item" onclick="preset('rome')">Rome</div>
-                <div class="item" onclick="preset('paris')">Paris</div>
-                <div class="item" onclick="preset('london')">London</div>
-                <div class="item" onclick="preset('manhattan')">Manhattan (NY)</div>
-                <div class="item" onclick="preset('bronx')">Bronx (NY)</div>
-                <div class="item" onclick="preset('bronoklyn')">Bronoklyn (NY)</div>
-                <div class="item" onclick="preset('queens')">Queens (NY)</div>
-                <div class="item" onclick="preset('sisland')">Staten Island (NY)</div>
+               <div class="item" onclick="preset('rome')">Rome</div>
+               <div class="item" onclick="preset('paris')">Paris</div>
+               <div class="item" onclick="preset('london')">London</div>
+               <div class="item" onclick="preset('manhattan')">Manhattan (NY)</div>
+               <div class="item" onclick="preset('bronx')">Bronx (NY)</div>
+               <div class="item" onclick="preset('bronoklyn')">Bronoklyn (NY)</div>
+               <div class="item" onclick="preset('queens')">Queens (NY)</div>
+               <div class="item" onclick="preset('sisland')">Staten Island (NY)</div>
             </div>
+         </div>
+      </main>
 
-        </div>
+      <div class="graphs">
+         <div id="cy" style="width: 90vw; height: 80vh" class="hidden"></div>
+         <div id="cy2" style="width: 90vw; height: 80vh" class="hidden"></div>
+         <div id="cy1" style="width: 90vw; height: 80vh" class="hidden"></div>
 
-    </main>
+         <textarea
+            name="text"
+            id="textArea"
+            readonly
+            cols="30"
+            rows="10"
+            class="hidden bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+         ></textarea>
 
+         <div id="network" style="width: 800px; height: 600px" class="hidden"></div>
 
-    <div class="graphs">
-        <div id="cy" style="width: 90vw; height: 80vh;" class="hidden"></div>
-        <div id="cy2" style="width: 90vw; height: 80vh;" class="hidden"></div>
-        <div id="cy1" style="width: 90vw; height: 80vh;" class="hidden"></div>
+         <div id="network2" style="width: 800px; height: 600px" class="hidden"></div>
+      </div>
 
+      <br />
+      <button class="hidden download" onclick="downloadFile()" id="download">Download File</button>
 
-        <textarea name="text" id="textArea" readonly cols="30" rows="10"
-            class="hidden bg-gray-100 border border-gray-300 rounded-lg py-2 px-4 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+      <div class="running hidden" id="running">
+         The Engine is processing and generating the items...
+      </div>
 
-        <div id="network" style="width: 800px; height: 600px;" class="hidden"></div>
-
-        <div id="network2" style="width: 800px; height: 600px;" class="hidden"></div>
-    </div>
-
-
-    <br>
-    <button class="hidden download" onclick="downloadFile()" id="download">Download File</button>
-
-    <div class="running hidden" id="running">
-        The Engine is processing and generating the items...
-    </div>
-
-    <div class="links">
-        <a href="https://traffic-signaling.netlify.app/" target="_blank"
-            class="text-blue-500 hover:text-blue-600 transition duration-300">
+      <div class="links">
+         <a
+            href="https://traffic-signaling.netlify.app/"
+            target="_blank"
+            class="text-blue-500 hover:text-blue-600 transition duration-300"
+         >
             <div class="text-center">
-                <h3 class="text-lg font-bold mb-2">Visualization App</h3>
-                <p class="text-gray-600 text-sm">A tool for creating interactive visualizations</p>
+               <h3 class="text-lg font-bold mb-2">Visualization App</h3>
+               <p class="text-gray-600 text-sm">A tool for creating interactive visualizations</p>
             </div>
-        </a>
-        <a href="https://validator.erzen.tk/" target="_blank"
-            class="text-blue-500 hover:text-blue-600 transition duration-300">
+         </a>
+         <a
+            href="https://validator.erzen.tk/"
+            target="_blank"
+            class="text-blue-500 hover:text-blue-600 transition duration-300"
+         >
             <div class="text-center">
-                <h3 class="text-lg font-bold mb-2">Solution Validator</h3>
-                <p class="text-gray-600 text-sm">A tool to validate the solutions.</p>
+               <h3 class="text-lg font-bold mb-2">Solution Validator</h3>
+               <p class="text-gray-600 text-sm">A tool to validate the solutions.</p>
             </div>
-        </a>
-        <a href="https://traffic-light-scheduling.uni-pr.edu/" target="_blank"
-            class="text-blue-500 hover:text-blue-600 transition duration-300">
+         </a>
+         <a
+            href="https://traffic-light-scheduling.uni-pr.edu/"
+            target="_blank"
+            class="text-blue-500 hover:text-blue-600 transition duration-300"
+         >
             <div class="text-center">
-                <h3 class="text-lg font-bold mb-2">Problem Site</h3>
-                <p class="text-gray-600 text-sm">Official Website with information about this project.</p>
+               <h3 class="text-lg font-bold mb-2">Problem Site</h3>
+               <p class="text-gray-600 text-sm">
+                  Official Website with information about this project.
+               </p>
             </div>
-        </a>
-    </div>
+         </a>
+      </div>
 
+      <footer class="footer">
+         <p class="text-gray-700 text-sm">
+            Version <span class="text-blue-500">3.0 - Relase Candidate 3</span>
+         </p>
+         <pre class="text-gray-600 text-xs">ErzenK     All rights reserved     2022 - 2023©</pre>
+      </footer>
 
-    <footer class="footer">
-        <p class="text-gray-700 text-sm">Version <span class="text-blue-500">3.0 - Relase Candidate 3</span></p>
-        <pre class="text-gray-600 text-xs">ErzenK     All rights reserved     2022 - 2023©</pre>
-    </footer>
+      <div id="bug-reporter">
+         <span class="text-xl">!</span>
+      </div>
 
-    <div id="bug-reporter">
-        <span class="text-xl">!</span>
-    </div>
-
-    <div class="ctr">
-        <div class="circle" id="theme-switcher">
+      <div class="ctr">
+         <div class="circle" id="theme-switcher">
             <i class="fas fa-adjust"></i>
-        </div>
-    </div>
+         </div>
+      </div>
 
-    <p id="build">B1-04/11#23_new_user-interface</p>
-
-
-
-
-</body>
-
+      <p id="build">B1-04/11#23_new_user-interface</p>
+   </body>
 </html>

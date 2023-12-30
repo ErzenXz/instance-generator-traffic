@@ -1,145 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Instance Generator for Traffic Signaling</title>
+      <link rel="stylesheet" href="css/map.css" />
+      <link
+         rel="stylesheet"
+         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+         crossorigin=""
+      />
+      <script
+         src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+         crossorigin=""
+      ></script>
+      <script
+         src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geosearch/3.10.2/bundle.min.js"
+         integrity="sha512-hRvwkDPdh/Q48PvnmVItFXBRIdZ0X6V4bZ4EvbDdaAmMTwmhezB5E7Jb1ShUrO0hg0wi5PzsupEQJ54ZgxpGxA=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      ></script>
+      <link
+         rel="stylesheet"
+         href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geosearch/3.10.2/geosearch.css"
+         integrity="sha512-QJOMqfkZ4TnW7nZ/eBykxqC5YpI4ySB/lpX71mF5e40fkO3jfp1vzKxQk5POuXjGvlXG96ux9K5gbAuM+Bj6Jg=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instance Generator for Traffic Signaling</title>
-    <link rel="stylesheet" href="css/map.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geosearch/3.10.2/bundle.min.js"
-        integrity="sha512-hRvwkDPdh/Q48PvnmVItFXBRIdZ0X6V4bZ4EvbDdaAmMTwmhezB5E7Jb1ShUrO0hg0wi5PzsupEQJ54ZgxpGxA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geosearch/3.10.2/geosearch.css"
-        integrity="sha512-QJOMqfkZ4TnW7nZ/eBykxqC5YpI4ySB/lpX71mF5e40fkO3jfp1vzKxQk5POuXjGvlXG96ux9K5gbAuM+Bj6Jg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <link
+         href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+         rel="stylesheet"
+         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+         crossorigin="anonymous"
+      />
 
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
+   </head>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-</head>
-
-<body>
-
-    <div class="ctn">
-        <div class="head">
-
+   <body>
+      <div class="ctn">
+         <div class="head">
             <select class="form-control" id="time">
-                <option value="0" disabled selected>Start time</option>
-                <option value="06:00">06:00</option>
-                <option value="06:15">06:15</option>
-                <option value="06:30">06:30</option>
-                <option value="06:45">06:45</option>
-                <option value="07:00">07:00</option>
-                <option value="07:15">07:15</option>
-                <option value="07:30">07:30</option>
-                <option value="07:45">07:45</option>
-                <option value="08:00">08:00</option>
-                <option value="08:15">08:15</option>
-                <option value="08:30">08:30</option>
-                <option value="08:45">08:45</option>
-                <option value="09:00">09:00</option>
-                <option value="09:15">09:15</option>
-                <option value="09:30">09:30</option>
-                <option value="09:45">09:45</option>
-                <option value="10:00">10:00</option>
-                <option value="10:15">10:15</option>
-                <option value="10:30">10:30</option>
-                <option value="10:45">10:45</option>
-                <option value="11:00">11:00</option>
-                <option value="11:15">11:15</option>
-                <option value="11:30">11:30</option>
-                <option value="11:45">11:45</option>
-                <option value="12:00">12:00</option>
-                <option value="12:15">12:15</option>
-                <option value="12:30">12:30</option>
-                <option value="12:45">12:45</option>
-                <option value="13:00">13:00</option>
-                <option value="13:15">13:15</option>
-                <option value="13:30">13:30</option>
-                <option value="13:45">13:45</option>
-                <option value="14:00">14:00</option>
-                <option value="14:15">14:15</option>
-                <option value="14:30">14:30</option>
-                <option value="14:45">14:45</option>
-                <option value="15:00">15:00</option>
-                <option value="15:15">15:15</option>
-                <option value="15:30">15:30</option>
-                <option value="15:45">15:45</option>
-                <option value="16:00">16:00</option>
-                <option value="16:15">16:15</option>
-                <option value="16:30">16:30</option>
-                <option value="16:45">16:45</option>
-                <option value="17:00">17:00</option>
-                <option value="17:15">17:15</option>
-                <option value="17:30">17:30</option>
-                <option value="17:45">17:45</option>
+               <option value="0" disabled selected>Start time</option>
+               <option value="06:00">06:00</option>
+               <option value="06:15">06:15</option>
+               <option value="06:30">06:30</option>
+               <option value="06:45">06:45</option>
+               <option value="07:00">07:00</option>
+               <option value="07:15">07:15</option>
+               <option value="07:30">07:30</option>
+               <option value="07:45">07:45</option>
+               <option value="08:00">08:00</option>
+               <option value="08:15">08:15</option>
+               <option value="08:30">08:30</option>
+               <option value="08:45">08:45</option>
+               <option value="09:00">09:00</option>
+               <option value="09:15">09:15</option>
+               <option value="09:30">09:30</option>
+               <option value="09:45">09:45</option>
+               <option value="10:00">10:00</option>
+               <option value="10:15">10:15</option>
+               <option value="10:30">10:30</option>
+               <option value="10:45">10:45</option>
+               <option value="11:00">11:00</option>
+               <option value="11:15">11:15</option>
+               <option value="11:30">11:30</option>
+               <option value="11:45">11:45</option>
+               <option value="12:00">12:00</option>
+               <option value="12:15">12:15</option>
+               <option value="12:30">12:30</option>
+               <option value="12:45">12:45</option>
+               <option value="13:00">13:00</option>
+               <option value="13:15">13:15</option>
+               <option value="13:30">13:30</option>
+               <option value="13:45">13:45</option>
+               <option value="14:00">14:00</option>
+               <option value="14:15">14:15</option>
+               <option value="14:30">14:30</option>
+               <option value="14:45">14:45</option>
+               <option value="15:00">15:00</option>
+               <option value="15:15">15:15</option>
+               <option value="15:30">15:30</option>
+               <option value="15:45">15:45</option>
+               <option value="16:00">16:00</option>
+               <option value="16:15">16:15</option>
+               <option value="16:30">16:30</option>
+               <option value="16:45">16:45</option>
+               <option value="17:00">17:00</option>
+               <option value="17:15">17:15</option>
+               <option value="17:30">17:30</option>
+               <option value="17:45">17:45</option>
             </select>
             <select class="form-control" id="time2">
-                <option value="00:00" disabled selected>End time</option>
-                <option value="06:00" disabled>06:00</option>
-                <option value="06:15" disabled>06:15</option>
-                <option value="06:30" disabled>06:30</option>
-                <option value="06:45" disabled>06:45</option>
-                <option value="07:00" disabled>07:00</option>
-                <option value="07:15" disabled>07:15</option>
-                <option value="07:30" disabled>07:30</option>
-                <option value="07:45" disabled>07:45</option>
-                <option value="08:00" disabled>08:00</option>
-                <option value="08:15" disabled>08:15</option>
-                <option value="08:30" disabled>08:30</option>
-                <option value="08:45" disabled>08:45</option>
-                <option value="09:00" disabled>09:00</option>
-                <option value="09:15" disabled>09:15</option>
-                <option value="09:30" disabled>09:30</option>
-                <option value="09:45" disabled>09:45</option>
-                <option value="10:00" disabled>10:00</option>
-                <option value="10:15" disabled>10:15</option>
-                <option value="10:30" disabled>10:30</option>
-                <option value="10:45" disabled>10:45</option>
-                <option value="11:00" disabled>11:00</option>
-                <option value="11:15" disabled>11:15</option>
-                <option value="11:30" disabled>11:30</option>
-                <option value="11:45" disabled>11:45</option>
-                <option value="12:00" disabled>12:00</option>
-                <option value="12:15" disabled>12:15</option>
-                <option value="12:30" disabled>12:30</option>
-                <option value="12:45" disabled>12:45</option>
-                <option value="13:00" disabled>13:00</option>
-                <option value="13:15" disabled>13:15</option>
-                <option value="13:30" disabled>13:30</option>
-                <option value="13:45" disabled>13:45</option>
-                <option value="14:00" disabled>14:00</option>
-                <option value="14:15" disabled>14:15</option>
-                <option value="14:30" disabled>14:30</option>
-                <option value="14:45" disabled>14:45</option>
-                <option value="15:00" disabled>15:00</option>
-                <option value="15:15" disabled>15:15</option>
-                <option value="15:30" disabled>15:30</option>
-                <option value="15:45" disabled>15:45</option>
-                <option value="16:00" disabled>16:00</option>
-                <option value="16:15" disabled>16:15</option>
-                <option value="16:30" disabled>16:30</option>
-                <option value="16:45" disabled>16:45</option>
-                <option value="17:00" disabled>17:00</option>
-                <option value="17:15" disabled>17:15</option>
-                <option value="17:30" disabled>17:30</option>
-                <option value="17:45" disabled>17:45</option>
-                <option value="18:00" disabled>18:00</option>
+               <option value="00:00" disabled selected>End time</option>
+               <option value="06:00" disabled>06:00</option>
+               <option value="06:15" disabled>06:15</option>
+               <option value="06:30" disabled>06:30</option>
+               <option value="06:45" disabled>06:45</option>
+               <option value="07:00" disabled>07:00</option>
+               <option value="07:15" disabled>07:15</option>
+               <option value="07:30" disabled>07:30</option>
+               <option value="07:45" disabled>07:45</option>
+               <option value="08:00" disabled>08:00</option>
+               <option value="08:15" disabled>08:15</option>
+               <option value="08:30" disabled>08:30</option>
+               <option value="08:45" disabled>08:45</option>
+               <option value="09:00" disabled>09:00</option>
+               <option value="09:15" disabled>09:15</option>
+               <option value="09:30" disabled>09:30</option>
+               <option value="09:45" disabled>09:45</option>
+               <option value="10:00" disabled>10:00</option>
+               <option value="10:15" disabled>10:15</option>
+               <option value="10:30" disabled>10:30</option>
+               <option value="10:45" disabled>10:45</option>
+               <option value="11:00" disabled>11:00</option>
+               <option value="11:15" disabled>11:15</option>
+               <option value="11:30" disabled>11:30</option>
+               <option value="11:45" disabled>11:45</option>
+               <option value="12:00" disabled>12:00</option>
+               <option value="12:15" disabled>12:15</option>
+               <option value="12:30" disabled>12:30</option>
+               <option value="12:45" disabled>12:45</option>
+               <option value="13:00" disabled>13:00</option>
+               <option value="13:15" disabled>13:15</option>
+               <option value="13:30" disabled>13:30</option>
+               <option value="13:45" disabled>13:45</option>
+               <option value="14:00" disabled>14:00</option>
+               <option value="14:15" disabled>14:15</option>
+               <option value="14:30" disabled>14:30</option>
+               <option value="14:45" disabled>14:45</option>
+               <option value="15:00" disabled>15:00</option>
+               <option value="15:15" disabled>15:15</option>
+               <option value="15:30" disabled>15:30</option>
+               <option value="15:45" disabled>15:45</option>
+               <option value="16:00" disabled>16:00</option>
+               <option value="16:15" disabled>16:15</option>
+               <option value="16:30" disabled>16:30</option>
+               <option value="16:45" disabled>16:45</option>
+               <option value="17:00" disabled>17:00</option>
+               <option value="17:15" disabled>17:15</option>
+               <option value="17:30" disabled>17:30</option>
+               <option value="17:45" disabled>17:45</option>
+               <option value="18:00" disabled>18:00</option>
+            </select>
+
+            <label for="crete">Create Instance</label>
+            <button class="btn btn-primary" onclick="createFile()">
+               <i class="fa-solid fa-plus"></i>
+            </button>
+
+            <select class="form-control" id="selectIntersection">
+               <option value="0" disabled selected>Select Intersection</option>
             </select>
 
             <span id="totalCars">0 cars in selected time.</span>
 
-            <button class="btn btn-primary" onclick="refresh()"><i id="refresh" class="fa-solid fa-rotate"></i></button>
+            <button class="btn btn-primary" onclick="refresh()">
+               <i id="refresh" class="fa-solid fa-rotate"></i>
+            </button>
 
-            <button class="btn btn-secondary" id="theme-switcher"><i class="fa-solid fa-moon"></i></button>
+            <button class="btn btn-secondary" id="theme-switcher">
+               <i class="fa-solid fa-moon"></i>
+            </button>
 
             <!-- <select name="mapStyle" class="form-control" id="mapStyle">
                 <option value="http://{s}.tile.osm.org/{z}/{x}/{y}.png" selected>Default Map</option>
@@ -172,50 +199,76 @@
                     value="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}">
                     ESRI WorldImagery</option>
             </select> -->
-
-
-
-        </div>
-        <div class="map">
+         </div>
+         <div class="map">
             <div class="pre" id="pre">
-                <h2>
-                    Please select a time first before proceeding.
-                </h2>
+               <h2>Please select a time first before proceeding.</h2>
             </div>
             <div id="map"></div>
-        </div>
-    </div>
+         </div>
+      </div>
 
+      <div class="maptypes">
+         <div class="item1">
+            <img
+               src="./images/normal.jpg"
+               alt="Normal Map"
+               title="Default Map"
+               width="30px"
+               height="30px"
+               onclick="changeMapStyle(`http://{s}.tile.osm.org/{z}/{x}/{y}.png`)"
+            />
+         </div>
+         <div class="item1">
+            <img
+               src="./images/france.jpg"
+               alt="Normal Map"
+               title="Streets View"
+               width="30px"
+               height="30px"
+               onclick="changeMapStyle(`https://tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token=R5Wnky3x68GoHNm8oLHIblV1E1aaciH4zWUo0vYIEwuCM2gf53jAU8SbmLoimCsH`)"
+            />
+         </div>
+         <div class="item1">
+            <img
+               src="./images/terrain.png"
+               alt="Normal Map"
+               title="Terrain View"
+               width="30px"
+               height="30px"
+               onclick="changeMapStyle(`https://tile.jawg.io/jawg-terrain/{z}/{x}/{y}{r}.png?access-token=R5Wnky3x68GoHNm8oLHIblV1E1aaciH4zWUo0vYIEwuCM2gf53jAU8SbmLoimCsH`)"
+            />
+         </div>
+         <div class="item1">
+            <img
+               src="./images/cyto.jpg"
+               alt="Normal Map"
+               title="CyclOSM Map"
+               width="30px"
+               height="30px"
+               onclick="changeMapStyle(`https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png`)"
+            />
+         </div>
+         <div class="item1">
+            <img
+               src="./images/satellite.jpg"
+               alt="Normal Map"
+               title="Satellite View"
+               width="30px"
+               height="30px"
+               onclick="changeMapStyle(`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`)"
+            />
+         </div>
+      </div>
 
-    <div class="maptypes">
-        <div class="item1">
-            <img src="./images/normal.jpg" alt="Normal Map" title="Default Map" width="30px" height="30px"
-                onclick="changeMapStyle(`http://{s}.tile.osm.org/{z}/{x}/{y}.png`)">
-        </div>
-        <div class="item1">
-            <img src="./images/france.jpg" alt="Normal Map" title="Streets View" width="30px" height="30px"
-                onclick="changeMapStyle(`https://tile.jawg.io/jawg-streets/{z}/{x}/{y}{r}.png?access-token=R5Wnky3x68GoHNm8oLHIblV1E1aaciH4zWUo0vYIEwuCM2gf53jAU8SbmLoimCsH`)">
-        </div>
-        <div class="item1">
-            <img src="./images/terrain.png" alt="Normal Map" title="Terrain View" width="30px" height="30px"
-                onclick="changeMapStyle(`https://tile.jawg.io/jawg-terrain/{z}/{x}/{y}{r}.png?access-token=R5Wnky3x68GoHNm8oLHIblV1E1aaciH4zWUo0vYIEwuCM2gf53jAU8SbmLoimCsH`)">
-        </div>
-        <div class="item1">
-            <img src="./images/cyto.jpg" alt="Normal Map" title="CyclOSM Map" width="30px" height="30px"
-                onclick="changeMapStyle(`https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png`)">
-        </div>
-        <div class="item1">
-            <img src="./images/satellite.jpg" alt="Normal Map" title="Satellite View" width="30px" height="30px"
-                onclick="changeMapStyle(`https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}`)">
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="jsDEV/map_data.js"></script>
-    <script src="jsDEV/map.js"></script>
-    <script src="https://kit.fontawesome.com/f45cd9c28c.js"></script>
-</body>
-
+      <script
+         src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+         crossorigin="anonymous"
+         referrerpolicy="no-referrer"
+      ></script>
+      <script src="jsDEV/map_data.js"></script>
+      <script src="jsDEV/map.js"></script>
+      <script src="https://kit.fontawesome.com/f45cd9c28c.js"></script>
+   </body>
 </html>
