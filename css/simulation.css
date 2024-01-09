@@ -1,0 +1,227 @@
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+
+:root {
+   --white-color: #fff;
+   --blue-color: #eff2f6;
+   --grey-color: #707070;
+   --grey-color-light: #aaa;
+
+   --blue-color-hover: #e3e6ed;
+
+   --link-hover: #333;
+   --text-color: #141824;
+
+   --border: #cbd0dd;
+   --border-hover: #333;
+
+   --sidebar: #fff;
+   --navbar: #fff;
+
+   --navbar-blur: rgba(255, 255, 255, 0.5);
+
+   --button: #f5f7fa;
+   --button-hover: #cbd0dd;
+
+   --scrollbar: #fff;
+   --scrollbar-thumb: rgb(170, 175, 186);
+   --scrollbar-thumb-hover: #d3d6de;
+
+   --body: #f5f7fa;
+   --toast: #777;
+   --toast-color: #e3e6ed;
+   --sidebar-blur: rgba(255, 255, 255, 0.5);
+}
+
+body.dark {
+   --white-color: #333;
+   --blue-color: #31374a;
+   --grey-color: #f2f2f2;
+   --grey-color-light: #aaa;
+
+   --blue-color-hover: rgb(65, 73, 99);
+
+   --link-hover: white;
+   --text-color: #e3e6ed;
+
+   --border: #31374a;
+   --border-hover: #777;
+
+   --sidebar: #141824;
+   --navbar: #141824;
+
+   --navbar-blur: rgba(20, 24, 36, 0.5);
+
+   --button: #0f111a;
+   --button-hover: #141824;
+
+   --scrollbar: #141824;
+   --scrollbar-thumb: #31374a;
+   --scrollbar-thumb-hover: rgb(65, 73, 99);
+
+   --toast: #31374a;
+   --toast-color: #e3e6ed;
+   --sidebar-blur: rgba(20, 24, 36, 0.5);
+}
+
+body {
+   font-family: "Lato", sans-serif;
+   color: var(--text-color) !important;
+   background-color: var(--button) !important;
+   transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0ms;
+}
+
+.head {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   padding: 10px;
+   background-color: var(--navbar-blur);
+   backdrop-filter: blur(5px);
+   color: var(--text-color);
+   height: 60px;
+   border-bottom: 1px solid var(--border);
+   box-shadow: 0 0 5px var(--border);
+   justify-content: space-around;
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   z-index: 999999;
+}
+
+.head select {
+   width: 200px;
+}
+
+@media (max-width: 600px) {
+   #map {
+      height: 300px;
+      margin: 10px;
+   }
+
+   .head {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 10px;
+      background-color: var(--navbar-blur);
+      backdrop-filter: blur(5px);
+      color: var(--text-color);
+      height: fit-content;
+      border-bottom: 1.5px solid var(--border);
+      box-shadow: 0 0 5px var(--border);
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      justify-content: space-around;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999999;
+   }
+
+   .head > * {
+      flex-shrink: 0;
+   }
+
+   .head {
+      justify-content: flex-start;
+   }
+
+   .menu-icon {
+      display: block;
+      /* Show the menu icon */
+   }
+
+   .menu-items {
+      display: none;
+      /* Hide the menu items initially */
+   }
+}
+
+.main {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background-color: var(--button);
+   border: 1px solid var(--border);
+   z-index: 9999999999;
+   backdrop-filter: blur(5px);
+   height: 70px;
+   padding: 15px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 15px;
+   flex-wrap: wrap;
+   flex-direction: column;
+}
+
+.results {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+   padding: 10px;
+   background-color: var(--navbar-blur);
+   backdrop-filter: blur(5px);
+   color: var(--text-color);
+   height: fit-content;
+   border-bottom: 1.5px solid var(--border);
+   box-shadow: 0 0 5px var(--border);
+   flex-wrap: nowrap;
+   overflow-x: auto;
+   justify-content: space-around;
+   width: 70vw;
+   margin: 0 auto;
+   margin-top: 90px;
+   z-index: 999999;
+   margin-bottom: 40px;
+}
+
+.main select {
+   width: 200px;
+}
+
+.main input {
+   width: 400px;
+}
+
+.main button {
+   width: 200px;
+}
+
+.ctr {
+   position: fixed;
+   bottom: 20px;
+   right: 20px;
+}
+
+.circle {
+   width: 50px;
+   height: 50px;
+   background-color: var(--navbar-blur);
+   border-radius: 50%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   cursor: pointer;
+   border: 2px solid var(--border);
+}
+
+.circle i {
+   color: var(--text-color);
+}
+
+.circle:hover {
+   background-color: var(--blue-color-hover);
+}
+
+.hidden {
+   display: none;
+}
