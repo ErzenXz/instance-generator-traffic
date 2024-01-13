@@ -41,6 +41,8 @@ startBtn.addEventListener("click", () => {
          default:
             createLineChart3(carData);
       }
+
+      createTable(carData);
    };
 
    reader.readAsText(file);
@@ -81,14 +83,24 @@ function createLineChart3(cars) {
       var car = cars[i];
       // Create an array of data points for the y-axis (number of cars)
       var data = [];
+
+      var times = [];
+
+      var status = [];
+
       // Loop through the car array
       for (var j = 0; j < car.length; j++) {
          // Get the current car object
          var obj = car[j];
          // If this is the first car, add the secondsToFinish to the labels array
-         if (i === 0) {
-            labels.push(obj.secondsToFinish);
+         if (labels.includes(j) === false) {
+            labels.push(j);
          }
+
+         times.push(obj.secondsToFinish);
+
+         status.push(obj.action);
+
          // Add the streetId to the data array
          data.push(obj.streetId);
       }
@@ -105,10 +117,13 @@ function createLineChart3(cars) {
             "," +
             Math.floor(Math.random() * 256) +
             ",1)",
+         times,
+         status,
       };
       // Add the dataset object to the datasets array
       datasets.push(dataset);
    }
+
    // Create a new chart instance
    var chart = new Chart(ctx, {
       // The type of chart we want to create
@@ -116,7 +131,18 @@ function createLineChart3(cars) {
       // The data for our dataset
       data: {
          labels: labels,
-         datasets: datasets,
+         datasets: datasets.map((dataset) => {
+            return {
+               label: dataset.label,
+               data: dataset.data,
+               fill: false,
+               borderColor: dataset.status.map((status) =>
+                  status === "waiting" ? "red" : "green"
+               ),
+               times: dataset.times,
+               status: dataset.status,
+            };
+         }),
       },
       // Configuration options go here
       options: {
@@ -129,7 +155,7 @@ function createLineChart3(cars) {
                {
                   scaleLabel: {
                      display: true,
-                     labelString: "Street ID",
+                     labelString: "Car",
                   },
                },
             ],
@@ -141,6 +167,17 @@ function createLineChart3(cars) {
                   },
                },
             ],
+         },
+         tooltips: {
+            callbacks: {
+               label: function (tooltipItem, data) {
+                  var dataset = data.datasets[tooltipItem.datasetIndex];
+                  var time = dataset.times[tooltipItem.index];
+                  var status = dataset.status[tooltipItem.index];
+                  var streetId = dataset.data[tooltipItem.index];
+                  return `Time: ${time}s, Status: ${status}, Street ID: ${streetId}`;
+               },
+            },
          },
       },
    });
@@ -367,3 +404,245 @@ modeToggle.addEventListener("click", () => {
       localStorage.setItem("mode", "light");
    }
 });
+
+// Function to create a table with the data
+
+function createTable(data) {
+   // Get the table element
+   var table = document.getElementById("table");
+
+   for (let i = 0; i < data.length; i++) {
+      let car = data[i];
+
+      let status = [];
+      let times = [];
+      let streetNames = [];
+      let currentTime = 0;
+
+      let lastAction = car[0].action;
+      let lastStreet = car[0].streetName;
+
+      let totaoTime = car.length;
+
+      let time = 1;
+
+      for (let j = 1; j < car.length; j++) {
+         let action = car[j].action;
+
+         if (action === lastAction && car[j].streetName === lastStreet) {
+            lastAction = action;
+            time++;
+
+            if (j === car.length - 1) {
+               status.push(`${lastAction}`);
+               times.push(time);
+               streetNames.push(lastStreet);
+            }
+
+            continue;
+         } else {
+            status.push(`${lastAction}`);
+            times.push(time);
+            streetNames.push(lastStreet);
+
+            lastAction = action;
+            time = 1;
+            lastStreet = car[j].streetName;
+         }
+      }
+
+      // Create a new row element
+      let row = document.createElement("tr");
+      // Create a new cell element for the car number
+      let cell = document.createElement("td");
+      // Set the cell text to the car number
+      cell.textContent = "Car " + (i + 1);
+      // Append the cell to the row
+      row.appendChild(cell);
+
+      for (let k = 0; k < status.length; k++) {
+         let cell = document.createElement("td");
+         cell.textContent = status[k] + " for " + times[k] + " seconds on " + streetNames[k];
+         row.appendChild(cell);
+      }
+
+      let cell3 = document.createElement("td");
+      cell3.textContent = "Total time: " + totaoTime + " seconds";
+      row.appendChild(cell3);
+      // Append the row to the table
+      table.appendChild(row);
+   }
+
+   // Info about the results
+
+   let p = document.getElementById("info");
+
+   p.textContent = "Total cars: " + data.length;
+
+   let total = 0;
+
+   for (let i = 0; i < data.length; i++) {
+      total += data[i].length;
+   }
+
+   p.textContent += ", Total time: " + total + " seconds";
+
+   let average = total / data.length;
+
+   p.textContent += ", Average time: " + average + " seconds";
+
+   let max = 0;
+
+   for (let i = 0; i < data.length; i++) {
+      if (data[i].length > max) {
+         max = data[i].length;
+      }
+   }
+
+   p.textContent += ", Max time: " + max + " seconds";
+
+   let min = max;
+
+   for (let i = 0; i < data.length; i++) {
+      if (data[i].length < min) {
+         min = data[i].length;
+      }
+   }
+
+   p.textContent += ", Min time: " + min + " seconds";
+
+   let totalWaiting = 0;
+
+   for (let i = 0; i < data.length; i++) {
+      let car = data[i];
+
+      let lastAction = car[0].action;
+
+      let time = 0;
+
+      for (let j = 1; j < car.length; j++) {
+         let action = car[j].action;
+
+         if (action === lastAction) {
+            lastAction = action;
+            time++;
+
+            if (j === car.length - 1) {
+               totalWaiting += time;
+            }
+
+            continue;
+         } else {
+            lastAction = action;
+            time = 0;
+         }
+      }
+   }
+
+   p.textContent += ", Total waiting time: " + totalWaiting + " seconds";
+
+   let averageWaiting = totalWaiting / data.length;
+
+   p.textContent += ", Average waiting time: " + Math.round(averageWaiting) + " seconds";
+
+   let maxWaiting = 0;
+
+   for (let i = 0; i < data.length; i++) {
+      let car = data[i];
+
+      let lastAction = car[0].action;
+
+      let time = 0;
+
+      for (let j = 1; j < car.length; j++) {
+         let action = car[j].action;
+
+         if (action === lastAction) {
+            lastAction = action;
+            time++;
+
+            if (j === car.length - 1) {
+               if (time > maxWaiting) {
+                  maxWaiting = time;
+               }
+            }
+
+            continue;
+         } else {
+            lastAction = action;
+            time = 0;
+         }
+      }
+   }
+
+   p.textContent += ", Max waiting time: " + maxWaiting + " seconds";
+
+   let minWaiting = maxWaiting;
+
+   for (let i = 0; i < data.length; i++) {
+      let car = data[i];
+
+      let lastAction = car[0].action;
+
+      let time = 0;
+
+      for (let j = 1; j < car.length; j++) {
+         let action = car[j].action;
+
+         if (action === lastAction) {
+            lastAction = action;
+            time++;
+
+            if (j === car.length - 1) {
+               if (time < minWaiting) {
+                  minWaiting = time;
+               }
+            }
+
+            continue;
+         } else {
+            lastAction = action;
+            time = 0;
+         }
+      }
+   }
+
+   p.textContent += ", Min waiting time: " + minWaiting + " seconds.";
+}
+
+// Function to download the table as txt file
+
+function downloadTable() {
+   let table = document.getElementById("table");
+
+   let text = "";
+
+   for (let i = 0; i < table.rows.length; i++) {
+      let row = table.rows[i];
+
+      for (let j = 0; j < row.cells.length; j++) {
+         let cell = row.cells[j];
+
+         text += cell.textContent + " ";
+      }
+
+      text += "\n";
+   }
+
+   let filename = "table.txt";
+
+   download(filename, text);
+}
+
+function download(filename, text) {
+   var element = document.createElement("a");
+   element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
+   element.setAttribute("download", filename);
+
+   element.style.display = "none";
+   document.body.appendChild(element);
+
+   element.click();
+
+   document.body.removeChild(element);
+}
