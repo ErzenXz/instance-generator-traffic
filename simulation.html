@@ -18,7 +18,7 @@
       <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
       <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
       <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
-      <script src="jsDEV/sim.js" defer></script>
+      <script src="js/sim.js" defer></script>
       <script
          defer
          src="https://kit.fontawesome.com/f45cd9c28c.js"
@@ -29,7 +29,7 @@
 
    <body>
       <div class="main" id="main">
-         <input type="file" class="form-control" name="file" id="file" />
+         <input type="file" class="form-control" name="file" id="file" accept=".json" />
          <select name="graphs" class="form-control" id="menu">
             <option value="3">Default Chart</option>
             <option value="2">Waiting</option>
@@ -50,6 +50,10 @@
          <div class="circle" id="theme-switcher">
             <i class="fas fa-adjust"></i>
          </div>
+      </div>
+
+      <div class="version">
+         <p>Version 1.0 © Erzen Krasniqi 2024</p>
       </div>
    </body>
 </html>

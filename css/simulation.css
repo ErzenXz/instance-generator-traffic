@@ -262,3 +262,13 @@ th {
    border-radius: 5px !important;
    color: var(--text-color) !important;
 }
+
+.version {
+   position: fixed;
+   bottom: 10px;
+   left: 10px;
+   color: var(--text-color);
+   font-size: 12px;
+   font-weight: bold;
+   z-index: 999999;
+}
