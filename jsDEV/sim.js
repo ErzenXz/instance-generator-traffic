@@ -23,26 +23,6 @@ startBtn.addEventListener("click", () => {
 
          data = carData;
 
-         let choosenOption = selectOption.options[selectOption.selectedIndex].value;
-
-         // Destroy the previous chart
-
-         let chart = Chart.getChart("chart");
-         if (chart) {
-            chart.destroy();
-         }
-
-         switch (choosenOption) {
-            case "1":
-               createLineChart(carData);
-               break;
-            case "2":
-               createLineChart2(carData);
-               break;
-            default:
-               createLineChart3(carData);
-         }
-
          createTable(carData);
       };
 
@@ -78,125 +58,6 @@ function parseCars(json) {
    }
 }
 
-function createLineChart3(cars) {
-   try {
-      // Get the canvas element where the chart will be rendered
-      var ctx = document.getElementById("chart").getContext("2d");
-      // Create an array of labels for the x-axis (time)
-      var labels = [];
-      // Create an array of datasets, one for each car
-      var datasets = [];
-      // Loop through the cars array
-      for (var i = 0; i < cars.length; i++) {
-         // Get the current car array
-         var car = cars[i];
-         // Create an array of data points for the y-axis (number of cars)
-         var data = [];
-
-         var times = [];
-
-         var status = [];
-
-         // Loop through the car array
-         for (var j = 0; j < car.length; j++) {
-            // Get the current car object
-            var obj = car[j];
-            // If this is the first car, add the secondsToFinish to the labels array
-            if (labels.includes(j) === false) {
-               labels.push(j);
-            }
-
-            times.push(obj.secondsToFinish);
-
-            status.push(obj.action);
-
-            // Add the streetId to the data array
-            data.push(obj.streetId);
-         }
-         // Create a dataset object for the current car
-         var dataset = {
-            label: "Car " + (i + 1),
-            data: data,
-            fill: false,
-            borderColor:
-               "rgba(" +
-               Math.floor(Math.random() * 256) +
-               "," +
-               Math.floor(Math.random() * 256) +
-               "," +
-               Math.floor(Math.random() * 256) +
-               ",1)",
-            times,
-            status,
-         };
-         // Add the dataset object to the datasets array
-         datasets.push(dataset);
-      }
-
-      // Create a new chart instance
-      var chart = new Chart(ctx, {
-         // The type of chart we want to create
-         type: "line",
-         // The data for our dataset
-         data: {
-            labels: labels,
-            datasets: datasets.map((dataset) => {
-               return {
-                  label: dataset.label,
-                  data: dataset.data,
-                  fill: false,
-                  borderColor: dataset.status.map((status) =>
-                     status === "waiting" ? "red" : "green"
-                  ),
-                  times: dataset.times,
-                  status: dataset.status,
-               };
-            }),
-         },
-         // Configuration options go here
-         options: {
-            title: {
-               display: true,
-               text: "Cars by street and time",
-            },
-            scales: {
-               yAxes: [
-                  {
-                     scaleLabel: {
-                        display: true,
-                        labelString: "Car",
-                     },
-                  },
-               ],
-               xAxes: [
-                  {
-                     scaleLabel: {
-                        display: true,
-                        labelString: "Time (seconds)",
-                     },
-                  },
-               ],
-            },
-            tooltips: {
-               callbacks: {
-                  label: function (tooltipItem, data) {
-                     var dataset = data.datasets[tooltipItem.datasetIndex];
-                     var time = dataset.times[tooltipItem.index];
-                     var status = dataset.status[tooltipItem.index];
-                     var streetId = dataset.data[tooltipItem.index];
-                     return `Time: ${time}s, Status: ${status}, Street ID: ${streetId}`;
-                  },
-               },
-            },
-         },
-      });
-      // Return the chart instance
-      return chart;
-   } catch (error) {
-      alert("An error occured while creating the chart!\nIs the file in the correct format?");
-   }
-}
-
 function countCarsByStreetAndTime(cars) {
    try {
       // An object to store the counts for each street and time
@@ -228,186 +89,6 @@ function countCarsByStreetAndTime(cars) {
       return counts;
    } catch (error) {
       alert("An error occured while counting the cars!\nIs the file in the correct format?");
-   }
-}
-
-// A function to create a line chart with graph.js
-function createLineChart(cars) {
-   try {
-      // Get the canvas element where the chart will be rendered
-      var ctx = document.getElementById("chart").getContext("2d");
-      // Get the counts of cars by street and time
-      var counts = countCarsByStreetAndTime(cars);
-      // Create an array of street names for the labels
-      var labels = Object.keys(counts);
-      // Create an array of datasets, one for each time
-      var datasets = [];
-      // Loop through the possible times from 1 to 3
-      for (var t = 1; t <= 3; t++) {
-         // Create an array of data points for the y-axis (number of cars)
-         var data = [];
-         // Loop through the labels array
-         for (var k = 0; k < labels.length; k++) {
-            // Get the current street name
-            var street = labels[k];
-            // Get the count for the street and time, or zero if not found
-            var count = counts[street][t] || 0;
-            // Add the count to the data array
-            data.push(count);
-         }
-         // Create a dataset object for the current time
-         var dataset = {
-            label: "Time " + t,
-            data: data,
-            fill: false,
-            borderColor:
-               "rgba(" +
-               Math.floor(Math.random() * 256) +
-               "," +
-               Math.floor(Math.random() * 256) +
-               "," +
-               Math.floor(Math.random() * 256) +
-               ",1)",
-         };
-         // Add the dataset object to the datasets array
-         datasets.push(dataset);
-      }
-      // Create a new chart instance
-      var chart = new Chart(ctx, {
-         // The type of chart we want to create
-         type: "line",
-         // The data for our dataset
-         data: {
-            labels: labels,
-            datasets: datasets,
-         },
-         // Configuration options go here
-         options: {
-            title: {
-               display: true,
-               text: "Cars by street and time",
-            },
-            scales: {
-               yAxes: [
-                  {
-                     scaleLabel: {
-                        display: true,
-                        labelString: "Number of cars",
-                     },
-                  },
-               ],
-               xAxes: [
-                  {
-                     scaleLabel: {
-                        display: true,
-                        labelString: "Street name",
-                     },
-                  },
-               ],
-            },
-         },
-      });
-      // Return the chart instance
-      return chart;
-   } catch (error) {
-      alert("An error occured while creating the chart!\nIs the file in the correct format?");
-   }
-}
-
-// A function to create a line chart with graph.js
-function createLineChart2(cars) {
-   try {
-      // Get the canvas element where the chart will be rendered
-      var ctx = document.getElementById("chart").getContext("2d");
-      // Create an array of labels for the x-axis (time)
-      var labels = [];
-      // Create an array of datasets, one for each car
-      var datasets = [];
-      // Loop through the cars array
-      for (var i = 0; i < cars.length; i++) {
-         // Get the current car array
-         var car = cars[i];
-         // Create an array of data points for the y-axis (action)
-         var data = [];
-         // Create an array of colors for the line (street name)
-         var colors = [];
-         // Loop through the car array
-         for (var j = 0; j < car.length; j++) {
-            // Get the current car object
-            var obj = car[j];
-            // If this is the first car, add the secondsToFinish to the labels array
-            if (labels.includes(j) === false) {
-               labels.push(j);
-            }
-            // Add the action to the data array
-            data.push(obj.action);
-            // Add the color based on the street name to the colors array
-            if (obj.streetName === "Derriopes") {
-               colors.push("red");
-            } else if (obj.streetName === "Lipjan") {
-               colors.push("green");
-            } else if (obj.streetName === "Lipjan1") {
-               colors.push("blue");
-            } else {
-               colors.push("black");
-            }
-         }
-         // Create a dataset object for the current car
-         var dataset = {
-            label: "Car " + (i + 1),
-            data: data,
-            fill: false,
-            borderColor: colors,
-            pointBackgroundColor: colors,
-         };
-         // Add the dataset object to the datasets array
-         datasets.push(dataset);
-      }
-      // Create a new chart instance
-      var chart = new Chart(ctx, {
-         // The type of chart we want to create
-         type: "line",
-         // The data for our dataset
-         data: {
-            labels: labels,
-            datasets: datasets,
-         },
-         // Configuration options go here
-         options: {
-            title: {
-               display: true,
-               text: "Cars by action and street",
-            },
-            scales: {
-               y: {
-                  // instead of yAxes: [{
-                  type: "category",
-                  labels: ["moving", "waiting"],
-                  scaleLabel: {
-                     display: true,
-                     labelString: "Action",
-                  },
-               }, // remove the closing bracket here
-               x: {
-                  // instead of xAxes: [{
-                  type: "time",
-                  ticks: {
-                     autoSkip: true,
-                     maxTicksLimit: 20,
-                  },
-                  display: true,
-                  scaleLabel: {
-                     display: true,
-                     labelString: "Time (seconds)",
-                  },
-               }, // remove the closing bracket here
-            },
-         },
-      });
-      // Return the chart instance
-      return chart;
-   } catch (error) {
-      alert("An error occured while creating the chart!\nIs the file in the correct format?");
    }
 }
 
@@ -459,14 +140,23 @@ function createTable(data) {
                time++;
 
                if (j === car.length - 1) {
-                  status.push(`${lastAction}`);
+                  if (lastAction === "waiting") {
+                     status.push(`W`);
+                  } else {
+                     status.push(`M`);
+                  }
+
                   times.push(time);
                   streetNames.push(lastStreet);
                }
 
                continue;
             } else {
-               status.push(`${lastAction}`);
+               if (lastAction === "waiting") {
+                  status.push(`W`);
+               } else {
+                  status.push(`M`);
+               }
                times.push(time);
                streetNames.push(lastStreet);
 
@@ -476,18 +166,46 @@ function createTable(data) {
             }
          }
 
+         // Adding table headers
+         if (i === 0) {
+            let header = document.createElement("tr");
+            let cell = document.createElement("th");
+            cell.textContent = "Car number";
+            header.appendChild(cell);
+
+            for (let k = 0; k < status.length; k++) {
+               let cell = document.createElement("th");
+               cell.textContent = "Status / Total time";
+               header.appendChild(cell);
+            }
+
+            let cell3 = document.createElement("th");
+            cell3.textContent = "Total time";
+            header.appendChild(cell3);
+
+            table.appendChild(header);
+         }
+
          // Create a new row element
          let row = document.createElement("tr");
          // Create a new cell element for the car number
          let cell = document.createElement("td");
          // Set the cell text to the car number
-         cell.textContent = "Car " + (i + 1);
+         cell.textContent = i + 1;
          // Append the cell to the row
          row.appendChild(cell);
 
          for (let k = 0; k < status.length; k++) {
             let cell = document.createElement("td");
-            cell.textContent = status[k] + " for " + times[k] + " seconds on " + streetNames[k];
+
+            // Calculating the score for each car, if the car arrives before the bonus time, give it bonus points
+            if (status[k] === "M") {
+               cell.style.backgroundColor = "#4a8e46";
+            } else {
+               cell.style.backgroundColor = "#e8876d";
+            }
+
+            cell.textContent = status[k] + times[k] + "s " + streetNames[k];
             row.appendChild(cell);
          }
 
@@ -502,7 +220,7 @@ function createTable(data) {
 
       let p = document.getElementById("info");
 
-      p.textContent = "Total cars: " + data.length;
+      p.textContent = " Total cars: " + data.length;
 
       let total = 0;
 
@@ -510,11 +228,11 @@ function createTable(data) {
          total += data[i].length;
       }
 
-      p.textContent += ", Total time: " + total + " seconds";
+      p.textContent += "\n Total time: " + total + " seconds";
 
       let average = total / data.length;
 
-      p.textContent += ", Average time: " + average + " seconds";
+      p.textContent += "\n Average time: " + average + " seconds";
 
       let max = 0;
 
@@ -524,7 +242,7 @@ function createTable(data) {
          }
       }
 
-      p.textContent += ", Max time: " + max + " seconds";
+      p.textContent += "\n Max time: " + max + " seconds";
 
       let min = max;
 
@@ -534,7 +252,7 @@ function createTable(data) {
          }
       }
 
-      p.textContent += ", Min time: " + min + " seconds";
+      p.textContent += "\n Min time: " + min + " seconds";
 
       let totalWaiting = 0;
 
@@ -564,11 +282,11 @@ function createTable(data) {
          }
       }
 
-      p.textContent += ", Total waiting time: " + totalWaiting + " seconds";
+      p.textContent += "\n Total waiting time: " + totalWaiting + " seconds";
 
       let averageWaiting = totalWaiting / data.length;
 
-      p.textContent += ", Average waiting time: " + Math.round(averageWaiting) + " seconds";
+      p.textContent += "\n Average waiting time: " + Math.round(averageWaiting) + " seconds";
 
       let maxWaiting = 0;
 
@@ -600,7 +318,7 @@ function createTable(data) {
          }
       }
 
-      p.textContent += ", Max waiting time: " + maxWaiting + " seconds";
+      p.textContent += "\n Max waiting time: " + maxWaiting + " seconds";
 
       let minWaiting = maxWaiting;
 
@@ -632,7 +350,7 @@ function createTable(data) {
          }
       }
 
-      p.textContent += ", Min waiting time: " + minWaiting + " seconds.";
+      p.textContent += "\n Min waiting time: " + minWaiting + " seconds.";
    } catch (error) {
       alert("An error occured while creating the table!\nIs the file in the correct format?");
    }
@@ -674,3 +392,9 @@ function download(filename, text) {
 
    document.body.removeChild(element);
 }
+
+let downloadBtn = document.getElementById("download-btn");
+
+downloadBtn.addEventListener("click", () => {
+   downloadTable();
+});

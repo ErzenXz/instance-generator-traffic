@@ -18,7 +18,7 @@
       <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
       <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
       <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
-      <script src="js/sim.js" defer></script>
+      <script src="jsDEV/sim.js" defer></script>
       <script
          defer
          src="https://kit.fontawesome.com/f45cd9c28c.js"
@@ -30,20 +30,15 @@
    <body>
       <div class="main" id="main">
          <input type="file" class="form-control" name="file" id="file" accept=".json" />
-         <select name="graphs" class="form-control" id="menu">
-            <option value="3">Default Chart</option>
-            <option value="2">Waiting</option>
-            <option value="1">Intersection Usage</option>
-         </select>
          <button id="start" class="form-control" class="start">Start</button>
       </div>
 
       <div class="results" id="results">
-         <canvas id="chart" width="500" height="500"></canvas>
-
+         <div id="info">Please upload a JSON file to start the simulation.</div>
          <table id="table"></table>
-
-         <div id="info"></div>
+         <div id="download">
+            <button id="download-btn" class="form-control">Download</button>
+         </div>
       </div>
 
       <div class="ctr">
@@ -53,7 +48,7 @@
       </div>
 
       <div class="version">
-         <p>Version 1.0 © Erzen Krasniqi 2024</p>
+         <p>Version 1.1 © Erzen Krasniqi 2024</p>
       </div>
    </body>
 </html>

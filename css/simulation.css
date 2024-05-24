@@ -124,7 +124,7 @@ body {
       z-index: 999999;
    }
 
-   .head > * {
+   .head>* {
       flex-shrink: 0;
    }
 
@@ -271,4 +271,25 @@ th {
    font-size: 12px;
    font-weight: bold;
    z-index: 999999;
+}
+
+
+#info {
+   padding: 30px 20px;
+   background-color: var(--navbar-blur);
+   backdrop-filter: blur(5px);
+   color: var(--text-color);
+   height: fit-content;
+   border-bottom: 1.5px solid var(--border);
+   box-shadow: 0 0 5px var(--border);
+   flex-wrap: nowrap;
+   overflow-x: auto;
+   justify-content: space-around;
+
+   width: 90vw;
+   margin: 0 auto;
+   z-index: 999999;
+   white-space: pre-wrap;
+
+
 }
