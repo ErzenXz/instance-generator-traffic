@@ -86,6 +86,7 @@ function countCarsByStreetAndTime(cars) {
          }
       }
       // Return the counts object
+
       return counts;
    } catch (error) {
       alert("An error occured while counting the cars!\nIs the file in the correct format?");
@@ -118,6 +119,7 @@ function createTable(data) {
       var table = document.getElementById("table");
 
       for (let i = 0; i < data.length; i++) {
+         console.log(data[i]);
          let car = data[i];
 
          let status = [];
@@ -131,6 +133,7 @@ function createTable(data) {
          let totaoTime = car.length;
 
          let time = 1;
+         let bonus = 0;
 
          for (let j = 1; j < car.length; j++) {
             let action = car[j].action;
@@ -166,7 +169,10 @@ function createTable(data) {
             }
          }
 
-         // Adding table headers
+         if (times[0] < 10) {
+            bonus = 10 - times[0];
+         }
+
          if (i === 0) {
             let header = document.createElement("tr");
             let cell = document.createElement("th");
@@ -198,20 +204,24 @@ function createTable(data) {
          for (let k = 0; k < status.length; k++) {
             let cell = document.createElement("td");
 
-            // Calculating the score for each car, if the car arrives before the bonus time, give it bonus points
+            // Calculating the score for each car, if the car arrives before the bonus time, give it bonus po ints
             if (status[k] === "M") {
                cell.style.backgroundColor = "#4a8e46";
             } else {
                cell.style.backgroundColor = "#e8876d";
             }
 
-            cell.textContent = status[k] + times[k] + "s " + streetNames[k];
+            cell.textContent = status[k] + " " + times[k] + "s " + streetNames[k];
             row.appendChild(cell);
          }
 
          let cell3 = document.createElement("td");
          cell3.textContent = "Total time: " + totaoTime + " seconds";
          row.appendChild(cell3);
+
+         let cell4 = document.createElement("td");
+         cell4.textContent = "Bonus: " + bonus + " points";
+         row.appendChild(cell4);
          // Append the row to the table
          table.appendChild(row);
       }
@@ -351,6 +361,138 @@ function createTable(data) {
       }
 
       p.textContent += "\n Min waiting time: " + minWaiting + " seconds.";
+
+      // let counts = countCarsByStreetAndTime(data);
+
+      // let streets = Object.keys(counts);
+
+      // let table2 = document.getElementById("table2");
+
+      // let header = document.createElement("tr");
+      // let cell = document.createElement("th");
+      // cell.textContent = "Street name";
+      // header.appendChild(cell);
+
+      // for (let i = 0; i < 50; i++) {
+      //    let cell = document.createElement("th");
+      //    cell.textContent = i;
+      //    header.appendChild(cell);
+      // }
+
+      // table2.appendChild(header);
+
+      // for (let i = 0; i < streets.length; i++) {
+      //    let street = streets[i];
+
+      //    let row = document.createElement("tr");
+      //    let cell = document.createElement("td");
+      //    cell.textContent = street;
+      //    row.appendChild(cell);
+
+      //    let streetCounts = counts[street];
+
+      //    for (let j = 0; j < 50; j++) {
+      //       let cell = document.createElement("td");
+
+      //       if (streetCounts[j]) {
+      //          cell.textContent = streetCounts[j];
+      //       } else {
+      //          cell.textContent = 0;
+      //       }
+
+      //       row.appendChild(cell);
+      //    }
+
+      //    table2.appendChild(row);
+      // }
+
+      // Calculate the average time for each street
+
+      let table3 = document.getElementById("table3");
+
+      let header = document.createElement("tr");
+      let cell = document.createElement("th");
+      cell.textContent = "Street name";
+      header.appendChild(cell);
+
+      let cell2 = document.createElement("th");
+      cell2.textContent = "Average time";
+      header.appendChild(cell2);
+
+      table3.appendChild(header);
+
+      let counts = countCarsByStreetAndTime(data);
+
+      let streets = Object.keys(counts);
+
+      for (let i = 0; i < streets.length; i++) {
+         let street = streets[i];
+
+         let streetCounts = counts[street];
+
+         let total = 0;
+         let count = 0;
+
+         for (let j = 0; j < 50; j++) {
+            if (streetCounts[j]) {
+               total += streetCounts[j] * j;
+               count += streetCounts[j];
+            }
+         }
+
+         let row = document.createElement("tr");
+         let cell = document.createElement("td");
+         cell.textContent = street;
+         row.appendChild(cell);
+
+         let cell2 = document.createElement("td");
+         cell2.textContent = Math.round(total / count) + " seconds";
+         row.appendChild(cell2);
+
+         table3.appendChild(row);
+      }
+
+      // Calculate the average waiting time for each street
+
+      let table4 = document.getElementById("table4");
+
+      let header2 = document.createElement("tr");
+      let cell3 = document.createElement("th");
+      cell3.textContent = "Street name";
+      header2.appendChild(cell3);
+
+      let cell4 = document.createElement("th");
+      cell4.textContent = "Average waiting time";
+      header2.appendChild(cell4);
+
+      table4.appendChild(header2);
+
+      for (let i = 0; i < streets.length; i++) {
+         let street = streets[i];
+
+         let streetCounts = counts[street];
+
+         let total = 0;
+         let count = 0;
+
+         for (let j = 0; j < 50; j++) {
+            if (streetCounts[j]) {
+               total += streetCounts[j] * j;
+               count += streetCounts[j];
+            }
+         }
+
+         let row = document.createElement("tr");
+         let cell = document.createElement("td");
+         cell.textContent = street;
+         row.appendChild(cell);
+
+         let cell2 = document.createElement("td");
+         cell2.textContent = Math.round(total / count) + " seconds";
+         row.appendChild(cell2);
+
+         table4.appendChild(row);
+      }
    } catch (error) {
       alert("An error occured while creating the table!\nIs the file in the correct format?");
    }
