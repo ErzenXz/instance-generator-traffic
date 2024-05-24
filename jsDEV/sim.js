@@ -115,11 +115,14 @@ modeToggle.addEventListener("click", () => {
 
 function createTable(data) {
    try {
+      let bonusTime = document.getElementById("bonus").value;
+      let duration = document.getElementById("duration").value;
       // Get the table element
       var table = document.getElementById("table");
 
+      let totalScore = 0;
+
       for (let i = 0; i < data.length; i++) {
-         console.log(data[i]);
          let car = data[i];
 
          let status = [];
@@ -133,7 +136,6 @@ function createTable(data) {
          let totaoTime = car.length;
 
          let time = 1;
-         let bonus = 0;
 
          for (let j = 1; j < car.length; j++) {
             let action = car[j].action;
@@ -169,15 +171,19 @@ function createTable(data) {
             }
          }
 
-         if (times[0] < 10) {
-            bonus = 10 - times[0];
-         }
-
          if (i === 0) {
             let header = document.createElement("tr");
             let cell = document.createElement("th");
             cell.textContent = "Car number";
             header.appendChild(cell);
+
+            let cell40 = document.createElement("th");
+            cell40.textContent = "Score";
+            header.appendChild(cell40);
+
+            let cell4 = document.createElement("th");
+            cell4.textContent = "Bonus";
+            header.appendChild(cell4);
 
             for (let k = 0; k < status.length; k++) {
                let cell = document.createElement("th");
@@ -201,6 +207,27 @@ function createTable(data) {
          // Append the cell to the row
          row.appendChild(cell);
 
+         let bonus = 0;
+         let score = 0;
+
+         if (duration > totaoTime) {
+            bonus = bonusTime;
+            score = Number(duration) - Number(totaoTime) + Number(bonus);
+         } else {
+            bonus = 0;
+            score = Number(duration) - Number(totaoTime);
+         }
+
+         let cell40 = document.createElement("td");
+         cell40.textContent = score + " p";
+         row.appendChild(cell40);
+
+         totalScore += score;
+
+         let cell4 = document.createElement("td");
+         cell4.textContent = bonus + " p";
+         row.appendChild(cell4);
+
          for (let k = 0; k < status.length; k++) {
             let cell = document.createElement("td");
 
@@ -218,10 +245,6 @@ function createTable(data) {
          let cell3 = document.createElement("td");
          cell3.textContent = "Total time: " + totaoTime + " seconds";
          row.appendChild(cell3);
-
-         let cell4 = document.createElement("td");
-         cell4.textContent = "Bonus: " + bonus + " points";
-         row.appendChild(cell4);
          // Append the row to the table
          table.appendChild(row);
       }
@@ -230,7 +253,9 @@ function createTable(data) {
 
       let p = document.getElementById("info");
 
-      p.textContent = " Total cars: " + data.length;
+      p.textContent = " Total score: " + totalScore + " points";
+
+      p.textContent += "\n Total cars: " + data.length;
 
       let total = 0;
 
@@ -362,49 +387,19 @@ function createTable(data) {
 
       p.textContent += "\n Min waiting time: " + minWaiting + " seconds.";
 
-      // let counts = countCarsByStreetAndTime(data);
+      let diffrenceBetweenTotalDurationAndAverage = duration - average;
 
-      // let streets = Object.keys(counts);
+      p.textContent +=
+         "\n Difference between total duration and average: " +
+         diffrenceBetweenTotalDurationAndAverage +
+         " seconds.";
 
-      // let table2 = document.getElementById("table2");
+      let diffrenceBetweenTotalDurationAndMax = duration - max;
 
-      // let header = document.createElement("tr");
-      // let cell = document.createElement("th");
-      // cell.textContent = "Street name";
-      // header.appendChild(cell);
-
-      // for (let i = 0; i < 50; i++) {
-      //    let cell = document.createElement("th");
-      //    cell.textContent = i;
-      //    header.appendChild(cell);
-      // }
-
-      // table2.appendChild(header);
-
-      // for (let i = 0; i < streets.length; i++) {
-      //    let street = streets[i];
-
-      //    let row = document.createElement("tr");
-      //    let cell = document.createElement("td");
-      //    cell.textContent = street;
-      //    row.appendChild(cell);
-
-      //    let streetCounts = counts[street];
-
-      //    for (let j = 0; j < 50; j++) {
-      //       let cell = document.createElement("td");
-
-      //       if (streetCounts[j]) {
-      //          cell.textContent = streetCounts[j];
-      //       } else {
-      //          cell.textContent = 0;
-      //       }
-
-      //       row.appendChild(cell);
-      //    }
-
-      //    table2.appendChild(row);
-      // }
+      p.textContent +=
+         "\n Difference between total duration and max: " +
+         diffrenceBetweenTotalDurationAndMax +
+         " seconds.";
 
       // Calculate the average time for each street
 
@@ -422,8 +417,10 @@ function createTable(data) {
       table3.appendChild(header);
 
       let counts = countCarsByStreetAndTime(data);
+      console.log(counts);
 
       let streets = Object.keys(counts);
+      console.log(streets);
 
       for (let i = 0; i < streets.length; i++) {
          let street = streets[i];
@@ -433,7 +430,7 @@ function createTable(data) {
          let total = 0;
          let count = 0;
 
-         for (let j = 0; j < 50; j++) {
+         for (let j = 0; j < 5000; j++) {
             if (streetCounts[j]) {
                total += streetCounts[j] * j;
                count += streetCounts[j];
@@ -450,48 +447,6 @@ function createTable(data) {
          row.appendChild(cell2);
 
          table3.appendChild(row);
-      }
-
-      // Calculate the average waiting time for each street
-
-      let table4 = document.getElementById("table4");
-
-      let header2 = document.createElement("tr");
-      let cell3 = document.createElement("th");
-      cell3.textContent = "Street name";
-      header2.appendChild(cell3);
-
-      let cell4 = document.createElement("th");
-      cell4.textContent = "Average waiting time";
-      header2.appendChild(cell4);
-
-      table4.appendChild(header2);
-
-      for (let i = 0; i < streets.length; i++) {
-         let street = streets[i];
-
-         let streetCounts = counts[street];
-
-         let total = 0;
-         let count = 0;
-
-         for (let j = 0; j < 50; j++) {
-            if (streetCounts[j]) {
-               total += streetCounts[j] * j;
-               count += streetCounts[j];
-            }
-         }
-
-         let row = document.createElement("tr");
-         let cell = document.createElement("td");
-         cell.textContent = street;
-         row.appendChild(cell);
-
-         let cell2 = document.createElement("td");
-         cell2.textContent = Math.round(total / count) + " seconds";
-         row.appendChild(cell2);
-
-         table4.appendChild(row);
       }
    } catch (error) {
       alert("An error occured while creating the table!\nIs the file in the correct format?");
